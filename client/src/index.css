@@ -1,0 +1,81 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+/* Import Merriweather (Serif) and Inter (Sans) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400&display=swap');
+
+@layer base {
+  :root {
+    --bg-page: #fafaf9;
+    --text-primary: #1c1917;
+    --text-secondary: #57534e;
+  }
+
+  body {
+    @apply bg-paper-50 text-ink-900 font-sans selection:bg-teal-100 selection:text-teal-900;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-serif text-ink-900 tracking-tight;
+  }
+}
+
+@layer components {
+
+  /* Modern "Paper" Card Utility */
+  .card-libra {
+    @apply bg-white border border-paper-200 shadow-card rounded-lg transition-shadow duration-200;
+  }
+
+  .card-libra-hover {
+    @apply hover:shadow-soft hover:border-teal-200;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply bg-teal-600 text-white font-medium px-5 py-2.5 rounded shadow-sm hover:bg-teal-700 active:scale-[0.98] transition-all duration-200;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-ink-600 hover:bg-paper-100 hover:text-ink-900 px-4 py-2 rounded transition-colors font-medium;
+  }
+
+  .btn-outline {
+    @apply border border-paper-200 text-ink-600 hover:border-teal-600 hover:text-teal-600 bg-white px-4 py-2 rounded transition-all font-medium;
+  }
+
+  /* Custom Inputs */
+  .input-libra {
+    @apply bg-white border border-paper-200 text-ink-900 placeholder-ink-400 rounded focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all shadow-sm;
+  }
+
+  /* Status Badges */
+  .badge-shelf {
+    @apply text-xs font-bold uppercase tracking-wider px-2 py-1 rounded bg-paper-100 text-ink-600;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fafaf9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d6d3d1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a29e;
+}
