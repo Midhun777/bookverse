@@ -19,6 +19,7 @@ const seedAdmin = async () => {
         const admin = new User({
             name: 'Admin User',
             email: 'admin@bookverse.com',
+            username: 'admin',
             password: 'admin123', // Admin credentials
             role: 'ADMIN'
         });

@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const AdminSettings = require('../models/AdminSettings');
 const SavedBook = require('../models/SavedBook');
+const BookMaster = require('../models/BookMaster');
 const Activity = require('../models/Activity');
 const Review = require('../models/Review');
 const ReadingList = require('../models/ReadingList');
@@ -89,6 +90,25 @@ const getAppStats = async (req, res) => {
             { $limit: 5 }
         ]);
 
+        // Enrich with Book Titles
+        // const BookMaster = require('../models/BookMaster'); // Moved to top
+        const allBookIds = [...new Set([
+            ...reviewStats.map(s => s._id),
+            ...likeStats.map(s => s._id)
+        ])];
+
+        const books = await BookMaster.find({ openLibraryId: { $in: allBookIds } }).select('openLibraryId title');
+        const bookMap = {};
+        books.forEach(b => bookMap[b.openLibraryId] = b.title);
+
+        const enrichStats = (stats) => stats.map(s => ({
+            _id: bookMap[s._id] || s._id, // Use title if found, else ID
+            count: s.count
+        }));
+
+        const enrichedReviewStats = enrichStats(reviewStats);
+        const enrichedLikeStats = enrichStats(likeStats);
+
         // 4. User Growth (Last 7 days)
         const sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
@@ -119,8 +139,8 @@ const getAppStats = async (req, res) => {
             },
             analytics: {
                 topKeywords,
-                mostReviewed: reviewStats,
-                mostLiked: likeStats,
+                mostReviewed: enrichedReviewStats,
+                mostLiked: enrichedLikeStats,
                 growth: growthStats,
                 categories: categoryStats
             }

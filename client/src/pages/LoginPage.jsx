@@ -23,7 +23,7 @@ const LoginPage = () => {
         try {
             const response = await api.post('/auth/login', data);
             login(response.data, response.data.token);
-            toast.success('Neural link established!');
+            toast.success('Login successful!');
             navigate('/dashboard');
         } catch (error) {
             toast.error(error.response?.data?.message || 'Authentication failed');
@@ -33,11 +33,11 @@ const LoginPage = () => {
     return (
         <div className="max-w-md mx-auto mt-20 p-10 bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 animate-page">
             <h2 className="text-3xl font-bold text-center mb-2 serif">Welcome Back</h2>
-            <p className="text-center text-gray-400 text-sm mb-10 italic">Secure access to your personal archive.</p>
+            <p className="text-center text-gray-400 text-sm mb-10 italic">Sign in to access your library.</p>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div>
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1.5 block ml-1">Neural Mail</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1.5 block ml-1">Email Address</label>
                     <input
                         {...register('email')}
                         type="email"
@@ -48,7 +48,7 @@ const LoginPage = () => {
                 </div>
 
                 <div>
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1.5 block ml-1">Security Key</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1.5 block ml-1">Password</label>
                     <input
                         {...register('password')}
                         type="password"
@@ -59,7 +59,7 @@ const LoginPage = () => {
                 </div>
 
                 <div className="flex justify-end">
-                    <button type="button" className="text-[10px] font-bold text-blue-600 uppercase tracking-widest hover:underline">Forgot Key?</button>
+                    <button type="button" className="text-[10px] font-bold text-blue-600 uppercase tracking-widest hover:underline">Forgot Password?</button>
                 </div>
 
                 <button
@@ -67,13 +67,13 @@ const LoginPage = () => {
                     disabled={isSubmitting}
                     className="w-full bg-gray-900 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl hover:bg-gray-800 hover:-translate-y-1 transition-all disabled:opacity-50 mt-4"
                 >
-                    {isSubmitting ? 'Authenticating...' : 'Establish Connection'}
+                    {isSubmitting ? 'Signing in...' : 'Sign In'}
                 </button>
             </form>
 
             <p className="text-center mt-12 text-xs font-bold uppercase tracking-widest text-gray-400">
-                New to the Nexus?{' '}
-                <Link to="/register" className="text-blue-600 hover:text-blue-700">Initialize Identity</Link>
+                New to Bookverse?{' '}
+                <Link to="/register" className="text-blue-600 hover:text-blue-700">Create Account</Link>
             </p>
         </div>
     );
