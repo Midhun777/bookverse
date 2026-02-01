@@ -52,7 +52,7 @@ const HomeSidebar = () => {
             <div className="space-y-6">
                 <div className="card-libra p-6 text-center">
                     <h3 className="font-bold font-serif text-ink-900 text-lg mb-2">New here?</h3>
-                    <p className="text-sm text-ink-600 mb-4">Create a free account to discover what your friends are reading.</p>
+                    <p className="text-sm text-ink-600 mb-4">Create a free account to track your reading and discover new books.</p>
                     <Link to="/register" className="btn-primary block w-full text-center mb-2">Create Account</Link>
                     <p className="text-xs text-ink-400">Already a member? <Link to="/login" className="text-teal-600 hover:underline">Sign in</Link></p>
                 </div>

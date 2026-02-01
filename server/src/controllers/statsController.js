@@ -147,16 +147,21 @@ const getPublicProfile = async (req, res) => {
         // Favorite Genres enrichment (based on books read)
         const genreCounts = {};
         books.forEach(b => {
-            b.subjects?.forEach(s => {
+            const subjects = Array.isArray(b.subjects) ? b.subjects : (b.genre ? [b.genre] : []);
+            subjects.forEach(s => {
                 genreCounts[s] = (genreCounts[s] || 0) + 1;
             });
         });
-        const favoriteGenres = Object.entries(genreCounts)
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, 3)
-            .map(([genre]) => genre);
 
-        if (favoriteGenres.length === 0) favoriteGenres.push('Fiction', 'Science', 'History');
+        const genreDistribution = Object.entries(genreCounts)
+            .sort((a, b) => b[1] - a[1])
+            .map(([name, value]) => ({ name, value }));
+
+        const favoriteGenres = genreDistribution.slice(0, 3).map(g => g.name);
+
+        if (favoriteGenres.length === 0) {
+            favoriteGenres.push('Fiction', 'Science', 'History');
+        }
 
         res.json({
             user,
@@ -167,6 +172,7 @@ const getPublicProfile = async (req, res) => {
             currentStreak,
             aheadOfSchedule,
             favoriteGenres,
+            genreDistribution,
             weeklyActivity,
             completedBooks,
             timeline: completedBooks.map(b => ({ bookId: b.googleBookId, date: b.completedAt }))

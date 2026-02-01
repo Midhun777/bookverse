@@ -6,20 +6,28 @@ const BookMaster = require('../models/BookMaster');
 // @access  Private
 const logActivity = async (req, res) => {
     try {
-        const { actionType, keyword, googleBookId, category } = req.body;
+        const { actionType, keyword, openLibraryId } = req.body;
+
+        let subjects = [];
+        if (openLibraryId) {
+            const book = await BookMaster.findOne({ openLibraryId });
+            if (book) {
+                subjects = book.subjects || [];
+            }
+        }
 
         const activity = await Activity.create({
             userId: req.user._id,
             actionType,
             keyword,
-            googleBookId,
-            category
+            openLibraryId,
+            subjects
         });
 
         res.status(201).json(activity);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server error' });
+        console.error('Log Activity Error:', error);
+        res.status(500).json({ message: 'Server error logging activity' });
     }
 };
 

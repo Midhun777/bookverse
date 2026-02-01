@@ -55,7 +55,7 @@ const ChallengesPage = () => {
         <div className="max-w-7xl mx-auto px-6 py-8 animate-in fade-in duration-500">
             {/* Header */}
             <div className="mb-10 text-center max-w-2xl mx-auto">
-                <div className="inline-flex items-center gap-2 bg-teal-50 text-teal-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
+                <div className="inline-flex items-center gap-2 bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-500 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
                     <Trophy size={14} /> 2026 Reading Challenge
                 </div>
                 <h1 className="text-4xl md:text-5xl font-serif font-bold text-ink-900 mb-4">
@@ -68,7 +68,7 @@ const ChallengesPage = () => {
 
             {/* Main Stats Card */}
             <div className="card-libra p-8 mb-12 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-teal-50/50 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+                <div className="absolute top-0 right-0 w-64 h-64 bg-teal-50/50 dark:bg-teal-900/10 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative z-10">
                     <div>

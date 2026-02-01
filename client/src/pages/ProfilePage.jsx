@@ -66,9 +66,9 @@ const ProfilePage = () => {
     const CustomTooltip = ({ active, payload, label }) => {
         if (active && payload && payload.length) {
             return (
-                <div className="bg-white p-3 border border-paper-200 rounded shadow-lg text-xs">
-                    <p className="font-bold text-ink-900 mb-1">{label}</p>
-                    <p className="text-teal-700 font-bold">{`${payload[0].value} units`}</p>
+                <div className="bg-paper-50 p-3 border border-paper-200 rounded shadow-lg text-xs dark:bg-stone-800 dark:border-stone-700">
+                    <p className="font-bold text-ink-900 mb-1 dark:text-stone-100">{label}</p>
+                    <p className="text-teal-700 font-bold dark:text-teal-500">{`${payload[0].value} units`}</p>
                 </div>
             );
         }
@@ -90,7 +90,7 @@ const ProfilePage = () => {
                 {/* Header Section */}
                 <div className="card-libra p-8 md:p-10 flex flex-col md:flex-row items-center md:items-start gap-8">
                     <div className="relative group shrink-0">
-                        <div className="w-32 h-32 md:w-36 md:h-36 rounded-full p-1 bg-white border border-paper-300 shadow-sm">
+                        <div className="w-32 h-32 md:w-36 md:h-36 rounded-full p-1 bg-paper-50 border border-paper-300 shadow-sm dark:bg-stone-800 dark:border-stone-700">
                             <div className="w-full h-full rounded-full bg-paper-100 flex items-center justify-center overflow-hidden">
                                 {user?.avatar ?
                                     <img src={user.avatar} className="w-full h-full object-cover" alt="" />
@@ -110,7 +110,7 @@ const ProfilePage = () => {
                             <span className="px-3 py-1 rounded bg-teal-50 border border-teal-100 text-xs font-bold text-teal-700 flex items-center gap-1.5">
                                 <Shield size={12} fill="currentColor" /> Verified
                             </span>
-                            <Link to={`/users/${user?.username}`} className="px-3 py-1 rounded bg-white border border-paper-200 text-xs font-bold text-ink-600 hover:bg-paper-50 transition-colors flex items-center gap-1.5">
+                            <Link to={`/users/${user?.username}`} className="px-3 py-1 rounded bg-paper-50 border border-paper-200 text-xs font-bold text-ink-600 hover:bg-paper-100 transition-colors flex items-center gap-1.5 dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-700">
                                 <ExternalLink size={12} /> Public Profile
                             </Link>
                         </div>
@@ -163,7 +163,7 @@ const ProfilePage = () => {
                                 <div className="card-libra p-8">
                                     <div className="flex items-center justify-between mb-4">
                                         <h3 className="font-serif font-bold text-lg text-ink-900 flex items-center gap-2">
-                                            <Trophy size={20} className="text-amber-500" /> 2025 Reading Challenge
+                                            <Trophy size={20} className="text-amber-500" /> 2026 Reading Challenge
                                         </h3>
                                         <span className="text-sm font-bold text-ink-500">
                                             {profile?.totalBooksRead || 0} / 50 Books
@@ -189,7 +189,7 @@ const ProfilePage = () => {
                                         <ResponsiveContainer width="100%" height="100%">
                                             <BarChart data={weeklyActivity}>
                                                 <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#78716c' }} dy={10} />
-                                                <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f5f5f4' }} />
+                                                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'var(--paper-100)' }} />
                                                 <Bar dataKey="minutes" fill="#0d9488" radius={[4, 4, 4, 4]} barSize={24} />
                                             </BarChart>
                                         </ResponsiveContainer>
@@ -235,12 +235,12 @@ const ProfilePage = () => {
 
                                 {/* Current Streak */}
                                 <div className="card-libra p-6 flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center text-amber-500">
+                                    <div className="w-12 h-12 rounded-full bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-500">
                                         <Flame size={24} fill="currentColor" />
                                     </div>
                                     <div>
                                         <p className="text-xs font-bold uppercase text-ink-400 tracking-wider">Current Streak</p>
-                                        <p className="text-2xl font-serif font-bold text-ink-900">12 Days</p>
+                                        <p className="text-2xl font-serif font-bold text-ink-900">{profile?.currentStreak || 0} Days</p>
                                     </div>
                                 </div>
                             </div>

@@ -58,9 +58,6 @@ const LoginPage = () => {
                     {errors.password && <p className="text-red-500 text-[10px] font-bold mt-2 ml-1 uppercase tracking-widest">{errors.password.message}</p>}
                 </div>
 
-                <div className="flex justify-end">
-                    <button type="button" className="text-[10px] font-bold text-blue-600 uppercase tracking-widest hover:underline">Forgot Password?</button>
-                </div>
 
                 <button
                     type="submit"

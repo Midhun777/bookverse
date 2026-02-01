@@ -69,7 +69,7 @@ const ListBookCard = ({ item, showRemove = true }) => {
                     {showRemove && (
                         <button
                             onClick={() => removeMutation.mutate()}
-                            className="p-2 text-ink-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors opacity-0 group-hover:opacity-100"
+                            className="p-2 text-ink-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors opacity-0 group-hover:opacity-100"
                             title="Remove from shelf"
                         >
                             <Trash2 size={16} />

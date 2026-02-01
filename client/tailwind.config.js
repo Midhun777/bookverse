@@ -4,19 +4,20 @@ export default {
         "./index.html",
         "./src/**/*.{js,ts,jsx,tsx}",
     ],
+    darkMode: 'class',
     theme: {
         extend: {
             colors: {
                 // Libra Palette (Goodreads x StoryGraph)
                 paper: {
-                    50: '#fafaf9', // Main Background (Warm White)
-                    100: '#f5f5f4', // Secondary BG
-                    200: '#e7e5e4', // Borders
+                    50: 'var(--paper-50)',
+                    100: 'var(--paper-100)',
+                    200: 'var(--paper-200)',
                 },
                 ink: {
-                    900: '#1c1917', // Primary Text
-                    600: '#57534e', // Secondary Text
-                    400: '#a8a29e', // Muted
+                    900: 'var(--ink-900)',
+                    600: 'var(--ink-600)',
+                    400: 'var(--ink-400)',
                 },
                 teal: {
                     600: '#0d9488', // Primary Accent (StoryGraph-ish)

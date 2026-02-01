@@ -30,7 +30,7 @@ const BookListItem = ({ book, onShelve }) => {
     const cleanDesc = description.replace(/<[^>]*>?/gm, '').slice(0, 180) + (description.length > 180 ? '...' : '');
 
     return (
-        <div className="flex gap-5 p-4 bg-white border border-paper-200 rounded-lg mb-4 group hover:shadow-card hover:border-paper-300 transition-all">
+        <div className="flex gap-5 p-4 bg-paper-50 border border-paper-200 rounded-lg mb-4 group hover:shadow-card hover:border-paper-300 transition-all dark:bg-stone-900 dark:border-stone-800">
             {/* 1. Cover Image (Small) */}
             <Link to={`/book/${id}`} className="shrink-0 w-24 h-36 rounded shadow-md overflow-hidden border border-paper-200 group-hover:-translate-y-1 transition-transform duration-300">
                 <img

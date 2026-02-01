@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { BookOpen, Search, Menu, X, User, LogOut, Heart, List, LayoutDashboard, ExternalLink, Compass, Loader2 } from 'lucide-react';
+import { BookOpen, Search, Menu, X, User, LogOut, List, LayoutDashboard, ExternalLink, Compass, Loader2, Sun, Moon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { searchBooks } from '../services/openLibraryService';
 import { useDebounce } from '../hooks/useDebounce';
+import { useThemeStore } from '../store/themeStore';
 
 const Navbar = () => {
     const { user, logout } = useAuthStore();
+    const { isDarkMode, toggleDarkMode } = useThemeStore();
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -53,14 +55,14 @@ const Navbar = () => {
 
     const navLinks = [
         { path: '/', label: 'Home', auth: true },
-        { path: '/discover', label: 'Discover', auth: true },
+        { path: '/discover', label: 'Discover', auth: false },
+        { path: '/recommendations', label: 'Recommendations', auth: true },
         { path: '/my-books', label: 'My Books', auth: true },
         { path: '/explore', label: 'Browse', auth: false },
-        { path: '/favorites', label: 'Favorites', auth: true },
     ];
 
     return (
-        <nav className="fixed top-0 left-0 w-full z-50 bg-white border-b border-paper-200">
+        <nav className="fixed top-0 left-0 w-full z-50 bg-white border-b border-paper-200 transition-colors duration-300 dark:bg-stone-900 dark:border-stone-800">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12">
                 <div className="flex items-center justify-between h-full gap-8">
 
@@ -79,7 +81,7 @@ const Navbar = () => {
                                 <NavLink
                                     key={link.path}
                                     to={link.path}
-                                    className={({ isActive }) => `text-sm font-medium transition-colors border-b-2 py-5 ${isActive ? 'text-ink-900 border-teal-600' : 'text-ink-600 border-transparent hover:text-teal-600'}`}
+                                    className={({ isActive }) => `text-sm font-medium transition-colors border-b-2 py-5 ${isActive ? 'text-ink-900 border-teal-600 dark:text-stone-100' : 'text-ink-600 border-transparent hover:text-teal-600 dark:text-stone-400 dark:hover:text-teal-500'}`}
                                 >
                                     {link.label}
                                 </NavLink>
@@ -162,8 +164,16 @@ const Navbar = () => {
                         </AnimatePresence>
                     </div>
 
-                    {/* Right: User Menu */}
+                    {/* Right: User Menu & Theme Toggle */}
                     <div className="hidden lg:flex items-center gap-4">
+                        <button
+                            onClick={toggleDarkMode}
+                            className="p-2 rounded-full hover:bg-paper-100 transition-colors text-ink-600 dark:text-stone-400 dark:hover:bg-stone-800"
+                            title={isDarkMode ? 'Light Mode' : 'Dark Mode'}
+                        >
+                            {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+                        </button>
+
                         {user ? (
                             <div className="relative">
                                 <button
@@ -184,20 +194,19 @@ const Navbar = () => {
                                                 initial={{ opacity: 0, y: 10 }}
                                                 animate={{ opacity: 1, y: 0 }}
                                                 exit={{ opacity: 0, y: 10 }}
-                                                className="absolute top-full right-0 mt-2 w-56 bg-white border border-paper-200 rounded shadow-card z-20 py-2"
+                                                className="absolute top-full right-0 mt-2 w-56 bg-white border border-paper-200 rounded shadow-card z-20 py-2 dark:bg-stone-900 dark:border-stone-800"
                                             >
-                                                <div className="px-4 py-2 border-b border-paper-100 mb-2">
-                                                    <p className="font-bold text-ink-900 text-sm">{user.name}</p>
-                                                    <p className="text-xs text-ink-400">@{user.username}</p>
+                                                <div className="px-4 py-2 border-b border-paper-100 mb-2 dark:border-stone-800">
+                                                    <p className="font-bold text-ink-900 text-sm dark:text-stone-100">{user.name}</p>
+                                                    <p className="text-xs text-ink-400 dark:text-stone-500">@{user.username}</p>
                                                 </div>
 
-                                                <Link to="/profile" className="block px-4 py-2 text-sm text-ink-600 hover:bg-paper-50 hover:text-teal-600">Profile</Link>
+                                                <Link to="/profile" className="block px-4 py-2 text-sm text-ink-600 hover:bg-paper-50 hover:text-teal-600 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-teal-500">Profile</Link>
                                                 {user.role === 'ADMIN' && (
-                                                    <Link to="/admin/dashboard" className="block px-4 py-2 text-sm text-ink-600 hover:bg-paper-50 hover:text-teal-600">Admin Dashboard</Link>
+                                                    <Link to="/admin/dashboard" className="block px-4 py-2 text-sm text-ink-600 hover:bg-paper-50 hover:text-teal-600 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-teal-500">Admin Dashboard</Link>
                                                 )}
-                                                <Link to="/friends" className="block px-4 py-2 text-sm text-ink-600 hover:bg-paper-50 hover:text-teal-600">Friends</Link>
-                                                <div className="border-t border-paper-100 my-2" />
-                                                <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-ink-600 hover:bg-paper-50 hover:text-teal-600">Sign Out</button>
+                                                <div className="border-t border-paper-100 my-2 dark:border-stone-800" />
+                                                <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-ink-600 hover:bg-paper-50 hover:text-teal-600 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-teal-500">Sign Out</button>
                                             </motion.div>
                                         </>
                                     )}

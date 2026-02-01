@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getFavoriteBooks, favoriteBook, unfavoriteBook } from '../services/bookService';
 import { useAuthStore } from '../store/authStore';
 import toast from 'react-hot-toast';
+import { logActivity } from '../services/activityService';
 
 const BookCard = ({ book, className = "w-32 md:w-40" }) => {
     const { user } = useAuthStore();
@@ -61,6 +62,14 @@ const BookCard = ({ book, className = "w-32 md:w-40" }) => {
         onSuccess: (action) => {
             toast.success(action === 'favorited' ? 'Added to favorites' : 'Removed from favorites');
             queryClient.invalidateQueries(['favoriteBooks']);
+
+            if (action === 'favorited') {
+                logActivity({
+                    actionType: 'SAVE',
+                    openLibraryId: id,
+                    keyword: title
+                });
+            }
         },
         onError: () => {
             toast.error('Failed to update favorites');

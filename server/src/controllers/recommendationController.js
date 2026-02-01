@@ -1,75 +1,88 @@
 const Activity = require('../models/Activity');
 const BookMaster = require('../models/BookMaster');
-const { getRecommendations } = require('./recommendationService');
+const { getRecommendations, getGlobalRecommendations } = require('./recommendationService');
 
-// @desc    Get Discover Feed (Main Personal Feed)
+// @desc    Get Discover Hub (Global Trending & Categories)
 // @route   GET /api/recommendations/discover
-// @access  Private
+// @access  Public
 const getDiscoverFeed = async (req, res) => {
     try {
-        const userId = req.user._id;
+        // 1. Top Categories from BookMaster (aggregated)
+        const categories = await BookMaster.aggregate([
+            { $unwind: "$subjects" },
+            { $group: { _id: "$subjects", count: { $sum: 1 } } },
+            { $sort: { count: -1 } },
+            { $limit: 12 }
+        ]);
 
-        // 1. Personal Recommendations
-        const personalRecs = await getRecommendations(userId);
-
-        // 2. Global / Popular
+        // 2. Global Sections
         const popularBooks = await BookMaster.find().sort({ popularityScore: -1 }).limit(10);
-
-        // 3. Classics
         const classics = await BookMaster.find({ isClassic: true }).limit(10);
-
-        // 4. Trending
         const trending = await BookMaster.find({ isTrending: true }).limit(10);
 
-        // 5. Short Reads (example of another section)
-        const shortReads = await BookMaster.find({ pageCount: { $lt: 200, $gt: 0 } }).limit(10);
-
-        // Determine if recommendations are actually personalized
-        const isPersonalized = personalRecs.length > 0 && personalRecs[0].reasons && personalRecs[0].reasons.length > 0;
-
-        const feed = [
-            {
-                title: isPersonalized ? "Recommended for You" : "Start Your Journey",
-                description: isPersonalized ? "Based on your reading history" : "Top picks to get you started",
-                books: personalRecs
-            },
+        const hub = [
             {
                 title: "Most Loved Worldwide",
                 description: "Top rated books by the community",
-                books: popularBooks
+                books: popularBooks,
+                type: 'GLOBAL'
             },
             {
-                title: "Trending Right Now",
-                description: "Books everyone is talking about",
-                books: trending
+                title: "Trending Now",
+                description: "What readers are picking up right now",
+                books: trending,
+                type: 'GLOBAL'
             },
             {
                 title: "Timeless Classics",
-                description: "Masterpieces you must read",
-                books: classics
-            },
-            {
-                title: "Quick Reads",
-                description: "Perfect for a busy weekend",
-                books: shortReads
+                description: "Masterpieces you must read once",
+                books: classics,
+                type: 'GLOBAL'
             }
-        ].filter(section => section.books.length > 0);
+        ];
 
-        res.json({ feed });
+        res.json({
+            categories: categories.map(c => ({ name: c._id, count: c.count })),
+            feed: hub
+        });
 
     } catch (error) {
-        console.error('Discover Feed Error:', error);
-        res.status(500).json({ message: 'Server error generating feed' });
+        console.error('Discover Hub Error:', error);
+        res.status(500).json({ message: 'Server error generating hub' });
     }
 };
 
-// @desc    Get top personal recommendations
+// @desc    Get Personal Recommendation Feed
 // @route   GET /api/recommendations/my
 // @access  Private
 const getMyRecommendations = async (req, res) => {
     try {
-        const recs = await getRecommendations(req.user._id);
-        res.json(recs);
+        const userId = req.user._id;
+        const personalRecs = await getRecommendations(userId);
+
+        const sections = [];
+
+        if (personalRecs.length > 0) {
+            sections.push({
+                title: "Picks for You",
+                description: "Tailored to your unique reading profile",
+                books: personalRecs.slice(0, 10),
+                type: 'PERSONAL'
+            });
+
+            // Based on saves
+            const savedActivity = await Activity.findOne({ userId, actionType: 'SAVE' });
+            if (savedActivity && personalRecs.length > 10) {
+                sections.push({
+                    title: "Because You Saved...",
+                    description: "More like the books in your collection",
+                    books: personalRecs.slice(10, 20),
+                    type: 'PERSONAL'
+                });
+            }
+        }
+
+        res.json({ feed: sections });
     } catch (error) {
         console.error('Personal Recs Error:', error);
         res.status(500).json({ message: 'Server error' });
@@ -79,9 +92,9 @@ const getMyRecommendations = async (req, res) => {
 // @desc    Get global trending/popular
 // @route   GET /api/recommendations/global
 // @access  Public
-const getGlobalRecommendations = async (req, res) => {
+const getGlobalRecommendationsController = async (req, res) => {
     try {
-        const global = await BookMaster.find().sort({ popularityScore: -1 }).limit(20);
+        const global = await getGlobalRecommendations();
         res.json(global);
     } catch (error) {
         console.error('Global Recs Error:', error);
@@ -92,5 +105,5 @@ const getGlobalRecommendations = async (req, res) => {
 module.exports = {
     getDiscoverFeed,
     getMyRecommendations,
-    getGlobalRecommendations
+    getGlobalRecommendations: getGlobalRecommendationsController
 };

@@ -32,8 +32,8 @@ const BookDetailsPage = () => {
         if (book && user) {
             logActivity({
                 actionType: 'VIEW',
-                googleBookId: id,
-                category: book.volumeInfo.categories?.[0]
+                openLibraryId: id,
+                subjects: book.volumeInfo.categories
             });
         }
     }, [book, id, user]);
@@ -79,8 +79,17 @@ const BookDetailsPage = () => {
             }
         },
         onSuccess: () => {
-            toast.success(isBookFavorited ? 'Removed from favorites' : 'Added to favorites');
+            const status = isBookFavorited ? 'Removed from favorites' : 'Added to favorites';
+            toast.success(status);
             queryClient.invalidateQueries(['favoriteBooks']);
+
+            if (!isBookFavorited) {
+                logActivity({
+                    actionType: 'SAVE',
+                    openLibraryId: id,
+                    keyword: book?.volumeInfo?.title
+                });
+            }
         }
     });
 
@@ -94,7 +103,14 @@ const BookDetailsPage = () => {
         onSuccess: (_, newStatus) => {
             toast.success(`Moved to ${newStatus.replace('_', ' ')}`);
             queryClient.invalidateQueries(['myLists']);
-            queryClient.invalidateQueries(['favoriteBooks']); // Invalidate favoriteBooks to reflect status change
+            queryClient.invalidateQueries(['favoriteBooks']);
+
+            // Log activity
+            logActivity({
+                actionType: newStatus === 'COMPLETED' ? 'COMPLETE' : 'STATUS_CHANGE',
+                openLibraryId: id,
+                keyword: book?.volumeInfo?.title
+            });
         }
     });
 
@@ -151,7 +167,7 @@ const BookDetailsPage = () => {
                 <div className="grid md:grid-cols-12 gap-10">
                     {/* LEFT: Cover & Actions */}
                     <div className="md:col-span-4 lg:col-span-3 space-y-6">
-                        <div className="relative rounded-r md:rounded shadow-lg border-l-4 border-paper-300 overflow-hidden bg-white">
+                        <div className="relative rounded-r md:rounded shadow-lg border-l-4 border-paper-300 overflow-hidden bg-paper-50 dark:bg-stone-900">
                             <img src={thumbnail.replace('zoom=1', 'zoom=3')} alt={volumeInfo.title} className="w-full h-auto object-cover" />
                         </div>
 
@@ -177,14 +193,14 @@ const BookDetailsPage = () => {
                                         {isListOpen && (
                                             <>
                                                 <div className="fixed inset-0 z-40" onClick={() => setIsListOpen(false)} />
-                                                <div className="absolute top-full left-0 w-full mt-1 bg-white border border-paper-200 shadow-xl rounded-md overflow-hidden z-50">
-                                                    <button onClick={() => handleShelve('TO_READ')} className="w-full text-left px-4 py-2 hover:bg-paper-100 text-sm text-ink-900 flex items-center gap-2">
+                                                <div className="absolute top-full left-0 w-full mt-1 bg-paper-50 border border-paper-200 shadow-xl rounded-md overflow-hidden z-50 dark:bg-stone-900 dark:border-stone-800">
+                                                    <button onClick={() => handleShelve('TO_READ')} className="w-full text-left px-4 py-2 hover:bg-paper-100 text-sm text-ink-900 flex items-center gap-2 dark:hover:bg-stone-800 dark:text-stone-300">
                                                         <Clock size={14} className="text-teal-600" /> Want to Read
                                                     </button>
-                                                    <button onClick={() => handleShelve('READING')} className="w-full text-left px-4 py-2 hover:bg-paper-100 text-sm text-ink-900 flex items-center gap-2">
+                                                    <button onClick={() => handleShelve('READING')} className="w-full text-left px-4 py-2 hover:bg-paper-100 text-sm text-ink-900 flex items-center gap-2 dark:hover:bg-stone-800 dark:text-stone-300">
                                                         <BookOpen size={14} className="text-amber-500" /> Currently Reading
                                                     </button>
-                                                    <button onClick={() => handleShelve('COMPLETED')} className="w-full text-left px-4 py-2 hover:bg-paper-100 text-sm text-ink-900 flex items-center gap-2">
+                                                    <button onClick={() => handleShelve('COMPLETED')} className="w-full text-left px-4 py-2 hover:bg-paper-100 text-sm text-ink-900 flex items-center gap-2 dark:hover:bg-stone-800 dark:text-stone-300">
                                                         <CheckCircle size={14} className="text-green-600" /> Read
                                                     </button>
                                                 </div>
@@ -195,7 +211,7 @@ const BookDetailsPage = () => {
                                     {savedStatus === 'READING' && (
                                         <button
                                             onClick={() => setIsProgressModalOpen(true)}
-                                            className="w-full py-2 border border-teal-600 text-teal-700 bg-white font-bold text-sm hover:bg-teal-50 transition-colors rounded"
+                                            className="w-full py-2 border border-teal-600 text-teal-700 bg-paper-50 font-bold text-sm hover:bg-teal-50 transition-colors rounded dark:bg-stone-900 dark:text-teal-500 dark:hover:bg-stone-800"
                                         >
                                             Update Progress
                                         </button>
@@ -204,7 +220,7 @@ const BookDetailsPage = () => {
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => toggleFavoriteMutation.mutate()}
-                                            className={`flex-1 py-1.5 rounded border text-xs font-bold transition-all ${isBookFavorited ? 'bg-red-50 border-red-200 text-red-600' : 'bg-white border-paper-200 text-ink-600 hover:bg-paper-50'}`}
+                                            className={`flex-1 py-1.5 rounded border text-xs font-bold transition-all ${isBookFavorited ? 'bg-red-50 border-red-200 text-red-600 dark:bg-red-900/20 dark:border-red-900/30' : 'bg-paper-50 border-paper-200 text-ink-600 hover:bg-paper-100 dark:bg-stone-900 dark:border-stone-800 dark:text-stone-400 dark:hover:bg-stone-800'}`}
                                         >
                                             {isBookFavorited ? 'Favorited' : 'Favorite'}
                                         </button>
@@ -217,7 +233,7 @@ const BookDetailsPage = () => {
                             )}
 
                             {book.accessInfo?.embeddable && (
-                                <Link to={`/reader/${id}`} className="block w-full text-center py-2 border border-teal-600 text-teal-700 bg-white font-bold text-sm hover:bg-teal-50 transition-colors rounded">
+                                <Link to={`/reader/${id}`} className="block w-full text-center py-2 border border-teal-600 text-teal-700 bg-paper-50 font-bold text-sm hover:bg-teal-50 transition-colors rounded dark:bg-stone-900 dark:text-teal-500 dark:hover:bg-stone-800">
                                     Read Sample
                                 </Link>
                             )}
@@ -263,7 +279,7 @@ const BookDetailsPage = () => {
                         {/* Genres */}
                         <div className="flex flex-wrap gap-2">
                             {volumeInfo.categories?.map(cat => (
-                                <Link key={cat} to={`/explore?category=${cat}`} className="text-xs font-bold text-teal-700 hover:underline bg-teal-50 px-2 py-1 rounded">
+                                <Link key={cat} to={`/explore?category=${cat}`} className="text-xs font-bold text-teal-700 hover:underline bg-teal-50 dark:bg-teal-900/20 dark:text-teal-500 px-2 py-1 rounded">
                                     {cat}
                                 </Link>
                             ))}

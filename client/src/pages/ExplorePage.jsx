@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import api from '../services/api';
 import { searchBooks } from '../services/openLibraryService';
 import BookCard from '../components/BookCard';
 import BookListItem from '../components/BookListItem';
@@ -14,12 +15,24 @@ import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 
 const ExplorePage = () => {
-    const [query, setQuery] = useState('programming');
+    const isFirstMount = useRef(true);
+    const [searchParams] = useSearchParams();
+    const urlQuery = searchParams.get('q');
+
+    const [query, setQuery] = useState(urlQuery || 'popular');
     const debouncedQuery = useDebounce(query, 500);
-    const [searchTerm, setSearchTerm] = useState('programming');
+    const [searchTerm, setSearchTerm] = useState(urlQuery || 'popular');
     const [viewMode, setViewMode] = useState('grid');
     const { user } = useAuthStore();
     const navigate = useNavigate();
+
+    // Reset search when URL param changes
+    useEffect(() => {
+        if (urlQuery) {
+            setQuery(urlQuery);
+            setSearchTerm(urlQuery);
+        }
+    }, [urlQuery]);
 
     const { data: recommendations } = useQuery({
         queryKey: ['recommendations'],
@@ -30,6 +43,13 @@ const ExplorePage = () => {
     useEffect(() => {
         if (debouncedQuery) {
             setSearchTerm(debouncedQuery);
+
+            // HONESTY: Don't log the initial default search as user activity
+            if (isFirstMount.current) {
+                isFirstMount.current = false;
+                return;
+            }
+
             if (user) {
                 logActivity({
                     actionType: 'SEARCH',
@@ -71,6 +91,12 @@ const ExplorePage = () => {
             toast.success(`Marked as ${variables.status.replace('_', ' ')}`);
             queryClient.invalidateQueries(['myLists']);
             queryClient.invalidateQueries(['favoriteBooks']);
+
+            // Log activity
+            logActivity({
+                actionType: variables.status === 'COMPLETED' ? 'COMPLETE' : 'STATUS_CHANGE',
+                openLibraryId: variables.googleBookId
+            });
         },
         onError: () => {
             toast.error('Failed to update shelf');
@@ -88,7 +114,7 @@ const ExplorePage = () => {
     return (
         <div className="min-h-screen bg-paper-50 pb-20">
             {/* Header & Search */}
-            <header className="bg-white border-b border-paper-200 py-8 px-6">
+            <header className="bg-paper-50 border-b border-paper-200 py-8 px-6 transition-colors duration-300">
                 <div className="max-w-7xl mx-auto space-y-6">
                     <div className="max-w-3xl mx-auto text-center space-y-4">
                         <h1 className="text-3xl md:text-4xl font-serif font-bold text-ink-900">
@@ -116,8 +142,8 @@ const ExplorePage = () => {
                                     key={cat}
                                     onClick={() => { setQuery(cat); setSearchTerm(cat); }}
                                     className={`px-3 py-1.5 rounded text-xs font-bold uppercase tracking-wider transition-all border ${searchTerm.toLowerCase() === cat.toLowerCase()
-                                        ? 'bg-ink-900 text-white border-ink-900'
-                                        : 'bg-white border-paper-200 text-ink-500 hover:border-ink-900 hover:text-ink-900'
+                                        ? 'bg-ink-900 text-white border-ink-900 dark:text-stone-900 dark:bg-stone-100 dark:border-stone-100'
+                                        : 'bg-paper-50 border-paper-200 text-ink-600 hover:border-ink-900 hover:text-ink-900 dark:text-stone-400 dark:hover:text-stone-100 dark:hover:border-stone-100'
                                         }`}
                                 >
                                     {cat}
@@ -129,7 +155,11 @@ const ExplorePage = () => {
                             {moods.map(mood => (
                                 <button
                                     key={mood}
-                                    className="px-2 py-1 rounded text-xs text-ink-500 hover:bg-paper-100 transition-colors"
+                                    onClick={() => { setQuery(mood); setSearchTerm(mood); }}
+                                    className={`px-2 py-1 rounded text-xs transition-colors ${searchTerm.toLowerCase() === mood.toLowerCase()
+                                        ? 'bg-teal-600 text-white'
+                                        : 'text-ink-500 hover:bg-paper-100'
+                                        }`}
                                 >
                                     {mood}
                                 </button>
@@ -163,16 +193,16 @@ const ExplorePage = () => {
                         {searchTerm === 'programming' ? 'Featured' : `Results for "${searchTerm}"`}
                     </h2>
 
-                    <div className="flex items-center gap-2 bg-white border border-paper-200 rounded p-1">
+                    <div className="flex items-center gap-2 bg-paper-100 border border-paper-200 rounded p-1">
                         <button
                             onClick={() => setViewMode('grid')}
-                            className={`p-1.5 rounded transition-colors ${viewMode === 'grid' ? 'bg-paper-100 text-ink-900' : 'text-ink-400 hover:text-ink-600'}`}
+                            className={`p-1.5 rounded transition-colors ${viewMode === 'grid' ? 'bg-paper-200 text-ink-900' : 'text-ink-400 hover:text-ink-600 dark:text-stone-500'}`}
                         >
                             <Grid size={16} />
                         </button>
                         <button
                             onClick={() => setViewMode('list')}
-                            className={`p-1.5 rounded transition-colors ${viewMode === 'list' ? 'bg-paper-100 text-ink-900' : 'text-ink-400 hover:text-ink-600'}`}
+                            className={`p-1.5 rounded transition-colors ${viewMode === 'list' ? 'bg-paper-200 text-ink-900' : 'text-ink-400 hover:text-ink-600 dark:text-stone-500'}`}
                         >
                             <List size={16} />
                         </button>

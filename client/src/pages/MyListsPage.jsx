@@ -3,12 +3,13 @@ import { useQuery } from '@tanstack/react-query';
 import api from '../services/api';
 import { Loader2, BookOpen, Search, Filter } from 'lucide-react';
 import ListBookCard from '../components/ListBookCard';
+import { getFavoriteBooks } from '../services/bookService';
 
 const MyListsPage = () => {
     const [activeTab, setActiveTab] = useState('TO_READ');
 
 
-    const { data: listItems, isLoading } = useQuery({
+    const { data: listItems, isLoading: listLoading } = useQuery({
         queryKey: ['myLists'],
         queryFn: async () => {
             const res = await api.get('/lists/my');
@@ -16,20 +17,23 @@ const MyListsPage = () => {
         }
     });
 
-    const filteredItems = listItems?.filter(item => {
-        const matchesTab = item.status === activeTab;
-        // Basic search filtering would require book details which are fetched in child.
-        // For now, we filter by simple properties if available or relying on client-side fetch in v2.
-        // Assuming we rely on the List items for now. Since `ListBookCard` fetches details, 
-        // true search filtering is hard here without specific backend support or prop drilling.
-        // We act as if we show all for the tab.
-        return matchesTab;
-    }) || [];
+    const { data: favoriteBooks, isLoading: favLoading } = useQuery({
+        queryKey: ['favoriteBooks'],
+        queryFn: getFavoriteBooks,
+        enabled: activeTab === 'FAVORITES'
+    });
+
+    const isLoading = listLoading || (activeTab === 'FAVORITES' && favLoading);
+
+    const filteredItems = activeTab === 'FAVORITES'
+        ? (favoriteBooks || []).map(b => ({ ...b, _id: b._id, googleBookId: b.googleBookId }))
+        : listItems?.filter(item => item.status === activeTab) || [];
 
     const tabs = [
         { id: 'READING', label: 'Currently Reading', count: listItems?.filter(i => i.status === 'READING').length },
         { id: 'TO_READ', label: 'Want to Read', count: listItems?.filter(i => i.status === 'TO_READ').length },
         { id: 'COMPLETED', label: 'Read', count: listItems?.filter(i => i.status === 'COMPLETED').length },
+        { id: 'FAVORITES', label: 'Favorites', count: favoriteBooks?.length || 0 },
     ];
 
     if (isLoading) return <div className="flex justify-center py-20"><Loader2 className="animate-spin text-teal-600 w-10 h-10" /></div>;
@@ -49,7 +53,7 @@ const MyListsPage = () => {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`flex items-center justify-between px-4 py-3 text-sm font-medium border-l-4 transition-colors ${activeTab === tab.id
-                                    ? 'border-teal-600 bg-white text-teal-700'
+                                    ? 'border-teal-600 bg-paper-100 text-teal-700 dark:bg-stone-800 dark:text-teal-500'
                                     : 'border-transparent text-ink-600 hover:bg-paper-50 hover:text-ink-900'
                                     }`}
                             >
@@ -100,11 +104,11 @@ const MyListsPage = () => {
                     <div className="md:col-span-3 hidden md:block">Date Added</div>
                 </div>
 
-                <div className="bg-white border-x border-b border-paper-200 rounded-b-lg divide-y divide-paper-100 min-h-[400px]">
+                <div className="bg-paper-50 border-x border-b border-paper-200 rounded-b-lg divide-y divide-paper-100 min-h-[400px]">
                     {filteredItems.length > 0 ? (
                         filteredItems.map(item => (
                             <div key={item._id} className="px-4">
-                                <ListBookCard item={item} />
+                                <ListBookCard item={item} showRemove={activeTab !== 'FAVORITES'} />
                             </div>
                         ))
                     ) : (

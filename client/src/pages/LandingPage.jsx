@@ -49,13 +49,13 @@ const LandingPage = () => {
             <main className="lg:col-span-6 space-y-6">
 
                 <h2 className="font-bold text-ink-900 border-b border-paper-200 pb-2 mb-4 uppercase tracking-wider text-sm flex items-center justify-between">
-                    <span>Community Updates</span>
+                    <span>Global Activity</span>
                 </h2>
 
                 {!user && (
                     <div className="card-libra p-8 text-center bg-teal-50 border-teal-100 mb-6">
                         <h1 className="font-serif font-bold text-2xl text-ink-900 mb-2">Welcome to Bookverse</h1>
-                        <p className="text-ink-600 mb-6">Discover your next favorite book and see what friends are reading.</p>
+                        <p className="text-ink-600 mb-6">Discover your next favorite book and track your reading journey.</p>
                         <div className="flex justify-center gap-4">
                             <Link to="/register" className="btn-primary">Sign Up via Email</Link>
                             <Link to="/login" className="btn-outline">Log In</Link>

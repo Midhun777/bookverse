@@ -25,8 +25,6 @@ app.use('/api/recommendations', require('./routes/recommendationRoutes'));
 app.use('/api/home', require('./routes/homeRoutes'));
 app.use('/api/stats', require('./routes/statsRoutes'));
 app.use('/api/progress', require('./routes/progressRoutes'));
-app.use('/api/discover', require('./routes/discoverRoutes'));
-
 app.get('/', (req, res) => {
     res.send('API is running...');
 });

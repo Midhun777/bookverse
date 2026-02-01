@@ -56,17 +56,17 @@ const DashboardPage = () => {
     return (
         <div className="max-w-4xl mx-auto space-y-24 pb-20">
             {/* Simple Greeting */}
-            <header className="space-y-4 pt-12">
-                <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 serif">Hello, {user?.name.split(' ')[0]}</h1>
-                <p className="text-lg text-gray-500 font-medium italic">Your personal reading journal at a glance.</p>
+            <header className="space-y-4 pt-12 transition-colors duration-300">
+                <h1 className="text-4xl lg:text-5xl font-bold text-ink-900 serif">Hello, {user?.name.split(' ')[0]}</h1>
+                <p className="text-lg text-ink-600 font-medium italic">Your personal reading journal at a glance.</p>
                 <div className="flex flex-wrap gap-4 pt-4">
-                    <button onClick={() => scrollTo(readingRef)} className="flex items-center space-x-2 text-sm font-bold text-blue-600 bg-blue-50 px-4 py-2 rounded-full border border-blue-100 hover:bg-blue-100 transition-colors">
+                    <button onClick={() => scrollTo(readingRef)} className="flex items-center space-x-2 text-sm font-bold text-blue-600 bg-blue-50 px-4 py-2 rounded-full border border-blue-100 hover:bg-blue-100 transition-colors dark:bg-blue-900/20 dark:border-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/40">
                         <BookOpen size={16} /> <span>Reading ({readingItems.length})</span>
                     </button>
-                    <button onClick={() => scrollTo(toReadRef)} className="flex items-center space-x-2 text-sm font-bold text-gray-600 bg-gray-50 px-4 py-2 rounded-full border border-gray-100 hover:bg-gray-100 transition-colors">
+                    <button onClick={() => scrollTo(toReadRef)} className="flex items-center space-x-2 text-sm font-bold text-ink-600 bg-paper-100 px-4 py-2 rounded-full border border-paper-200 hover:bg-paper-200 transition-colors dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-700">
                         <Clock size={16} /> <span>To Read ({toReadItems.length})</span>
                     </button>
-                    <button onClick={() => scrollTo(completedRef)} className="flex items-center space-x-2 text-sm font-bold text-green-600 bg-green-50 px-4 py-2 rounded-full border border-green-100 hover:bg-green-100 transition-colors">
+                    <button onClick={() => scrollTo(completedRef)} className="flex items-center space-x-2 text-sm font-bold text-green-600 bg-green-50 px-4 py-2 rounded-full border border-green-100 hover:bg-green-100 transition-colors dark:bg-green-900/20 dark:border-green-900/30 dark:text-green-400 dark:hover:bg-green-900/40">
                         <CheckCircle size={16} /> <span>Completed ({completedItems.length})</span>
                     </button>
                 </div>
@@ -78,7 +78,7 @@ const DashboardPage = () => {
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                             <Sparkles size={20} className="text-yellow-500" />
-                            <h2 className="text-2xl font-bold serif">Recommended for You</h2>
+                            <h2 className="text-2xl font-bold serif text-ink-900">Recommended for You</h2>
                         </div>
                     </div>
                     <div className="flex gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x">
@@ -108,7 +108,7 @@ const DashboardPage = () => {
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                             <Star size={20} className="text-purple-500" />
-                            <h2 className="text-2xl font-bold serif">Trending on Bookverse</h2>
+                            <h2 className="text-2xl font-bold serif text-ink-900">Trending on Bookverse</h2>
                         </div>
                     </div>
                     <div className="flex gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x">
@@ -142,9 +142,9 @@ const DashboardPage = () => {
                         ))}
                     </div>
                 ) : (
-                    <div className="py-20 text-center bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-                        <p className="text-gray-400 font-medium italic">You're not reading anything at the moment.</p>
-                        <Link to="/explore" className="text-blue-600 font-bold text-sm block mt-4">Browse library</Link>
+                    <div className="py-20 text-center bg-paper-50 rounded-2xl border border-dashed border-paper-200">
+                        <p className="text-ink-400 font-medium italic">You're not reading anything at the moment.</p>
+                        <Link to="/explore" className="text-teal-600 font-bold text-sm block mt-4">Browse library</Link>
                     </div>
                 )}
             </section>
@@ -162,8 +162,8 @@ const DashboardPage = () => {
                         ))}
                     </div>
                 ) : (
-                    <div className="py-20 text-center bg-white border border-dashed border-gray-100 rounded-2xl">
-                        <p className="text-gray-400 font-medium italic">Your reading queue is empty.</p>
+                    <div className="py-20 text-center bg-paper-50 border border-dashed border-paper-200 rounded-2xl">
+                        <p className="text-ink-400 font-medium italic">Your reading queue is empty.</p>
                     </div>
                 )}
             </section>
@@ -178,19 +178,19 @@ const DashboardPage = () => {
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8">
                         {completedItems.map(item => (
                             <Link key={item._id} to={`/book/${item.googleBookId}`} className="group space-y-3">
-                                <div className="aspect-[2/3] rounded-lg overflow-hidden border border-gray-100 shadow-sm transition-transform group-hover:-translate-y-1 group-hover:shadow-md">
+                                <div className="aspect-[2/3] rounded-lg overflow-hidden border border-paper-200 shadow-sm transition-transform group-hover:-translate-y-1 group-hover:shadow-md">
                                     <ShelfItem googleBookId={item.googleBookId} />
                                 </div>
                                 <div className="text-center">
                                     <p className="text-[10px] font-bold uppercase tracking-widest text-green-600">Completed</p>
-                                    <p className="text-xs text-gray-400 mt-1">{new Date(item.completedAt).toLocaleDateString()}</p>
+                                    <p className="text-xs text-ink-400 mt-1">{new Date(item.completedAt).toLocaleDateString()}</p>
                                 </div>
                             </Link>
                         ))}
                     </div>
                 ) : (
-                    <div className="py-20 text-center bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-                        <p className="text-gray-400 font-medium italic">You haven't added any completed books yet.</p>
+                    <div className="py-20 text-center bg-paper-50 rounded-2xl border border-dashed border-paper-200">
+                        <p className="text-ink-400 font-medium italic">You haven't added any completed books yet.</p>
                     </div>
                 )}
             </section>
