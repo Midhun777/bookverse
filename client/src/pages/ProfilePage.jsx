@@ -81,15 +81,7 @@ const ProfilePage = () => {
         { name: 'History', value: 30 },
     ];
 
-    const weeklyActivity = [
-        { day: 'Mon', minutes: 45 },
-        { day: 'Tue', minutes: 30 },
-        { day: 'Wed', minutes: 60 },
-        { day: 'Thu', minutes: 20 },
-        { day: 'Fri', minutes: 50 },
-        { day: 'Sat', minutes: 90 },
-        { day: 'Sun', minutes: 30 },
-    ];
+    const weeklyActivity = profile?.weeklyActivity || [];
 
     return (
         <div className="min-h-screen bg-paper-50 pb-20 pt-10">
@@ -183,7 +175,9 @@ const ProfilePage = () => {
                                             style={{ width: `${Math.min(((profile?.totalBooksRead || 0) / 50) * 100, 100)}%` }}
                                         />
                                     </div>
-                                    <p className="text-xs text-ink-400 mt-2 text-right italic">You're on track!</p>
+                                    <p className="text-xs text-ink-400 mt-2 text-right italic">
+                                        {profile?.totalBooksRead >= 50 ? "Goal reached! Amazing!" : "You're on track!"}
+                                    </p>
                                 </div>
 
                                 {/* Activity Chart */}

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const User = require('../models/User');
 const Activity = require('../models/Activity');
-const SavedBook = require('../models/SavedBook');
+const Favorite = require('../models/Favorite');
 const ReadingList = require('../models/ReadingList');
 const ReadingProgress = require('../models/ReadingProgress');
 const Review = require('../models/Review');
@@ -83,7 +83,7 @@ const seedData = async () => {
         await User.deleteMany({ email: { $ne: 'admin@bookverse.com' } });
         await Activity.deleteMany({});
         await Review.deleteMany({});
-        await SavedBook.deleteMany({});
+        await Favorite.deleteMany({});
         await ReadingList.deleteMany({});
         await ReadingProgress.deleteMany({});
 
@@ -118,7 +118,7 @@ const seedData = async () => {
                     });
 
                     // Add to Saved Books (Favorites)
-                    await SavedBook.create({
+                    await Favorite.create({
                         userId: user._id,
                         googleBookId: book.id,
                         title: book.title,

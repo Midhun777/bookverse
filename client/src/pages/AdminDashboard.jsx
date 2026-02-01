@@ -145,8 +145,8 @@ const AdminDashboard = () => {
                                 <Heart size={24} />
                             </div>
                             <div>
-                                <h3 className="text-gray-500 font-medium text-sm">Saved Books</h3>
-                                <p className="text-2xl font-bold text-gray-900">{stats?.summary?.savedBooks || 0}</p>
+                                <h3 className="text-gray-500 font-medium text-sm">Favorite Books</h3>
+                                <p className="text-2xl font-bold text-gray-900">{stats?.summary?.favoriteBooks || 0}</p>
                             </div>
                         </div>
                         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center space-x-4">

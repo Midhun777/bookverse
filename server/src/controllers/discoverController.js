@@ -1,5 +1,5 @@
 const Activity = require('../models/Activity');
-const SavedBook = require('../models/SavedBook');
+const Favorite = require('../models/Favorite');
 const Review = require('../models/Review');
 const axios = require('axios');
 

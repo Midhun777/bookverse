@@ -39,6 +39,15 @@ const ExplorePage = () => {
         }
     }, [debouncedQuery, user]);
 
+    const { data: favoriteBooks, isLoading: favoriteLoading } = useQuery({
+        queryKey: ['favoriteBooks'],
+        queryFn: async () => {
+            const res = await api.get('/books/favorites');
+            return res.data;
+        },
+        enabled: !!user, // Only fetch if user is logged in
+    });
+
     const { data, isLoading, isError, error } = useQuery({
         queryKey: ['books', searchTerm],
         queryFn: () => searchBooks(searchTerm),
@@ -61,7 +70,7 @@ const ExplorePage = () => {
         onSuccess: (_, variables) => {
             toast.success(`Marked as ${variables.status.replace('_', ' ')}`);
             queryClient.invalidateQueries(['myLists']);
-            queryClient.invalidateQueries(['savedBooks']);
+            queryClient.invalidateQueries(['favoriteBooks']);
         },
         onError: () => {
             toast.error('Failed to update shelf');
@@ -171,7 +180,7 @@ const ExplorePage = () => {
                 </div>
 
                 {/* Results */}
-                {isLoading ? (
+                {favoriteLoading || isLoading ? (
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 animate-pulse">
                         {[...Array(10)].map((_, i) => (
                             <div key={i} className="space-y-2">

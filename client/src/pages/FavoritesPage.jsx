@@ -1,28 +1,20 @@
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '../services/api';
-import { Link } from 'react-router-dom';
-import { Trash2, Star, Loader2 } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { getFavoriteBooks, unfavoriteBook } from '../services/bookService';
 
 const FavoritesPage = () => {
     const queryClient = useQueryClient();
 
     const { data: books, isLoading, isError } = useQuery({
-        queryKey: ['savedBooks'],
-        queryFn: async () => {
-            const res = await api.get('/books/saved');
-            return res.data;
-        }
+        queryKey: ['favoriteBooks'],
+        queryFn: getFavoriteBooks
     });
 
-    const unsaveMutation = useMutation({
-        mutationFn: async (googleBookId) => {
-            await api.delete(`/books/unsave/${googleBookId}`);
-        },
+    const unfavoriteMutation = useMutation({
+        mutationFn: unfavoriteBook,
         onSuccess: () => {
             toast.success('Removed from favorites');
-            queryClient.invalidateQueries(['savedBooks']);
+            queryClient.invalidateQueries(['favoriteBooks']);
         },
         onError: (err) => {
             toast.error('Failed to remove book');
@@ -54,7 +46,7 @@ const FavoritesPage = () => {
                                 </h3>
                                 <p className="text-sm text-gray-500 truncate mb-3">{book.authors?.join(', ')}</p>
                                 <button
-                                    onClick={() => unsaveMutation.mutate(book.googleBookId)}
+                                    onClick={() => unfavoriteMutation.mutate(book.googleBookId)}
                                     className="w-full flex items-center justify-center space-x-2 py-2 text-red-500 bg-red-50 hover:bg-red-100 rounded-lg text-sm font-medium transition"
                                 >
                                     <Trash2 size={16} /> <span>Remove</span>

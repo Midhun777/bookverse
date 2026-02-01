@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Star, Heart } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getSavedBooks, saveBook, unsaveBook } from '../services/bookService';
+import { getFavoriteBooks, favoriteBook, unfavoriteBook } from '../services/bookService';
 import { useAuthStore } from '../store/authStore';
 import toast from 'react-hot-toast';
 
@@ -25,29 +25,29 @@ const BookCard = ({ book, className = "w-32 md:w-40" }) => {
     const categories = book.subjects || book.categories || book.volumeInfo?.categories;
 
     // Check if saved
-    const { data: savedBooks } = useQuery({
-        queryKey: ['savedBooks'],
-        queryFn: getSavedBooks,
+    const { data: favoriteBooks } = useQuery({
+        queryKey: ['favoriteBooks'],
+        queryFn: getFavoriteBooks,
         enabled: !!user,
         staleTime: 1000 * 60 * 5 // 5 mins
     });
 
-    const isSaved = savedBooks?.some(b => b.googleBookId === id);
+    const isFavorited = favoriteBooks?.some(b => b.googleBookId === id);
 
-    const toggleSaveMutation = useMutation({
+    const toggleFavoriteMutation = useMutation({
         mutationFn: async (e) => {
             e.preventDefault();
             e.stopPropagation();
             if (!user) {
-                toast.error('Please login to save books');
+                toast.error('Please login to favorite books');
                 return;
             }
 
-            if (isSaved) {
-                await unsaveBook(id);
-                return 'unsaved';
+            if (isFavorited) {
+                await unfavoriteBook(id);
+                return 'unfavorited';
             } else {
-                await saveBook({
+                await favoriteBook({
                     googleBookId: id,
                     title: title || 'Unknown Title',
                     authors: Array.isArray(authors) ? authors : [authors || 'Unknown'],
@@ -55,12 +55,12 @@ const BookCard = ({ book, className = "w-32 md:w-40" }) => {
                     categories: Array.isArray(categories) ? categories : [],
                     rating: avgRating
                 });
-                return 'saved';
+                return 'favorited';
             }
         },
         onSuccess: (action) => {
-            toast.success(action === 'saved' ? 'Added to favorites' : 'Removed from favorites');
-            queryClient.invalidateQueries(['savedBooks']);
+            toast.success(action === 'favorited' ? 'Added to favorites' : 'Removed from favorites');
+            queryClient.invalidateQueries(['favoriteBooks']);
         },
         onError: () => {
             toast.error('Failed to update favorites');
@@ -93,10 +93,10 @@ const BookCard = ({ book, className = "w-32 md:w-40" }) => {
 
                     {/* Heart Button */}
                     <button
-                        onClick={(e) => toggleSaveMutation.mutate(e)}
-                        className={`p-1.5 rounded-full shadow-sm transition-transform hover:scale-110 ${isSaved ? 'bg-white text-red-500 opacity-100' : 'bg-white/90 text-slate-400 hover:text-red-500'}`}
+                        onClick={(e) => toggleFavoriteMutation.mutate(e)}
+                        className={`p-1.5 rounded-full shadow-sm transition-transform hover:scale-110 ${isFavorited ? 'bg-white text-red-500 opacity-100' : 'bg-white/90 text-slate-400 hover:text-red-500'}`}
                     >
-                        <Heart size={14} fill={isSaved ? "currentColor" : "none"} />
+                        <Heart size={14} fill={isFavorited ? "currentColor" : "none"} />
                     </button>
                 </div>
 
@@ -104,7 +104,7 @@ const BookCard = ({ book, className = "w-32 md:w-40" }) => {
                     Let's stick to hover for cleanliness, OR if isSaved is true, show it always?
                     Let's make it visible on hover OR if saved.
                 */}
-                {isSaved && (
+                {isFavorited && (
                     <div className="absolute top-2 right-2 z-10 group-hover:hidden">
                         <div className="p-1.5 bg-white rounded-full shadow-sm text-red-500">
                             <Heart size={14} fill="currentColor" />

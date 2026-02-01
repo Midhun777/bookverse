@@ -12,10 +12,10 @@ const DashboardPage = () => {
     const toReadRef = useRef(null);
     const completedRef = useRef(null);
 
-    const { data: savedBooks, isLoading: savedLoading } = useQuery({
-        queryKey: ['savedBooks'],
+    const { data: favoriteBooks, isLoading: favoriteLoading } = useQuery({
+        queryKey: ['favoriteBooks'],
         queryFn: async () => {
-            const res = await api.get('/books/saved');
+            const res = await api.get('/books/favorites');
             return res.data;
         }
     });
@@ -47,7 +47,7 @@ const DashboardPage = () => {
         ref.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
-    if (savedLoading || lisLoading) return (
+    if (favoriteLoading || lisLoading) return (
         <div className="flex justify-center py-20">
             <Loader2 className="animate-spin text-gray-400 w-10 h-10" />
         </div>

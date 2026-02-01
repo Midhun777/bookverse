@@ -1,6 +1,6 @@
 const User = require('../models/User');
 const AdminSettings = require('../models/AdminSettings');
-const SavedBook = require('../models/SavedBook');
+const Favorite = require('../models/Favorite');
 const BookMaster = require('../models/BookMaster');
 const Activity = require('../models/Activity');
 const Review = require('../models/Review');
@@ -62,7 +62,7 @@ const deleteUser = async (req, res) => {
 const getAppStats = async (req, res) => {
     try {
         const userCount = await User.countDocuments();
-        const savedBooksCount = await SavedBook.countDocuments();
+        const favoriteBooksCount = await Favorite.countDocuments();
         const reviewsCount = await Review.countDocuments();
 
         // 1. Top Keywords
@@ -124,7 +124,7 @@ const getAppStats = async (req, res) => {
         ]);
 
         // 5. Categorical Distribution
-        const categoryStats = await SavedBook.aggregate([
+        const categoryStats = await Favorite.aggregate([
             { $unwind: "$categories" },
             { $group: { _id: "$categories", count: { $sum: 1 } } },
             { $sort: { count: -1 } },
@@ -134,7 +134,7 @@ const getAppStats = async (req, res) => {
         res.json({
             summary: {
                 users: userCount,
-                savedBooks: savedBooksCount,
+                favoriteBooks: favoriteBooksCount,
                 reviews: reviewsCount
             },
             analytics: {

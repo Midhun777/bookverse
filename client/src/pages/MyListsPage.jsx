@@ -6,7 +6,7 @@ import ListBookCard from '../components/ListBookCard';
 
 const MyListsPage = () => {
     const [activeTab, setActiveTab] = useState('TO_READ');
-    const [searchQuery, setSearchQuery] = useState('');
+
 
     const { data: listItems, isLoading } = useQuery({
         queryKey: ['myLists'],
@@ -90,16 +90,7 @@ const MyListsPage = () => {
                 <div className="flex items-center justify-between mb-6">
                     <h1 className="text-2xl font-bold font-serif text-ink-900">My Books</h1>
 
-                    <div className="relative">
-                        <input
-                            type="text"
-                            placeholder="Search within shelf..."
-                            className="input-libra py-1.5 px-3 pl-9 text-sm w-64"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-400" />
-                    </div>
+
                 </div>
 
                 {/* Table Header */}

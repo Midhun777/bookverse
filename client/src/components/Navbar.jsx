@@ -57,7 +57,6 @@ const Navbar = () => {
         { path: '/my-books', label: 'My Books', auth: true },
         { path: '/explore', label: 'Browse', auth: false },
         { path: '/favorites', label: 'Favorites', auth: true },
-        { path: '/community', label: 'Community', auth: true },
     ];
 
     return (

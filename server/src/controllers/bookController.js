@@ -1,4 +1,4 @@
-const SavedBook = require('../models/SavedBook');
+const Favorite = require('../models/Favorite');
 const BookMaster = require('../models/BookMaster');
 const Activity = require('../models/Activity');
 
@@ -21,20 +21,20 @@ const getBookById = async (req, res) => {
     }
 };
 
-// @desc    Save a book
-// @route   POST /api/books/save
+// @desc    Add a book to favorites
+// @route   POST /api/books/favorites
 // @access  Private
-const saveBook = async (req, res) => {
+const addToFavorites = async (req, res) => {
     try {
         const { googleBookId, title, authors, thumbnail, categories, rating } = req.body;
 
-        const existingBook = await SavedBook.findOne({ userId: req.user._id, googleBookId });
+        const existingBook = await Favorite.findOne({ userId: req.user._id, googleBookId });
 
         if (existingBook) {
-            return res.status(400).json({ message: 'Book already saved' });
+            return res.status(400).json({ message: 'Book already in favorites' });
         }
 
-        const savedBook = await SavedBook.create({
+        const favorite = await Favorite.create({
             userId: req.user._id,
             googleBookId,
             title,
@@ -53,24 +53,24 @@ const saveBook = async (req, res) => {
             category: categories ? categories[0] : null
         });
 
-        res.status(201).json(savedBook);
+        res.status(201).json(favorite);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
-// @desc    Unsave a book
-// @route   DELETE /api/books/unsave/:googleBookId
+// @desc    Remove a book from favorites
+// @route   DELETE /api/books/favorites/:googleBookId
 // @access  Private
-const unsaveBook = async (req, res) => {
+const removeFromFavorites = async (req, res) => {
     try {
-        const book = await SavedBook.findOneAndDelete({
+        const book = await Favorite.findOneAndDelete({
             userId: req.user._id,
             googleBookId: req.params.googleBookId
         });
 
         if (!book) {
-            return res.status(404).json({ message: 'Book not found' });
+            return res.status(404).json({ message: 'Book not found in favorites' });
         }
 
         res.json({ message: 'Book removed from favorites' });
@@ -79,12 +79,12 @@ const unsaveBook = async (req, res) => {
     }
 };
 
-// @desc    Get all saved books
-// @route   GET /api/books/saved
+// @desc    Get all favorite books
+// @route   GET /api/books/favorites
 // @access  Private
-const getSavedBooks = async (req, res) => {
+const getFavorites = async (req, res) => {
     try {
-        const books = await SavedBook.find({ userId: req.user._id }).sort({ savedAt: -1 });
+        const books = await Favorite.find({ userId: req.user._id }).sort({ savedAt: -1 });
         res.json(books);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -93,7 +93,7 @@ const getSavedBooks = async (req, res) => {
 
 module.exports = {
     getBookById,
-    saveBook,
-    unsaveBook,
-    getSavedBooks
+    addToFavorites,
+    removeFromFavorites,
+    getFavorites
 };

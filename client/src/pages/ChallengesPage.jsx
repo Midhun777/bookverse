@@ -4,7 +4,9 @@ import { Trophy, Target, Calendar, BookOpen, Edit2, CheckCircle, TrendingUp } fr
 import { useAuthStore } from '../store/authStore';
 import { Link } from 'react-router-dom';
 import BookCard from '../components/BookCard';
-import { getSavedBooks } from '../services/bookService';
+import ChallengeBookCard from '../components/ChallengeBookCard';
+import { getMyLists } from '../services/listService';
+import { getPublicProfile } from '../services/statsService';
 import toast from 'react-hot-toast';
 
 const ChallengesPage = () => {
@@ -13,15 +15,24 @@ const ChallengesPage = () => {
     const [goal, setGoal] = useState(30); // Default, ideally fetched from user preferences
     const [isEditing, setIsEditing] = useState(false);
 
-    const { data: savedBooks, isLoading: booksLoading } = useQuery({
-        queryKey: ['savedBooks'],
-        queryFn: getSavedBooks,
+    const { data: myLists, isLoading: listLoading } = useQuery({
+        queryKey: ['myLists'],
+        queryFn: getMyLists,
         enabled: !!user
     });
 
-    // Filter books read in 2026 (Mock logic: Assuming 'COMPLETED' books count)
-    // In a real app, we'd check the "readDate"
-    const readBooks = savedBooks?.filter(b => b.status === 'COMPLETED') || [];
+    const { data: profile, isLoading: profileLoading } = useQuery({
+        queryKey: ['myProfile', user?.username],
+        queryFn: () => getPublicProfile(user?.username),
+        enabled: !!user?.username,
+    });
+
+    // Filter books read in 2026
+    const currentYear = new Date().getFullYear();
+    const readBooks = myLists?.filter(b =>
+        b.status === 'COMPLETED' &&
+        new Date(b.completedAt || b.updatedAt).getFullYear() === currentYear
+    ) || [];
     const progress = readBooks.length;
     const percentage = Math.min(Math.round((progress / goal) * 100), 100);
 
@@ -107,23 +118,29 @@ const ChallengesPage = () => {
                     <div className="grid grid-cols-2 gap-6">
                         <div className="bg-paper-50 p-6 rounded-xl border border-paper-100 text-center">
                             <BookOpen size={24} className="mx-auto text-amber-500 mb-2" />
-                            <div className="text-2xl font-bold text-ink-900">12k</div>
+                            <div className="text-2xl font-bold text-ink-900">
+                                {profile?.totalPagesRead > 1000 ? `${(profile.totalPagesRead / 1000).toFixed(1)}k` : profile?.totalPagesRead || 0}
+                            </div>
                             <div className="text-xs text-ink-400 font-bold uppercase tracking-wider">Pages Read</div>
                         </div>
                         <div className="bg-paper-50 p-6 rounded-xl border border-paper-100 text-center">
                             <TrendingUp size={24} className="mx-auto text-green-500 mb-2" />
-                            <div className="text-2xl font-bold text-ink-900">45</div>
+                            <div className="text-2xl font-bold text-ink-900">{profile?.avgPagesPerDay || 0}</div>
                             <div className="text-xs text-ink-400 font-bold uppercase tracking-wider">Avg Pages/Day</div>
                         </div>
                         <div className="bg-paper-50 p-6 rounded-xl border border-paper-100 text-center">
                             <Calendar size={24} className="mx-auto text-purple-500 mb-2" />
-                            <div className="text-2xl font-bold text-ink-900">12</div>
+                            <div className="text-2xl font-bold text-ink-900">{profile?.currentStreak || 0}</div>
                             <div className="text-xs text-ink-400 font-bold uppercase tracking-wider">Current Streak</div>
                         </div>
                         <div className="bg-paper-50 p-6 rounded-xl border border-paper-100 text-center">
                             <CheckCircle size={24} className="mx-auto text-blue-500 mb-2" />
-                            <div className="text-2xl font-bold text-ink-900">5</div>
-                            <div className="text-xs text-ink-400 font-bold uppercase tracking-wider">Ahead of Sched</div>
+                            <div className="text-2xl font-bold text-ink-900">
+                                {profile?.aheadOfSchedule > 0 ? `+${profile.aheadOfSchedule}` : profile?.aheadOfSchedule || 0}
+                            </div>
+                            <div className="text-xs text-ink-400 font-bold uppercase tracking-wider">
+                                {profile?.aheadOfSchedule >= 0 ? 'Ahead of Sched' : 'Behind Sched'}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -136,7 +153,7 @@ const ChallengesPage = () => {
                     <span className="text-sm font-sans font-normal text-ink-500 bg-paper-200 px-2 py-0.5 rounded-full">{readBooks.length}</span>
                 </h3>
 
-                {booksLoading ? (
+                {listLoading ? (
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 animate-pulse">
                         {[...Array(5)].map((_, i) => (
                             <div key={i} className="space-y-2">
@@ -148,7 +165,7 @@ const ChallengesPage = () => {
                 ) : readBooks.length > 0 ? (
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-6 gap-y-10">
                         {readBooks.map(book => (
-                            <BookCard key={book.googleBookId} book={book} className="w-full" />
+                            <ChallengeBookCard key={book.googleBookId} googleBookId={book.googleBookId} />
                         ))}
                     </div>
                 ) : (

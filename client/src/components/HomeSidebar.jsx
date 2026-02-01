@@ -3,15 +3,15 @@ import { Link } from 'react-router-dom';
 import { BookOpen, Trophy, Target, ArrowRight } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { useQuery } from '@tanstack/react-query';
-import { getSavedBooks } from '../services/bookService';
+import { getFavoriteBooks } from '../services/bookService';
 import { getMyLists } from '../services/listService';
 
 const HomeSidebar = () => {
     const { user } = useAuthStore();
 
-    const { data: savedBooks } = useQuery({
-        queryKey: ['savedBooks'],
-        queryFn: getSavedBooks,
+    const { data: favoriteBooks } = useQuery({
+        queryKey: ['favoriteBooks'],
+        queryFn: getFavoriteBooks,
         enabled: !!user
     });
 
@@ -33,9 +33,9 @@ const HomeSidebar = () => {
         // Let's try to match with savedBooks to get cover/title if list item is sparse.
         // Assuming list item has some info or we use savedBooks to find it.
         // Actually myLists items usually have googleBookId.
-        // Let's find the saved book.
-        return savedBooks?.find(b => b.googleBookId === readingItem.googleBookId);
-    }, [myLists, savedBooks]);
+        // Let's find the favorite book.
+        return favoriteBooks?.find(b => b.googleBookId === readingItem.googleBookId);
+    }, [myLists, favoriteBooks]);
 
     // Derive Challenge Progress (Completed this year)
     const challengeProgress = useMemo(() => {

@@ -24,10 +24,13 @@ const getDiscoverFeed = async (req, res) => {
         // 5. Short Reads (example of another section)
         const shortReads = await BookMaster.find({ pageCount: { $lt: 200, $gt: 0 } }).limit(10);
 
+        // Determine if recommendations are actually personalized
+        const isPersonalized = personalRecs.length > 0 && personalRecs[0].reasons && personalRecs[0].reasons.length > 0;
+
         const feed = [
             {
-                title: "Recommended for You",
-                description: "Based on your reading history",
+                title: isPersonalized ? "Recommended for You" : "Start Your Journey",
+                description: isPersonalized ? "Based on your reading history" : "Top picks to get you started",
                 books: personalRecs
             },
             {

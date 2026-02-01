@@ -5,11 +5,11 @@ import { getBookDetails } from '../services/openLibraryService';
 import api from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import {
-    Loader2, Heart, BookOpen, Clock, CheckCircle, Star, Send, Trash2, ChevronLeft, Share2, Calendar, Book, ChevronDown
+    Loader2, Heart, BookOpen, Clock, CheckCircle, Star, Send, Trash2, ChevronLeft, Calendar, Book, ChevronDown
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { getBookReviews, addReview, deleteReview } from '../services/reviewService';
-import { saveBook, unsaveBook, getSavedBooks } from '../services/bookService';
+import { favoriteBook, unfavoriteBook, getFavoriteBooks } from '../services/bookService';
 import { getMyLists, addToList } from '../services/listService';
 import { logActivity } from '../services/activityService';
 import ReviewList from '../components/ReviewList';
@@ -48,10 +48,10 @@ const BookDetailsPage = () => {
         queryFn: () => getBookReviews(id, reviewSort),
     });
 
-    const { data: savedBooks } = useQuery({
-        queryKey: ['savedBooks'],
-        queryFn: getSavedBooks,
-        enabled: !!user,
+    const { data: favoriteBooks } = useQuery({
+        queryKey: ['favoriteBooks'],
+        queryFn: getFavoriteBooks,
+        enabled: !!user
     });
 
     const { data: myLists } = useQuery({
@@ -60,15 +60,15 @@ const BookDetailsPage = () => {
         enabled: !!user,
     });
 
-    const isBookSaved = savedBooks?.some(b => b.googleBookId === id);
+    const isBookFavorited = favoriteBooks?.some(b => b.googleBookId === id);
     const savedStatus = myLists?.find(b => b.googleBookId === id)?.status;
 
     const toggleFavoriteMutation = useMutation({
         mutationFn: async () => {
-            if (isBookSaved) {
-                return await unsaveBook(id);
+            if (isBookFavorited) {
+                return await unfavoriteBook(id);
             } else {
-                return await saveBook({
+                return await favoriteBook({
                     googleBookId: book.id,
                     title: book.volumeInfo.title,
                     authors: book.volumeInfo.authors,
@@ -79,8 +79,8 @@ const BookDetailsPage = () => {
             }
         },
         onSuccess: () => {
-            toast.success(isBookSaved ? 'Removed from favorites' : 'Saved to favorites');
-            queryClient.invalidateQueries(['savedBooks']);
+            toast.success(isBookFavorited ? 'Removed from favorites' : 'Added to favorites');
+            queryClient.invalidateQueries(['favoriteBooks']);
         }
     });
 
@@ -94,7 +94,7 @@ const BookDetailsPage = () => {
         onSuccess: (_, newStatus) => {
             toast.success(`Moved to ${newStatus.replace('_', ' ')}`);
             queryClient.invalidateQueries(['myLists']);
-            queryClient.invalidateQueries(['savedBooks']); // Invalidate savedBooks to reflect status change
+            queryClient.invalidateQueries(['favoriteBooks']); // Invalidate favoriteBooks to reflect status change
         }
     });
 
@@ -128,7 +128,7 @@ const BookDetailsPage = () => {
             await updateProgress({ googleBookId: id, currentPage: page });
             toast.success('Progress updated!');
             queryClient.invalidateQueries(['book', id]);
-            queryClient.invalidateQueries(['savedBooks']); // Invalidate savedBooks to reflect status change
+            queryClient.invalidateQueries(['favoriteBooks']); // Invalidate favoriteBooks to reflect status change
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to update progress');
         }
@@ -204,12 +204,9 @@ const BookDetailsPage = () => {
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => toggleFavoriteMutation.mutate()}
-                                            className={`flex-1 py-1.5 rounded border text-xs font-bold transition-all ${isBookSaved ? 'bg-red-50 border-red-200 text-red-600' : 'bg-white border-paper-200 text-ink-600 hover:bg-paper-50'}`}
+                                            className={`flex-1 py-1.5 rounded border text-xs font-bold transition-all ${isBookFavorited ? 'bg-red-50 border-red-200 text-red-600' : 'bg-white border-paper-200 text-ink-600 hover:bg-paper-50'}`}
                                         >
-                                            {isBookSaved ? 'Saved' : 'Save'}
-                                        </button>
-                                        <button className="flex-1 py-1.5 bg-white border border-paper-200 rounded text-ink-600 text-xs font-bold hover:bg-paper-50 transition-all">
-                                            Share
+                                            {isBookFavorited ? 'Favorited' : 'Favorite'}
                                         </button>
                                     </div>
                                 </>
@@ -226,16 +223,7 @@ const BookDetailsPage = () => {
                             )}
                         </div>
 
-                        <div className="border-t border-paper-200 pt-4 text-center">
-                            <p className="text-sm font-bold text-ink-900">Rate this book</p>
-                            <div className="flex justify-center gap-1 mt-2 text-paper-300">
-                                {[1, 2, 3, 4, 5].map(s => (
-                                    <button key={s} className="hover:text-amber-400 hover:scale-110 transition-all">
-                                        <Star size={20} fill="currentColor" />
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
+
                     </div>
 
                     {/* RIGHT: Metadata & Content */}
