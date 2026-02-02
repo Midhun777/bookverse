@@ -150,9 +150,10 @@ const BookCard = ({ book, className = "w-32 md:w-40" }) => {
                     Let's stick to hover for cleanliness, OR if isSaved is true, show it always?
                     Let's make it visible on hover OR if saved.
                 */}
+                {/* Always show heart if saved, even without hover (but slightly different style) */}
                 {isFavorited && (
                     <div className="absolute top-2 right-2 z-10 group-hover:hidden">
-                        <div className="p-1.5 bg-white rounded-full shadow-sm text-red-500">
+                        <div className="p-1.5 bg-white dark:bg-stone-800 rounded-full shadow-sm text-red-500">
                             <Heart size={14} fill="currentColor" />
                         </div>
                     </div>
@@ -161,10 +162,10 @@ const BookCard = ({ book, className = "w-32 md:w-40" }) => {
 
             {/* Metadata */}
             <div className="pr-1">
-                <h3 className="font-bold text-ink-900 text-sm leading-tight line-clamp-2 mb-0.5 group-hover:text-teal-700 transition-colors font-serif">
+                <h3 className="font-bold text-ink-900 dark:text-stone-100 text-sm leading-tight line-clamp-2 mb-0.5 group-hover:text-teal-700 dark:group-hover:text-teal-400 transition-colors font-serif">
                     {title}
                 </h3>
-                <p className="text-xs text-ink-500 line-clamp-1">{authorText}</p>
+                <p className="text-xs text-ink-500 dark:text-stone-400 line-clamp-1">{authorText}</p>
             </div>
         </Link>
     );

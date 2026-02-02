@@ -84,17 +84,17 @@ const ProfilePage = () => {
     const weeklyActivity = profile?.weeklyActivity || [];
 
     return (
-        <div className="min-h-screen bg-paper-50 pb-20 pt-10">
+        <div className="min-h-screen bg-paper-50 dark:bg-stone-950 pb-20 pt-10">
             <div className="max-w-6xl mx-auto px-6 space-y-8">
 
                 {/* Header Section */}
                 <div className="card-libra p-8 md:p-10 flex flex-col md:flex-row items-center md:items-start gap-8">
                     <div className="relative group shrink-0">
-                        <div className="w-32 h-32 md:w-36 md:h-36 rounded-full p-1 bg-paper-50 border border-paper-300 shadow-sm dark:bg-stone-800 dark:border-stone-700">
-                            <div className="w-full h-full rounded-full bg-paper-100 flex items-center justify-center overflow-hidden">
+                        <div className="w-32 h-32 md:w-36 md:h-36 rounded-full p-1 bg-paper-50 dark:bg-stone-900 border border-paper-300 dark:border-stone-700 shadow-sm">
+                            <div className="w-full h-full rounded-full bg-paper-100 dark:bg-stone-800 flex items-center justify-center overflow-hidden">
                                 {user?.avatar ?
                                     <img src={user.avatar} className="w-full h-full object-cover" alt="" />
-                                    : <span className="text-4xl font-serif font-bold text-ink-400">{user?.name[0]}</span>
+                                    : <span className="text-4xl font-serif font-bold text-ink-400 dark:text-stone-500">{user?.name[0]}</span>
                                 }
                             </div>
                         </div>
@@ -102,8 +102,8 @@ const ProfilePage = () => {
 
                     <div className="flex-1 text-center md:text-left space-y-4">
                         <div>
-                            <h1 className="text-3xl md:text-4xl font-serif font-bold text-ink-900 mb-1">{user?.name}</h1>
-                            <p className="text-ink-500 font-medium">@{user?.username || 'reader'} · <span className="text-teal-600 font-bold">Level {Math.floor((profile?.totalBooksRead || 0) / 5) + 1} Curator</span></p>
+                            <h1 className="text-3xl md:text-4xl font-serif font-bold text-ink-900 dark:text-stone-100 mb-1">{user?.name}</h1>
+                            <p className="text-ink-500 dark:text-stone-400 font-medium">@{user?.username || 'reader'} · <span className="text-teal-600 dark:text-teal-500 font-bold">Level {Math.floor((profile?.totalBooksRead || 0) / 5) + 1} Curator</span></p>
                         </div>
 
                         <div className="flex flex-wrap justify-center md:justify-start gap-3">
@@ -116,23 +116,23 @@ const ProfilePage = () => {
                         </div>
                     </div>
 
-                    <div className="flex gap-8 border-l border-paper-200 pl-8 hidden md:flex">
+                    <div className="flex gap-8 border-l border-paper-200 dark:border-stone-700 pl-8 hidden md:flex">
                         <div className="text-center">
-                            <p className="text-3xl font-serif font-bold text-ink-900">{profile?.totalBooksRead || 0}</p>
-                            <p className="text-[10px] font-bold uppercase tracking-widest text-ink-400 mt-1">Books Read</p>
+                            <p className="text-3xl font-serif font-bold text-ink-900 dark:text-stone-100">{profile?.totalBooksRead || 0}</p>
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-ink-400 dark:text-stone-500 mt-1">Books Read</p>
                         </div>
                         <div className="text-center">
-                            <p className="text-3xl font-serif font-bold text-ink-900">{Math.floor((profile?.totalReadingTime || 0) / 60)}</p>
-                            <p className="text-[10px] font-bold uppercase tracking-widest text-ink-400 mt-1">Hours</p>
+                            <p className="text-3xl font-serif font-bold text-ink-900 dark:text-stone-100">{Math.floor((profile?.totalReadingTime || 0) / 60)}</p>
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-ink-400 dark:text-stone-500 mt-1">Hours</p>
                         </div>
                     </div>
                 </div>
 
                 {/* Tabbed Navigation */}
-                <div className="flex justify-center md:justify-start border-b border-paper-200">
+                <div className="flex justify-center md:justify-start border-b border-paper-200 dark:border-stone-800">
                     <button
                         onClick={() => setActiveTab('portfolio')}
-                        className={`px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all border-b-2 ${activeTab === 'portfolio' ? 'border-teal-600 text-teal-700' : 'border-transparent text-ink-400 hover:text-ink-600'}`}
+                        className={`px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all border-b-2 ${activeTab === 'portfolio' ? 'border-teal-600 text-teal-700 dark:text-teal-500' : 'border-transparent text-ink-400 dark:text-stone-500 hover:text-ink-600 dark:hover:text-stone-300'}`}
                     >
                         <div className="flex items-center gap-2">
                             <BarChart2 size={16} /> Reading Stats
@@ -140,7 +140,7 @@ const ProfilePage = () => {
                     </button>
                     <button
                         onClick={() => setActiveTab('settings')}
-                        className={`px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all border-b-2 ${activeTab === 'settings' ? 'border-teal-600 text-teal-700' : 'border-transparent text-ink-400 hover:text-ink-600'}`}
+                        className={`px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all border-b-2 ${activeTab === 'settings' ? 'border-teal-600 text-teal-700 dark:text-teal-500' : 'border-transparent text-ink-400 dark:text-stone-500 hover:text-ink-600 dark:hover:text-stone-300'}`}
                     >
                         <div className="flex items-center gap-2">
                             <Settings size={16} /> Settings
@@ -162,10 +162,10 @@ const ProfilePage = () => {
                                 {/* Reading Goal Progress */}
                                 <div className="card-libra p-8">
                                     <div className="flex items-center justify-between mb-4">
-                                        <h3 className="font-serif font-bold text-lg text-ink-900 flex items-center gap-2">
+                                        <h3 className="font-serif font-bold text-lg text-ink-900 dark:text-stone-100 flex items-center gap-2">
                                             <Trophy size={20} className="text-amber-500" /> 2026 Reading Challenge
                                         </h3>
-                                        <span className="text-sm font-bold text-ink-500">
+                                        <span className="text-sm font-bold text-ink-500 dark:text-stone-400">
                                             {profile?.totalBooksRead || 0} / 50 Books
                                         </span>
                                     </div>
@@ -182,7 +182,7 @@ const ProfilePage = () => {
 
                                 {/* Activity Chart */}
                                 <div className="card-libra p-8">
-                                    <h3 className="font-serif font-bold text-lg text-ink-900 mb-6 flex items-center gap-2">
+                                    <h3 className="font-serif font-bold text-lg text-ink-900 dark:text-stone-100 mb-6 flex items-center gap-2">
                                         <Activity size={20} className="text-teal-600" /> Reading Activity
                                     </h3>
                                     <div className="h-64 w-full">
@@ -201,7 +201,7 @@ const ProfilePage = () => {
                             <div className="lg:col-span-4 space-y-8">
                                 {/* Genre Pie Chart */}
                                 <div className="card-libra p-8">
-                                    <h3 className="font-serif font-bold text-lg text-ink-900 mb-4 flex items-center gap-2">
+                                    <h3 className="font-serif font-bold text-lg text-ink-900 dark:text-stone-100 mb-4 flex items-center gap-2">
                                         <Book size={20} className="text-teal-600" /> Top Genres
                                     </h3>
                                     <div className="h-56">
@@ -227,7 +227,7 @@ const ProfilePage = () => {
                                         {genreData.slice(0, 4).map((genre, index) => (
                                             <div key={genre.name} className="flex items-center gap-1.5">
                                                 <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                                                <span className="text-xs font-bold text-ink-600">{genre.name}</span>
+                                                <span className="text-xs font-bold text-ink-600 dark:text-stone-400">{genre.name}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -239,8 +239,8 @@ const ProfilePage = () => {
                                         <Flame size={24} fill="currentColor" />
                                     </div>
                                     <div>
-                                        <p className="text-xs font-bold uppercase text-ink-400 tracking-wider">Current Streak</p>
-                                        <p className="text-2xl font-serif font-bold text-ink-900">{profile?.currentStreak || 0} Days</p>
+                                        <p className="text-xs font-bold uppercase text-ink-400 dark:text-stone-500 tracking-wider">Current Streak</p>
+                                        <p className="text-2xl font-serif font-bold text-ink-900 dark:text-stone-100">{profile?.currentStreak || 0} Days</p>
                                     </div>
                                 </div>
                             </div>
@@ -248,14 +248,14 @@ const ProfilePage = () => {
                     ) : (
                         <div className="max-w-xl mx-auto">
                             <div className="card-libra p-8 md:p-10">
-                                <div className="mb-8 border-b border-paper-200 pb-4">
-                                    <h3 className="text-xl font-bold font-serif text-ink-900">Profile Settings</h3>
-                                    <p className="text-ink-500 text-sm">Update your personal information and preferences.</p>
+                                <div className="mb-8 border-b border-paper-200 dark:border-stone-800 pb-4">
+                                    <h3 className="text-xl font-bold font-serif text-ink-900 dark:text-stone-100">Profile Settings</h3>
+                                    <p className="text-ink-500 dark:text-stone-400 text-sm">Update your personal information and preferences.</p>
                                 </div>
 
                                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                                     <div>
-                                        <label className="text-xs font-bold uppercase tracking-widest text-ink-500 mb-2 block">Display Name</label>
+                                        <label className="text-xs font-bold uppercase tracking-widest text-ink-500 dark:text-stone-400 mb-2 block">Display Name</label>
                                         <input
                                             {...register('name')}
                                             type="text"
@@ -265,9 +265,9 @@ const ProfilePage = () => {
                                     </div>
 
                                     <div>
-                                        <label className="text-xs font-bold uppercase tracking-widest text-ink-500 mb-2 block">Handle</label>
+                                        <label className="text-xs font-bold uppercase tracking-widest text-ink-500 dark:text-stone-400 mb-2 block">Handle</label>
                                         <div className="relative">
-                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-400 font-bold">@</span>
+                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-400 dark:text-stone-500 font-bold">@</span>
                                             <input
                                                 {...register('username')}
                                                 type="text"
@@ -278,7 +278,7 @@ const ProfilePage = () => {
                                     </div>
 
                                     <div>
-                                        <label className="text-xs font-bold uppercase tracking-widest text-ink-500 mb-2 block">Email Address</label>
+                                        <label className="text-xs font-bold uppercase tracking-widest text-ink-500 dark:text-stone-400 mb-2 block">Email Address</label>
                                         <input
                                             {...register('email')}
                                             type="email"
@@ -288,7 +288,7 @@ const ProfilePage = () => {
                                     </div>
 
                                     <div>
-                                        <label className="text-xs font-bold uppercase tracking-widest text-ink-500 mb-2 block">Avatar URL</label>
+                                        <label className="text-xs font-bold uppercase tracking-widest text-ink-500 dark:text-stone-400 mb-2 block">Avatar URL</label>
                                         <input
                                             {...register('avatar')}
                                             type="text"
@@ -298,8 +298,8 @@ const ProfilePage = () => {
                                         {errors.avatar && <p className="text-red-500 text-xs mt-1">{errors.avatar.message}</p>}
                                     </div>
 
-                                    <div className="pt-6 border-t border-paper-200">
-                                        <label className="text-xs font-bold uppercase tracking-widest text-ink-500 mb-2 block">Change Password</label>
+                                    <div className="pt-6 border-t border-paper-200 dark:border-stone-800">
+                                        <label className="text-xs font-bold uppercase tracking-widest text-ink-500 dark:text-stone-500 mb-2 block">Change Password</label>
                                         <input
                                             {...register('password')}
                                             type="password"

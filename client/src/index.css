@@ -45,7 +45,7 @@
   /* Modern "Paper" Card Utility */
   .card-libra {
     @apply bg-white border border-paper-200 shadow-card rounded-lg transition-all duration-200;
-    @apply dark:bg-stone-900 dark:shadow-none;
+    @apply dark:bg-stone-900 dark:border-stone-800 dark:shadow-none;
   }
 
   .card-libra-hover {
@@ -65,13 +65,13 @@
 
   .btn-outline {
     @apply border border-paper-200 text-ink-600 hover:border-teal-600 hover:text-teal-600 bg-white px-4 py-2 rounded transition-all font-medium;
-    @apply dark:bg-stone-900 dark:text-stone-400 dark:hover:border-teal-700 dark:hover:text-teal-500;
+    @apply dark:bg-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:border-teal-700 dark:hover:text-teal-500;
   }
 
   /* Custom Inputs */
   .input-libra {
     @apply bg-white border border-paper-200 text-ink-900 placeholder-ink-400 rounded focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600 transition-all shadow-sm;
-    @apply dark:bg-stone-900 dark:placeholder-stone-500;
+    @apply dark:bg-stone-900 dark:border-stone-800 dark:text-stone-100 dark:placeholder-stone-500;
   }
 
   /* Status Badges */

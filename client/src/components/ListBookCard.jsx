@@ -54,8 +54,16 @@ const ListBookCard = ({ item, showRemove = true }) => {
     return (
         <div className="flex items-center gap-4 py-3 border-b border-paper-200 dark:border-stone-800 hover:bg-paper-50 dark:hover:bg-stone-900/50 transition-colors group">
             {/* 1. Cover */}
-            <Link to={`/book/${item.googleBookId}`} className="shrink-0 w-12 h-16 shadow-card border border-paper-200 dark:border-stone-800">
-                <img src={thumbnail} alt={title} className="w-full h-full object-cover" />
+            <Link to={`/book/${item.googleBookId}`} className="shrink-0 w-12 h-16 shadow-card border border-paper-200 dark:border-stone-800 bg-paper-100 dark:bg-stone-800">
+                <img
+                    src={thumbnail}
+                    alt={title}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = 'https://via.placeholder.com/90x140?text=No+Cover';
+                    }}
+                />
             </Link>
 
             {/* 2. Title & Author (Main Col) */}
