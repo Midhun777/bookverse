@@ -38,8 +38,25 @@ const logActivity = async (req, res) => {
 // @access  Private
 const getMyActivities = async (req, res) => {
     try {
-        const activities = await Activity.find({ userId: req.user._id }).sort({ createdAt: -1 });
-        res.json(activities);
+        const activities = await Activity.find({ userId: req.user._id })
+            .sort({ createdAt: -1 })
+            .limit(20);
+
+        const enrichedActivities = await Promise.all(activities.map(async (act) => {
+            const actObj = act.toObject();
+            if (act.openLibraryId) {
+                const book = await BookMaster.findOne({ openLibraryId: act.openLibraryId });
+                if (book) {
+                    actObj.bookTitle = book.title;
+                    actObj.bookCover = book.coverImage;
+                } else if (!actObj.bookTitle) {
+                    actObj.bookTitle = act.keyword || 'Unknown Book';
+                }
+            }
+            return actObj;
+        }));
+
+        res.json(enrichedActivities);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });

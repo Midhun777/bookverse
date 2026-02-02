@@ -94,7 +94,7 @@ const ProfilePage = () => {
                             <div className="w-full h-full rounded-full bg-paper-100 dark:bg-stone-800 flex items-center justify-center overflow-hidden">
                                 {user?.avatar ?
                                     <img src={user.avatar} className="w-full h-full object-cover" alt="" />
-                                    : <span className="text-4xl font-serif font-bold text-ink-400 dark:text-stone-500">{user?.name[0]}</span>
+                                    : <User size={64} strokeWidth={1.5} className="text-ink-400 dark:text-stone-500" />
                                 }
                             </div>
                         </div>

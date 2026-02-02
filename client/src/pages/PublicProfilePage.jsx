@@ -41,8 +41,8 @@ const PublicProfilePage = () => {
         <div className="max-w-4xl mx-auto space-y-24 pb-32 animate-page">
             {/* Simple Profile Header */}
             <div className="text-center space-y-8 py-12 border-b border-paper-200 dark:border-stone-800">
-                <div className="w-40 h-40 rounded-full bg-paper-50 dark:bg-stone-900 flex items-center justify-center text-ink-900 dark:text-stone-100 text-6xl font-bold border border-paper-200 dark:border-stone-800 shadow-sm mx-auto overflow-hidden">
-                    {profile.user.avatar ? <img src={profile.user.avatar} className="w-full h-full object-cover" alt="" /> : profile.user.name[0]}
+                <div className="w-40 h-40 rounded-full bg-paper-50 dark:bg-stone-900 flex items-center justify-center border border-paper-200 dark:border-stone-800 shadow-sm mx-auto overflow-hidden">
+                    {profile.user.avatar ? <img src={profile.user.avatar} className="w-full h-full object-cover" alt="" /> : <User size={80} strokeWidth={1.5} className="text-ink-400 dark:text-stone-500" />}
                 </div>
                 <div className="space-y-3">
                     <h1 className="text-5xl font-bold text-ink-900 dark:text-stone-100 serif">{profile.user.name}</h1>

@@ -75,8 +75,20 @@ const updateStatus = async (req, res) => {
 // @access  Private
 const getMyLists = async (req, res) => {
     try {
-        const lists = await ReadingList.find({ userId: req.user._id });
-        res.json(lists);
+        const lists = await ReadingList.find({ userId: req.user._id }).sort({ updatedAt: -1 });
+        const BookMaster = require('../models/BookMaster');
+
+        const enrichedLists = await Promise.all(lists.map(async (item) => {
+            const itemObj = item.toObject();
+            const book = await BookMaster.findOne({ openLibraryId: item.googleBookId });
+            if (book) {
+                itemObj.bookTitle = book.title;
+                itemObj.bookCover = book.coverImage;
+            }
+            return itemObj;
+        }));
+
+        res.json(enrichedLists);
     } catch (error) {
         console.error('GET MY LISTS ERROR:', error);
         res.status(500).json({ message: error.message || 'Server error' });

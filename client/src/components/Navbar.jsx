@@ -190,8 +190,8 @@ const Navbar = () => {
                                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                                     className="flex items-center gap-2 hover:bg-paper-100 rounded-full p-1 pr-3 transition-colors"
                                 >
-                                    <div className="w-8 h-8 rounded-full bg-paper-200 overflow-hidden border border-paper-300">
-                                        {user.avatar ? <img src={user.avatar} className="w-full h-full object-cover" alt="" /> : <User size={16} className="m-auto text-ink-400" />}
+                                    <div className="w-8 h-8 rounded-full bg-paper-200 dark:bg-stone-800 overflow-hidden border border-paper-300 dark:border-stone-700 flex items-center justify-center">
+                                        {user.avatar ? <img src={user.avatar} className="w-full h-full object-cover" alt="" /> : <User size={20} strokeWidth={2.5} className="text-ink-400 dark:text-stone-500" />}
                                     </div>
                                     <span className="text-sm font-bold text-ink-900">{user.name.split(' ')[0]}</span>
                                 </button>
