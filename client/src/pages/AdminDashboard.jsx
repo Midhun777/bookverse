@@ -99,29 +99,29 @@ const AdminDashboard = () => {
     return (
         <div className="space-y-8 pb-20">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <h1 className="text-3xl font-bold text-gray-900 serif">Admin Dashboard</h1>
-                <div className="flex bg-gray-100 p-1 rounded-xl overflow-x-auto">
+                <h1 className="text-3xl font-bold text-ink-900 serif">Admin Dashboard</h1>
+                <div className="flex bg-paper-100 p-1 rounded-xl overflow-x-auto">
                     <button
                         onClick={() => setActiveTab('stats')}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition whitespace-nowrap ${activeTab === 'stats' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition whitespace-nowrap ${activeTab === 'stats' ? 'bg-white dark:bg-stone-800 text-teal-600 shadow-sm' : 'text-ink-600 hover:text-ink-900'}`}
                     >
                         Analytics
                     </button>
                     <button
                         onClick={() => setActiveTab('users')}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition whitespace-nowrap ${activeTab === 'users' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition whitespace-nowrap ${activeTab === 'users' ? 'bg-white dark:bg-stone-800 text-teal-600 shadow-sm' : 'text-ink-600 hover:text-ink-900'}`}
                     >
                         Users
                     </button>
                     <button
                         onClick={() => setActiveTab('reviews')}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition whitespace-nowrap ${activeTab === 'reviews' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition whitespace-nowrap ${activeTab === 'reviews' ? 'bg-white dark:bg-stone-800 text-teal-600 shadow-sm' : 'text-ink-600 hover:text-ink-900'}`}
                     >
                         Moderation
                     </button>
                     <button
                         onClick={() => setActiveTab('settings')}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition whitespace-nowrap ${activeTab === 'settings' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition whitespace-nowrap ${activeTab === 'settings' ? 'bg-white dark:bg-stone-800 text-teal-600 shadow-sm' : 'text-ink-600 hover:text-ink-900'}`}
                     >
                         Settings
                     </button>
@@ -131,38 +131,38 @@ const AdminDashboard = () => {
             {activeTab === 'stats' && (
                 <div className="space-y-8 animate-in fade-in duration-500">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center space-x-4">
-                            <div className="p-4 bg-blue-50 text-blue-600 rounded-2xl">
+                        <div className="card-libra p-6 flex items-center space-x-4">
+                            <div className="p-4 bg-teal-50 dark:bg-teal-900/30 text-teal-600 rounded-2xl">
                                 <TrendingUp size={24} />
                             </div>
                             <div>
-                                <h3 className="text-gray-500 font-medium text-sm">Total Users</h3>
-                                <p className="text-2xl font-bold text-gray-900">{stats?.summary?.users || 0}</p>
+                                <h3 className="text-ink-600 font-medium text-sm">Total Users</h3>
+                                <p className="text-2xl font-bold text-ink-900">{stats?.summary?.users || 0}</p>
                             </div>
                         </div>
-                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center space-x-4">
-                            <div className="p-4 bg-red-50 text-red-600 rounded-2xl">
+                        <div className="card-libra p-6 flex items-center space-x-4">
+                            <div className="p-4 bg-red-50 dark:bg-red-900/30 text-red-600 rounded-2xl">
                                 <Heart size={24} />
                             </div>
                             <div>
-                                <h3 className="text-gray-500 font-medium text-sm">Favorite Books</h3>
-                                <p className="text-2xl font-bold text-gray-900">{stats?.summary?.favoriteBooks || 0}</p>
+                                <h3 className="text-ink-600 font-medium text-sm">Favorite Books</h3>
+                                <p className="text-2xl font-bold text-ink-900">{stats?.summary?.favoriteBooks || 0}</p>
                             </div>
                         </div>
-                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center space-x-4">
-                            <div className="p-4 bg-yellow-50 text-yellow-600 rounded-2xl">
+                        <div className="card-libra p-6 flex items-center space-x-4">
+                            <div className="p-4 bg-amber-50 dark:bg-amber-900/30 text-amber-600 rounded-2xl">
                                 <MessageSquare size={24} />
                             </div>
                             <div>
-                                <h3 className="text-gray-500 font-medium text-sm">Reviews</h3>
-                                <p className="text-2xl font-bold text-gray-900">{stats?.summary?.reviews || 0}</p>
+                                <h3 className="text-ink-600 font-medium text-sm">Reviews</h3>
+                                <p className="text-2xl font-bold text-ink-900">{stats?.summary?.reviews || 0}</p>
                             </div>
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        <div className="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-                            <h3 className="text-xl font-bold text-gray-900 mb-6">User Registration Growth</h3>
+                        <div className="lg:col-span-2 card-libra p-8">
+                            <h3 className="text-xl font-bold text-ink-900 mb-6 font-serif">User Registration Growth</h3>
                             <div className="h-72">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <LineChart data={stats?.analytics?.growth}>
@@ -176,8 +176,9 @@ const AdminDashboard = () => {
                             </div>
                         </div>
 
-                        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-                            <h3 className="text-xl font-bold text-gray-900 mb-6">Genre Distribution</h3>
+
+                        <div className="card-libra p-8">
+                            <h3 className="text-xl font-bold text-ink-900 mb-6 font-serif">Genre Distribution</h3>
                             <div className="h-72">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <PieChart>
@@ -204,30 +205,30 @@ const AdminDashboard = () => {
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-                            <h3 className="text-xl font-bold text-gray-900 mb-6">Top Search Keywords</h3>
+                        <div className="card-libra p-8">
+                            <h3 className="text-xl font-bold text-ink-900 mb-6 font-serif">Top Search Keywords</h3>
                             <div className="h-64">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <BarChart data={stats?.analytics?.topKeywords.map(k => ({ name: k[0], count: k[1] }))}>
-                                        <XAxis dataKey="name" />
-                                        <YAxis />
-                                        <Tooltip />
-                                        <Bar dataKey="count" fill="#3B82F6" radius={[4, 4, 0, 0]} />
+                                        <XAxis dataKey="name" stroke="currentColor" />
+                                        <YAxis stroke="currentColor" />
+                                        <Tooltip contentStyle={{ backgroundColor: 'var(--paper-100)', color: 'var(--ink-900)', border: 'none' }} />
+                                        <Bar dataKey="count" fill="#14b8a6" radius={[4, 4, 0, 0]} />
                                     </BarChart>
                                 </ResponsiveContainer>
                             </div>
                         </div>
 
-                        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-                            <h3 className="text-xl font-bold text-gray-900 mb-6">Most Reviewed Books</h3>
+                        <div className="card-libra p-8">
+                            <h3 className="text-xl font-bold text-ink-900 mb-6 font-serif">Most Reviewed Books</h3>
                             <div className="space-y-4">
                                 {stats?.analytics?.mostReviewed.map((book, i) => (
-                                    <div key={book._id} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
+                                    <div key={book._id} className="flex items-center justify-between p-4 bg-paper-100 rounded-2xl">
                                         <div className="flex items-center space-x-3">
-                                            <span className="w-8 h-8 flex items-center justify-center bg-white rounded-full font-bold text-blue-600 shadow-sm">{i + 1}</span>
-                                            <span className="font-medium text-gray-900 truncate max-w-[200px]">{book._id}</span>
+                                            <span className="w-8 h-8 flex items-center justify-center bg-paper-50 rounded-full font-bold text-teal-600 shadow-sm">{i + 1}</span>
+                                            <span className="font-medium text-ink-900 truncate max-w-[200px]">{book._id}</span>
                                         </div>
-                                        <span className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs font-bold">{book.count} Reviews</span>
+                                        <span className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-xs font-bold">{book.count} Reviews</span>
                                     </div>
                                 ))}
                             </div>
@@ -237,14 +238,14 @@ const AdminDashboard = () => {
             )}
 
             {activeTab === 'users' && (
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden animate-in fade-in duration-500">
-                    <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                        <h2 className="text-xl font-bold text-gray-900">Manage Users</h2>
-                        <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-bold">{users?.length} Total</span>
+                <div className="card-libra overflow-hidden animate-in fade-in duration-500">
+                    <div className="px-6 py-4 border-b border-paper-100 flex items-center justify-between">
+                        <h2 className="text-xl font-bold text-ink-900">Manage Users</h2>
+                        <span className="bg-teal-50 dark:bg-teal-900/30 text-teal-600 px-3 py-1 rounded-full text-xs font-bold">{users?.length} Total</span>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full text-left">
-                            <thead className="bg-gray-50 text-gray-600 text-sm">
+                            <thead className="bg-paper-100 text-ink-600 text-sm">
                                 <tr>
                                     <th className="px-6 py-3">User</th>
                                     <th className="px-6 py-3">Email</th>
@@ -253,18 +254,18 @@ const AdminDashboard = () => {
                                     <th className="px-6 py-3 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-100">
+                            <tbody className="divide-y divide-paper-100">
                                 {users?.map(user => (
-                                    <tr key={user._id} className="hover:bg-gray-50 transition">
-                                        <td className="px-6 py-4 font-medium text-gray-900 flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 overflow-hidden shadow-inner border border-white">
+                                    <tr key={user._id} className="hover:bg-paper-50 transition">
+                                        <td className="px-6 py-4 font-medium text-ink-900 flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-800 overflow-hidden shadow-inner border border-white dark:border-stone-800">
                                                 {user.avatar ? <img src={user.avatar} className="w-full h-full object-cover" alt="" /> : user.name.charAt(0)}
                                             </div>
                                             {user.name}
                                         </td>
-                                        <td className="px-6 py-4 text-gray-600">{user.email}</td>
+                                        <td className="px-6 py-4 text-ink-600">{user.email}</td>
                                         <td className="px-6 py-4">
-                                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${user.role === 'ADMIN' ? 'bg-purple-100 text-purple-600' : 'bg-blue-100 text-blue-600'}`}>
+                                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${user.role === 'ADMIN' ? 'bg-purple-100 text-purple-600' : 'bg-teal-100 text-teal-600'}`}>
                                                 {user.role}
                                             </span>
                                         </td>
@@ -272,7 +273,7 @@ const AdminDashboard = () => {
                                             {user.isBanned ? (
                                                 <span className="text-red-500 text-sm font-medium flex items-center gap-1"><Ban size={14} /> Banned</span>
                                             ) : (
-                                                <span className="text-green-500 text-sm font-medium flex items-center gap-1"><CheckCircle size={14} /> Active</span>
+                                                <span className="text-teal-500 text-sm font-medium flex items-center gap-1"><CheckCircle size={14} /> Active</span>
                                             )}
                                         </td>
                                         <td className="px-6 py-4 text-right space-x-2">
@@ -306,13 +307,13 @@ const AdminDashboard = () => {
             )}
 
             {activeTab === 'reviews' && (
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden animate-in fade-in duration-500">
-                    <div className="px-6 py-4 border-b border-gray-100">
-                        <h2 className="text-xl font-bold text-gray-900">Review Moderation</h2>
+                <div className="card-libra overflow-hidden animate-in fade-in duration-500">
+                    <div className="px-6 py-4 border-b border-paper-100">
+                        <h2 className="text-xl font-bold text-ink-900">Review Moderation</h2>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full text-left">
-                            <thead className="bg-gray-50 text-gray-600 text-sm">
+                            <thead className="bg-paper-100 text-ink-600 text-sm">
                                 <tr>
                                     <th className="px-6 py-3">Book</th>
                                     <th className="px-6 py-3">Author</th>
@@ -321,20 +322,20 @@ const AdminDashboard = () => {
                                     <th className="px-6 py-3 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-100">
+                            <tbody className="divide-y divide-paper-100">
                                 {allReviews?.map(review => (
-                                    <tr key={review._id} className="hover:bg-gray-50 transition">
-                                        <td className="px-6 py-4 text-sm font-mono text-gray-500 truncate max-w-[100px]">{review.googleBookId}</td>
+                                    <tr key={review._id} className="hover:bg-paper-50 transition">
+                                        <td className="px-6 py-4 text-sm font-mono text-ink-400 truncate max-w-[100px]">{review.googleBookId}</td>
                                         <td className="px-6 py-4">
-                                            <p className="font-medium text-gray-900">{review.userId?.name || 'Deleted User'}</p>
-                                            <p className="text-xs text-gray-500">{review.userId?.email}</p>
+                                            <p className="font-medium text-ink-900">{review.userId?.name || 'Deleted User'}</p>
+                                            <p className="text-xs text-ink-600">{review.userId?.email}</p>
                                         </td>
-                                        <td className="px-6 py-4 text-yellow-500">
+                                        <td className="px-6 py-4 text-amber-500">
                                             <div className="flex">
                                                 {[...Array(review.rating)].map((_, i) => <Star key={i} size={14} fill="currentColor" />)}
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">{review.reviewText}</td>
+                                        <td className="px-6 py-4 text-sm text-ink-600 max-w-xs truncate">{review.reviewText}</td>
                                         <td className="px-6 py-4 text-right">
                                             <button
                                                 onClick={() => {
@@ -358,12 +359,12 @@ const AdminDashboard = () => {
             )}
 
             {activeTab === 'settings' && (
-                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 max-w-2xl animate-in fade-in duration-500">
+                <div className="card-libra p-8 max-w-2xl animate-in fade-in duration-500">
                     <div className="flex items-center space-x-3 mb-6">
-                        <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
+                        <div className="p-3 bg-teal-50 dark:bg-teal-900/30 text-teal-600 rounded-xl">
                             <SettingsIcon size={24} />
                         </div>
-                        <h2 className="text-xl font-bold text-gray-900">Platform Portal Settings</h2>
+                        <h2 className="text-xl font-bold text-ink-900">Platform Portal Settings</h2>
                     </div>
 
                     <form className="space-y-6" onSubmit={(e) => {
@@ -374,20 +375,20 @@ const AdminDashboard = () => {
                         });
                     }}>
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Featured Categories</label>
-                            <p className="text-xs text-gray-400 mb-2">Separated by commas (e.g., Fiction, Self-Help, Science)</p>
+                            <label className="block text-sm font-bold text-ink-600 mb-2 uppercase tracking-wide">Featured Categories</label>
+                            <p className="text-xs text-ink-400 mb-2">Separated by commas (e.g., Fiction, Self-Help, Science)</p>
                             <input
                                 type="text"
-                                className="w-full px-5 py-3 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition"
+                                className="w-full px-5 py-3 input-libra rounded-2xl outline-none transition"
                                 value={settingsData.featuredCategories}
                                 onChange={(e) => setSettingsData({ ...settingsData, featuredCategories: e.target.value })}
                                 placeholder="Fiction, Self-Help, Science"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Homepage Banner Text</label>
+                            <label className="block text-sm font-bold text-ink-600 mb-2 uppercase tracking-wide">Homepage Banner Text</label>
                             <textarea
-                                className="w-full px-5 py-4 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition h-32 resize-none"
+                                className="w-full px-5 py-4 input-libra rounded-2xl outline-none transition h-32 resize-none"
                                 value={settingsData.homepageBannerText}
                                 onChange={(e) => setSettingsData({ ...settingsData, homepageBannerText: e.target.value })}
                                 placeholder="Welcome to the ultimate book sanctuary..."
@@ -396,7 +397,7 @@ const AdminDashboard = () => {
                         <button
                             type="submit"
                             disabled={updateSettingsMutation.isPending}
-                            className="w-full bg-blue-600 text-white px-6 py-4 rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 hover:-translate-y-0.5 transition active:translate-y-0 disabled:opacity-50"
+                            className="btn-primary w-full py-4 rounded-2xl font-bold"
                         >
                             {updateSettingsMutation.isPending ? 'Saving Configuration...' : 'Save Changes'}
                         </button>

@@ -12,6 +12,7 @@
     --ink-900: #1c1917;
     --ink-600: #57534e;
     --ink-400: #a8a29e;
+    --teal-glow: rgba(20, 184, 166, 0.1);
   }
 
   .dark {
@@ -21,6 +22,7 @@
     --ink-900: #fafafa;
     --ink-600: #a3a3a3;
     --ink-400: #525252;
+    --teal-glow: rgba(20, 184, 166, 0.05);
   }
 
   body {
@@ -76,6 +78,36 @@
   .badge-shelf {
     @apply text-xs font-bold uppercase tracking-wider px-2 py-1 rounded bg-paper-100 text-ink-600;
     @apply dark:bg-stone-800;
+  }
+
+  /* Glassmorphism */
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-xl;
+    @apply dark:bg-stone-900/40 dark:border-white/5;
+  }
+
+  /* Gradients */
+  .bg-gradient-bookverse {
+    @apply bg-gradient-to-br from-teal-500 via-teal-600 to-emerald-700;
+  }
+
+  /* Animations */
+  @keyframes float {
+    0% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
+
+    100% {
+      transform: translateY(0px);
+    }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
   }
 }
 

@@ -4,8 +4,9 @@ import { useQuery } from '@tanstack/react-query';
 import { getHomeData } from '../services/homeService';
 import BookCard from '../components/BookCard';
 import HomeSidebar from '../components/HomeSidebar';
+import HeroSection from '../components/HeroSection';
 import { useAuthStore } from '../store/authStore';
-import { TrendingUp, MessageSquare, Star, User } from 'lucide-react';
+import { TrendingUp, MessageSquare, Star, User, Bookmark, ChevronRight } from 'lucide-react';
 import api from '../services/api';
 
 const LandingPage = () => {
@@ -46,89 +47,151 @@ const LandingPage = () => {
             </aside>
 
             {/* Center Column: News Feed */}
-            <main className="lg:col-span-6 space-y-6">
+            <main className="lg:col-span-9 space-y-12">
 
-                <h2 className="font-bold text-ink-900 border-b border-paper-200 pb-2 mb-4 uppercase tracking-wider text-sm flex items-center justify-between">
-                    <span>Global Activity</span>
-                </h2>
+                {/* Hero Section */}
+                <HeroSection />
 
-                {!user && (
-                    <div className="card-libra p-8 text-center bg-teal-50 border-teal-100 mb-6">
-                        <h1 className="font-serif font-bold text-2xl text-ink-900 mb-2">Welcome to Bookverse</h1>
-                        <p className="text-ink-600 mb-6">Discover your next favorite book and track your reading journey.</p>
-                        <div className="flex justify-center gap-4">
-                            <Link to="/register" className="btn-primary">Sign Up via Email</Link>
-                            <Link to="/login" className="btn-outline">Log In</Link>
-                        </div>
+                {/* Featured Collections */}
+                <section>
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-serif font-bold text-ink-900">Featured Collections</h2>
+                        <Link to="/explore" className="text-teal-600 hover:text-teal-700 font-medium flex items-center gap-1 text-sm">
+                            View All <ChevronRight size={16} />
+                        </Link>
                     </div>
-                )}
-
-                {feedItems.length > 0 ? (
-                    feedItems.map(item => (
-                        <div key={item._id} className="card-libra p-5">
-                            <div className="flex gap-4">
-                                <div className="shrink-0">
-                                    <div className="w-10 h-10 rounded-full bg-paper-200 flex items-center justify-center">
-                                        <User size={18} className="text-ink-400" />
-                                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {[
+                            { title: 'Award Winning Fiction', q: 'Award Winners', desc: 'Bestsellers and award winners from 2024.', color: 'from-amber-400 to-orange-500', icon: Star },
+                            { title: 'New & Noteworthy', q: 'New Releases', desc: 'The most anticipated releases of the month.', color: 'from-blue-400 to-indigo-500', icon: TrendingUp },
+                            { title: 'Community Favorites', q: 'Top Rated', desc: 'Books that our readers just couldn\'t put down.', color: 'from-teal-400 to-emerald-500', icon: Bookmark },
+                        ].map((col, idx) => (
+                            <Link to={`/explore?q=${col.q}`} key={idx} className={`relative overflow-hidden p-6 rounded-2xl bg-gradient-to-br ${col.color} text-white shadow-lg group cursor-pointer hover:scale-[1.02] transition-transform`}>
+                                <div className="relative z-10">
+                                    <col.icon size={24} className="mb-3 opacity-80" />
+                                    <h3 className="text-xl font-bold mb-1">{col.title}</h3>
+                                    <p className="text-sm text-white/80">{col.desc}</p>
                                 </div>
-                                <div className="flex-1">
-                                    <p className="text-sm text-ink-900">
-                                        <span className="font-bold">{item.user?.name || 'User'}</span> {item.actionType === 'REVIEW' ? 'reviewed' : 'rated'}
-                                        <Link to={`/book/${item.googleBookId}`} className="font-bold text-teal-700 hover:underline ml-1">
-                                            {item.bookTitle}
-                                        </Link>
-                                    </p>
-                                    <p className="text-xs text-ink-400 mb-3">{new Date(item.createdAt).toLocaleDateString()}</p>
+                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-125 transition-transform">
+                                    <col.icon size={80} />
                                 </div>
-                            </div>
-                        </div>
-                    ))
-                ) : (
-                    <div className="text-center py-12 text-ink-400 bg-paper-50 rounded border border-dashed border-paper-200">
-                        <MessageSquare size={32} className="mx-auto mb-2 opacity-50" />
-                        <p>No recent activity. Be the first to start reading!</p>
-                    </div>
-                )}
-            </main>
-
-            {/* Right Column: Recommendations */}
-            <aside className="hidden xl:block xl:col-span-3 space-y-6">
-
-                <div className="card-libra p-4">
-                    <h3 className="font-bold text-ink-900 text-sm border-b border-paper-200 pb-2 mb-3 uppercase tracking-wider">
-                        Trending this Week
-                    </h3>
-                    <div className="space-y-4">
-                        {data?.trending?.slice(0, 3).map(book => (
-                            <div key={book.googleBookId || book._id} className="flex gap-3">
-                                <Link to={`/book/${book.googleBookId || book._id}`} className="w-12 h-16 bg-paper-200 shrink-0 border border-paper-100 shadow-sm">
-                                    <img src={book.coverImage || book.thumbnail} alt="" className="w-full h-full object-cover" />
-                                </Link>
-                                <div>
-                                    <Link to={`/book/${book.googleBookId || book._id}`} className="font-bold text-sm text-ink-900 hover:underline line-clamp-2 leading-tight">
-                                        {book.title}
-                                    </Link>
-                                    <p className="text-xs text-ink-500 mt-1 line-clamp-1">{book.authors?.[0]}</p>
-                                    <button className="text-[10px] uppercase font-bold text-teal-600 hover:underline mt-1 bg-teal-50 px-2 py-0.5 rounded">Want to Read</button>
-                                </div>
-                            </div>
+                            </Link>
                         ))}
                     </div>
+                </section>
+
+                <div className="grid grid-cols-1 xl:grid-cols-12 gap-10">
+                    <div className="xl:col-span-8 space-y-10">
+                        {/* Trending Section */}
+                        <section>
+                            <h2 className="text-2xl font-serif font-bold text-ink-900 mb-6 flex items-center gap-2">
+                                <TrendingUp className="text-teal-600" size={24} />
+                                Trending Books
+                            </h2>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+                                {data?.trending?.slice(0, 4).map(book => (
+                                    <BookCard key={book.googleBookId || book._id} book={book} />
+                                ))}
+                            </div>
+                        </section>
+
+                        {/* Recent Activity */}
+                        <section>
+                            <h2 className="text-2xl font-serif font-bold text-ink-900 border-b border-paper-200 pb-2 mb-6 uppercase tracking-wider text-sm flex items-center justify-between">
+                                <span>Recent Activity</span>
+                            </h2>
+                            <div className="space-y-4">
+                                {feedItems.length > 0 ? (
+                                    feedItems.slice(0, 5).map(item => (
+                                        <div key={item._id} className="card-libra p-5 card-libra-hover">
+                                            <div className="flex gap-4">
+                                                <div className="shrink-0">
+                                                    <div className="w-10 h-10 rounded-full bg-paper-200 flex items-center justify-center">
+                                                        <User size={18} className="text-ink-400" />
+                                                    </div>
+                                                </div>
+                                                <div className="flex-1">
+                                                    <p className="text-sm text-ink-900">
+                                                        <span className="font-bold">{item.user?.name || 'User'}</span> {item.actionType === 'REVIEW' ? 'reviewed' : 'rated'}
+                                                        <Link to={`/book/${item.googleBookId}`} className="font-bold text-teal-700 hover:underline ml-1">
+                                                            {item.bookTitle}
+                                                        </Link>
+                                                    </p>
+                                                    <p className="text-xs text-ink-400 mb-1">{new Date(item.createdAt).toLocaleDateString()}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="text-center py-12 text-ink-400 bg-paper-50 rounded border border-dashed border-paper-200">
+                                        <MessageSquare size={32} className="mx-auto mb-2 opacity-50" />
+                                        <p>No recent activity. Be the first to start reading!</p>
+                                    </div>
+                                )}
+                            </div>
+                        </section>
+                    </div>
+
+                    {/* Right Column within main */}
+                    <aside className="xl:col-span-4 space-y-8">
+                        {/* Weekly Recommendation Card */}
+                        <div className="card-libra p-6 bg-paper-50 border-teal-100 overflow-hidden relative">
+                            <div className="absolute -top-6 -right-6 w-24 h-24 bg-teal-500/10 rounded-full blur-2xl"></div>
+                            <h3 className="font-bold text-ink-900 text-sm border-b border-paper-200 pb-2 mb-4 uppercase tracking-wider">
+                                Weekly Pick
+                            </h3>
+                            {data?.trending?.[4] && (
+                                <div className="space-y-4 relative z-10">
+                                    <div className="flex gap-4">
+                                        <Link to={`/book/${data.trending[4].googleBookId || data.trending[4]._id}`} className="w-20 h-28 bg-paper-200 shrink-0 border border-paper-100 shadow-md rounded-md overflow-hidden group">
+                                            <img src={data.trending[4].coverImage || data.trending[4].thumbnail} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                        </Link>
+                                        <div className="flex-1">
+                                            <Link to={`/book/${data.trending[4].googleBookId || data.trending[4]._id}`} className="font-bold text-ink-900 hover:underline line-clamp-2 leading-tight">
+                                                {data.trending[4].title}
+                                            </Link>
+                                            <p className="text-xs text-ink-500 mt-1 line-clamp-1">{data.trending[4].authors?.[0]}</p>
+                                            <div className="flex items-center gap-1 mt-2">
+                                                {[...Array(5)].map((_, i) => (
+                                                    <Star key={i} size={10} className={i < 4 ? "fill-amber-400 text-amber-400" : "text-paper-200"} />
+                                                ))}
+                                                <span className="text-[10px] text-ink-400 ml-1">4.0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p className="text-xs text-ink-600 line-clamp-3 italic">"A masterful blend of storytelling and profound insights. A must-read for anyone looking to expand their horizons."</p>
+                                    <Link to={`/book/${data.trending[4].googleBookId || data.trending[4]._id}`} className="btn-primary w-full text-center text-xs py-2">Read Now</Link>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Popular Genres Chip List */}
+                        <div className="card-libra p-5">
+                            <h3 className="font-bold text-ink-900 text-sm border-b border-paper-200 pb-2 mb-4 uppercase tracking-wider">
+                                Popular Genres
+                            </h3>
+                            <div className="flex flex-wrap gap-2 text-xs">
+                                {['Fiction', 'Non-Fiction', 'Science', 'Mystery', 'Fantasy', 'Romance', 'Historical', 'Biography', 'Thrillers', 'Philosophy'].map(genre => (
+                                    <Link key={genre} to={`/explore?q=${genre}`} className="px-3 py-1.5 rounded-full bg-paper-100 text-ink-600 hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200 border border-transparent transition-all font-medium">
+                                        {genre}
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="flex flex-wrap gap-2 text-xs text-ink-400 px-2">
+                            <a href="#" className="hover:text-teal-600">© 2026 Bookverse</a>
+                            <span>·</span>
+                            <a href="#" className="hover:text-teal-600">About</a>
+                            <span>·</span>
+                            <a href="#" className="hover:text-teal-600">Privacy</a>
+                            <span>·</span>
+                            <a href="#" className="hover:text-teal-600">Mobile</a>
+                        </div>
+                    </aside>
                 </div>
+            </main>
 
-
-
-                <div className="flex flex-wrap gap-2 text-xs text-ink-400">
-                    <a href="#" className="hover:text-teal-600">© 2026 Bookverse</a>
-                    <span>·</span>
-                    <a href="#" className="hover:text-teal-600">About</a>
-                    <span>·</span>
-                    <a href="#" className="hover:text-teal-600">Privacy</a>
-                    <span>·</span>
-                    <a href="#" className="hover:text-teal-600">Mobile</a>
-                </div>
-            </aside>
 
         </div>
     );

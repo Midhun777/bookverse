@@ -29,7 +29,7 @@ const ReviewList = ({ reviews, user, onAddReview, onDeleteReview }) => {
 
             {/* Input Area */}
             {user && (
-                <div className="mb-10 flex gap-4 bg-paper-50 p-6 rounded-xl border border-paper-100">
+                <div className="mb-10 flex gap-4 bg-paper-100/50 p-6 rounded-xl border border-paper-200">
                     <div className="shrink-0">
                         <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-800 font-bold border border-teal-200">
                             {user.name?.charAt(0)}
@@ -37,7 +37,7 @@ const ReviewList = ({ reviews, user, onAddReview, onDeleteReview }) => {
                     </div>
                     <div className="flex-1 space-y-3">
                         <textarea
-                            className="w-full bg-white border border-paper-200 rounded-lg p-3 text-sm text-ink-900 placeholder-ink-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 min-h-[100px] shadow-sm resize-none"
+                            className="w-full input-libra rounded-lg p-3 text-sm min-h-[100px] resize-none"
                             placeholder="Share your thoughts on this book..."
                             value={reviewText}
                             onChange={e => setReviewText(e.target.value)}
@@ -49,7 +49,7 @@ const ReviewList = ({ reviews, user, onAddReview, onDeleteReview }) => {
                                     <button
                                         key={s}
                                         onClick={() => setRating(s)}
-                                        className={`transition-all hover:scale-110 ${s <= rating ? "text-amber-400" : "text-paper-300 hover:text-amber-200"}`}
+                                        className={`transition-all hover:scale-110 ${s <= rating ? "text-amber-400" : "text-ink-400/30 hover:text-amber-200"}`}
                                     >
                                         <Star size={20} fill="currentColor" />
                                     </button>

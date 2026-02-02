@@ -39,8 +39,8 @@ const Sidebar = () => {
         <aside className="w-72 bg-[#0A0A0B]/80 backdrop-blur-3xl border-r border-white/5 flex flex-col sticky top-0 h-screen z-50">
             {/* Logo */}
             <div className="p-8">
-                <Link to="/" className="flex items-center space-x-3 text-blue-500 font-bold text-2xl group">
-                    <div className="p-2.5 bg-blue-600 text-white rounded-2xl shadow-lg shadow-blue-600/20 group-hover:rotate-6 transition-transform">
+                <Link to="/" className="flex items-center space-x-3 text-teal-500 font-bold text-2xl group">
+                    <div className="p-2.5 bg-teal-600 text-white rounded-2xl shadow-lg shadow-teal-600/20 group-hover:rotate-6 transition-transform">
                         <BookOpen size={24} />
                     </div>
                     <span className="font-display tracking-tight text-white">BOOKVERSE</span>
@@ -85,7 +85,7 @@ const Sidebar = () => {
                 {user ? (
                     <>
                         <Link to="/profile" className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-white/5 transition group">
-                            <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-500 border border-blue-500/20">
+                            <div className="w-10 h-10 rounded-xl bg-teal-500/20 flex items-center justify-center text-teal-500 border border-teal-500/20">
                                 {user.avatar ? <img src={user.avatar} className="w-full h-full object-cover rounded-xl" alt="" /> : <UserIcon size={20} />}
                             </div>
                             <div className="min-w-0">
@@ -106,7 +106,7 @@ const Sidebar = () => {
                         <Link to="/login" className="flex items-center justify-center w-full py-3 rounded-2xl bg-white/5 text-white font-bold text-sm hover:bg-white/10 transition">
                             Log In
                         </Link>
-                        <Link to="/register" className="flex items-center justify-center w-full py-3 rounded-2xl bg-blue-600 text-white font-bold text-sm hover:bg-blue-500 transition shadow-lg shadow-blue-600/20">
+                        <Link to="/register" className="flex items-center justify-center w-full py-3 rounded-2xl bg-teal-600 text-white font-bold text-sm hover:bg-teal-500 transition shadow-lg shadow-teal-600/20">
                             Get Started
                         </Link>
                     </div>

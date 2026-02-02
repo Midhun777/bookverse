@@ -58,8 +58,12 @@ const loginUser = async (req, res) => {
 
         const user = await User.findOne({ email });
 
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
+
         // Plain text comparison
-        if (user && user.password === password) {
+        if (user.password === password) {
             if (user.isBanned) {
                 return res.status(403).json({ message: 'Your account has been banned.' });
             }

@@ -31,28 +31,28 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="max-w-md mx-auto mt-20 p-10 bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 animate-page">
-            <h2 className="text-3xl font-bold text-center mb-2 serif">Welcome Back</h2>
-            <p className="text-center text-gray-400 text-sm mb-10 italic">Sign in to access your library.</p>
+        <div className="max-w-md mx-auto mt-20 p-10 card-libra animate-page">
+            <h2 className="text-3xl font-bold text-center mb-2 serif text-ink-900">Welcome Back</h2>
+            <p className="text-center text-ink-600 text-sm mb-10 italic">Sign in to access your library.</p>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div>
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1.5 block ml-1">Email Address</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-ink-400 mb-1.5 block ml-1">Email Address</label>
                     <input
                         {...register('email')}
                         type="email"
-                        className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-50 focus:border-blue-400 outline-none transition font-medium text-gray-900"
+                        className="w-full px-5 py-4 input-libra rounded-2xl focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 outline-none transition font-medium"
                         placeholder="you@domain.com"
                     />
                     {errors.email && <p className="text-red-500 text-[10px] font-bold mt-2 ml-1 uppercase tracking-widest">{errors.email.message}</p>}
                 </div>
 
                 <div>
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1.5 block ml-1">Password</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-ink-400 mb-1.5 block ml-1">Password</label>
                     <input
                         {...register('password')}
                         type="password"
-                        className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-50 focus:border-blue-400 outline-none transition font-medium text-gray-900"
+                        className="w-full px-5 py-4 input-libra rounded-2xl focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 outline-none transition font-medium"
                         placeholder="••••••••"
                     />
                     {errors.password && <p className="text-red-500 text-[10px] font-bold mt-2 ml-1 uppercase tracking-widest">{errors.password.message}</p>}
@@ -62,15 +62,15 @@ const LoginPage = () => {
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-gray-900 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl hover:bg-gray-800 hover:-translate-y-1 transition-all disabled:opacity-50 mt-4"
+                    className="btn-primary w-full py-4 rounded-2xl font-black uppercase tracking-widest text-[11px] mt-4"
                 >
                     {isSubmitting ? 'Signing in...' : 'Sign In'}
                 </button>
             </form>
 
-            <p className="text-center mt-12 text-xs font-bold uppercase tracking-widest text-gray-400">
+            <p className="text-center mt-12 text-xs font-bold uppercase tracking-widest text-ink-400">
                 New to Bookverse?{' '}
-                <Link to="/register" className="text-blue-600 hover:text-blue-700">Create Account</Link>
+                <Link to="/register" className="text-teal-600 hover:text-teal-700">Create Account</Link>
             </p>
         </div>
     );
