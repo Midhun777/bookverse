@@ -58,31 +58,47 @@ const getDiscoverFeed = async (req, res) => {
 const getMyRecommendations = async (req, res) => {
     try {
         const userId = req.user._id;
-        const personalRecs = await getRecommendations(userId);
+        const personalSections = await getRecommendations(userId);
 
-        const sections = [];
+        // Fetch Global Sections for everyone
+        const popularBooks = await BookMaster.find().sort({ popularityScore: -1 }).limit(6);
+        const classics = await BookMaster.find({ isClassic: true }).limit(6);
+        const trending = await BookMaster.find({ isTrending: true }).limit(6);
 
-        if (personalRecs.length > 0) {
-            sections.push({
-                title: "Picks for You",
-                description: "Tailored to your unique reading profile",
-                books: personalRecs.slice(0, 10),
-                type: 'PERSONAL'
-            });
-
-            // Based on saves
-            const savedActivity = await Activity.findOne({ userId, actionType: 'SAVE' });
-            if (savedActivity && personalRecs.length > 10) {
-                sections.push({
-                    title: "Because You Saved...",
-                    description: "More like the books in your collection",
-                    books: personalRecs.slice(10, 20),
-                    type: 'PERSONAL'
-                });
+        const globalSections = [
+            {
+                title: "Most Loved Worldwide",
+                description: "Top rated books by the community",
+                books: popularBooks.map(b => ({
+                    ...b.toObject(),
+                    reasons: ["Highly rated worldwide"]
+                })),
+                type: 'GLOBAL'
+            },
+            {
+                title: "Trending Now",
+                description: "What readers are picking up right now",
+                books: trending.map(b => ({
+                    ...b.toObject(),
+                    reasons: ["Trending on Bookverse"]
+                })),
+                type: 'GLOBAL'
+            },
+            {
+                title: "Timeless Classics",
+                description: "Masterpieces you must read once",
+                books: classics.map(b => ({
+                    ...b.toObject(),
+                    reasons: ["Must-read classic"]
+                })),
+                type: 'GLOBAL'
             }
-        }
+        ];
 
-        res.json({ feed: sections });
+        // Combine: Personal sections first (if any), then global sections
+        const feed = [...personalSections, ...globalSections];
+
+        res.json({ feed });
     } catch (error) {
         console.error('Personal Recs Error:', error);
         res.status(500).json({ message: 'Server error' });

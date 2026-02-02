@@ -21,21 +21,16 @@ const getUserProfile = async (userId) => {
         .limit(100);
 
     const profile = {
-        subjects: {}, // 'fiction': 5, 'mystery': 2
-        themes: {},
+        genres: {}, // weighted counts
         keywords: new Set(),
-        viewedBooks: new Set(),
-        completedBooks: new Set(),
-        savedBooks: new Set()
+        excludeIds: new Set()
     };
 
     if (activities.length === 0) return null;
 
     activities.forEach(act => {
-        if (act.openLibraryId) {
-            profile.viewedBooks.add(act.openLibraryId);
-            if (act.actionType === 'COMPLETE') profile.completedBooks.add(act.openLibraryId);
-            if (act.actionType === 'SAVE') profile.savedBooks.add(act.openLibraryId);
+        if (act.openLibraryId && (act.actionType === 'SAVE' || act.actionType === 'COMPLETE')) {
+            profile.excludeIds.add(act.openLibraryId);
         }
 
         if (act.keyword) {
@@ -43,8 +38,9 @@ const getUserProfile = async (userId) => {
         }
 
         if (act.subjects && act.subjects.length > 0) {
+            const weight = act.actionType === 'COMPLETE' ? 3 : (act.actionType === 'SAVE' ? 2 : 1);
             act.subjects.forEach(sub => {
-                profile.subjects[sub] = (profile.subjects[sub] || 0) + 1;
+                profile.genres[sub] = (profile.genres[sub] || 0) + weight;
             });
         }
     });
@@ -53,75 +49,57 @@ const getUserProfile = async (userId) => {
 };
 
 /**
- * Score a list of candidate books against a user profile using REAL DATA.
+ * Score a list of candidate books against specific criteria.
  */
-const scoreBooks = (books, profile) => {
-    if (!profile) return [];
-
+const scoreBooks = (books, profile, filterGenre = null) => {
     const scored = books.map(book => {
         let personalScore = 0;
         let globalScore = 0;
         const reasons = [];
 
-        // 1. Subject Match (+6)
+        // 1. Genre/Subject Match
         if (book.subjects && book.subjects.length > 0) {
-            let subjectMatch = false;
-            book.subjects.forEach(sub => {
-                if (profile.subjects[sub]) {
-                    personalScore += SCORES.CATEGORY_MATCH;
-                    subjectMatch = true;
-                }
-            });
-            if (subjectMatch) reasons.push("Matches your preferred subjects");
+            if (filterGenre && book.subjects.includes(filterGenre)) {
+                personalScore += SCORES.CATEGORY_MATCH * 2;
+                reasons.push(`Top pick in ${filterGenre}`);
+            } else {
+                let match = false;
+                book.subjects.forEach(sub => {
+                    if (profile.genres[sub]) {
+                        personalScore += SCORES.CATEGORY_MATCH;
+                        match = true;
+                    }
+                });
+                if (match) reasons.push("Matches your interests");
+            }
         }
 
-        // 2. Theme Match (+5)
-        if (book.themes && book.themes.length > 0) {
-            let themeMatch = false;
-            book.themes.forEach(theme => {
-                if (profile.keywords.has(theme.toLowerCase())) {
-                    personalScore += SCORES.THEME_MATCH;
-                    themeMatch = true;
-                }
-            });
-            if (themeMatch) reasons.push("Aligns with your explored themes");
-        }
-
-        // 3. Keyword Overlap (+4)
+        // 2. Keyword Overlap
         if (profile.keywords.size > 0) {
-            let keywordMatch = false;
             const titleWords = book.title.toLowerCase().split(' ');
+            let kwMatch = false;
             profile.keywords.forEach(kw => {
                 if (titleWords.includes(kw)) {
                     personalScore += SCORES.KEYWORD_MATCH;
-                    keywordMatch = true;
+                    kwMatch = true;
                 }
             });
-            if (keywordMatch) reasons.push("Matches your recent searches");
+            if (kwMatch) reasons.push("Relates to your searches");
         }
 
-        // 4. Popularity (+2 Boost)
-        if (book.popularityScore > 50) {
-            globalScore += SCORES.POPULARITY;
-            reasons.push("Highly rated worldwide");
-        }
-
-        // 5. Trending (+2 Boost)
-        if (book.isTrending) {
-            globalScore += SCORES.TRENDING;
-            reasons.push("Trending now");
-        }
+        // 3. Global Stats
+        if (book.popularityScore > 50) globalScore += SCORES.POPULARITY;
+        if (book.isTrending) globalScore += SCORES.TRENDING;
 
         return {
             ...book.toObject(),
             personalScore,
             globalScore,
             totalScore: personalScore + globalScore,
-            reasons: [...new Set(reasons)].slice(0, 2)
+            reasons: [...new Set(reasons)].slice(0, 1)
         };
     });
 
-    // HONESTY: Only show in "Picks for You" if there is an actual personal connection
     return scored
         .filter(b => b.personalScore > 0)
         .sort((a, b) => b.totalScore - a.totalScore);
@@ -129,15 +107,55 @@ const scoreBooks = (books, profile) => {
 
 const getRecommendations = async (userId) => {
     const profile = await getUserProfile(userId);
-    if (!profile) return []; // Return empty if no activity
+    if (!profile) return [];
 
-    // Get Candidates (Filter out already completed)
-    const candidates = await BookMaster.find({
-        openLibraryId: { $nin: Array.from(profile.completedBooks) }
-    }).limit(200);
+    const sections = [];
+    const excludeIds = Array.from(profile.excludeIds);
 
-    const scoredBooks = scoreBooks(candidates, profile);
-    return scoredBooks.slice(0, 15);
+    // 1. Identify Top Genres
+    const sortedGenres = Object.entries(profile.genres)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(g => g[0]);
+
+    // 2. Build sections for TOP 2 genres
+    for (const genre of sortedGenres.slice(0, 2)) {
+        const books = await BookMaster.find({
+            subjects: genre,
+            openLibraryId: { $nin: excludeIds }
+        }).limit(6);
+
+        if (books.length > 0) {
+            sections.push({
+                title: `Because you like ${genre}`,
+                description: `Recommendations based on your interest in ${genre}.`,
+                books: books.map(b => ({
+                    ...b.toObject(),
+                    reasons: [`Recommended for ${genre} fans`]
+                })),
+                type: 'PERSONAL_GENRE'
+            });
+            // Update excludeIds to avoid duplication between sections
+            books.forEach(b => excludeIds.push(b.openLibraryId));
+        }
+    }
+
+    // 3. "Recommended for You" Mixed section
+    const generalCandidates = await BookMaster.find({
+        openLibraryId: { $nin: excludeIds }
+    }).limit(100);
+
+    const personalPicks = scoreBooks(generalCandidates, profile).slice(0, 6);
+    if (personalPicks.length > 0) {
+        sections.push({
+            title: "Picks for your Profile",
+            description: "Books we think you'll love based on your overall activity.",
+            books: personalPicks,
+            type: 'PERSONAL_MIXED'
+        });
+    }
+
+    return sections;
 };
 
 const getGlobalRecommendations = async () => {

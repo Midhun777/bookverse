@@ -19,11 +19,30 @@ const ListBookCard = ({ item, showRemove = true }) => {
         mutationFn: async () => {
             await api.delete(`/lists/remove/${item.googleBookId}`);
         },
+        onMutate: async () => {
+            // Cancel any outgoing refetches
+            await queryClient.cancelQueries({ queryKey: ['myLists'] });
+
+            // Snapshot the previous value
+            const previousLists = queryClient.getQueryData(['myLists']);
+
+            // Optimistically update to the new value
+            queryClient.setQueryData(['myLists'], (old) => old?.filter(b => b.googleBookId !== item.googleBookId));
+
+            return { previousLists };
+        },
         onSuccess: () => {
             toast.success('Removed from shelf');
-            queryClient.invalidateQueries(['myLists']);
         },
-        onError: () => toast.error('Action failed')
+        onError: (err, variables, context) => {
+            toast.error('Action failed');
+            if (context?.previousLists) {
+                queryClient.setQueryData(['myLists'], context.previousLists);
+            }
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ['myLists'] });
+        }
     });
 
     if (isLoading) return <div className="h-16 bg-paper-100 rounded animate-pulse my-2"></div>;

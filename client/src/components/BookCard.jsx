@@ -37,11 +37,9 @@ const BookCard = ({ book, className = "w-32 md:w-40" }) => {
 
     const toggleFavoriteMutation = useMutation({
         mutationFn: async (e) => {
-            e.preventDefault();
-            e.stopPropagation();
             if (!user) {
                 toast.error('Please login to favorite books');
-                return;
+                throw new Error('Unauthorized');
             }
 
             if (isFavorited) {
@@ -59,20 +57,55 @@ const BookCard = ({ book, className = "w-32 md:w-40" }) => {
                 return 'favorited';
             }
         },
+        onMutate: async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Cancel any outgoing refetches
+            await queryClient.cancelQueries({ queryKey: ['favoriteBooks'] });
+
+            // Snapshot the previous value
+            const previousFavorites = queryClient.getQueryData(['favoriteBooks']);
+
+            // Optimistically update to the new value
+            queryClient.setQueryData(['favoriteBooks'], (old) => {
+                if (isFavorited) {
+                    return old?.filter(b => b.googleBookId !== id);
+                } else {
+                    return [...(old || []), {
+                        googleBookId: id,
+                        title,
+                        thumbnail,
+                        authors: Array.isArray(authors) ? authors : [authors]
+                    }];
+                }
+            });
+
+            return { previousFavorites };
+        },
         onSuccess: (action) => {
             toast.success(action === 'favorited' ? 'Added to favorites' : 'Removed from favorites');
-            queryClient.invalidateQueries(['favoriteBooks']);
 
             if (action === 'favorited') {
                 logActivity({
                     actionType: 'SAVE',
                     openLibraryId: id,
-                    keyword: title
+                    keyword: title,
+                    subjects: Array.isArray(categories) ? categories : [categories].filter(Boolean)
                 });
             }
         },
-        onError: () => {
-            toast.error('Failed to update favorites');
+        onError: (err, variables, context) => {
+            if (err.message !== 'Unauthorized') {
+                toast.error(err.response?.data?.message || 'Failed to update favorites');
+                // Rollback
+                if (context?.previousFavorites) {
+                    queryClient.setQueryData(['favoriteBooks'], context.previousFavorites);
+                }
+            }
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ['favoriteBooks'] });
         }
     });
 

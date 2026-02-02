@@ -87,28 +87,63 @@ const ExplorePage = () => {
 
     const updateListMutation = useMutation({
         mutationFn: addToList,
+        onMutate: async (variables) => {
+            // Cancel any outgoing refetches
+            await queryClient.cancelQueries({ queryKey: ['myLists'] });
+
+            // Snapshot the previous value
+            const previousLists = queryClient.getQueryData(['myLists']);
+
+            // Optimistically update to the new value
+            queryClient.setQueryData(['myLists'], (old) => {
+                const existing = old?.find(b => b.googleBookId === variables.googleBookId);
+                if (existing) {
+                    return old.map(b => b.googleBookId === variables.googleBookId ? { ...b, status: variables.status } : b);
+                } else {
+                    return [...(old || []), { googleBookId: variables.googleBookId, status: variables.status }];
+                }
+            });
+
+            return { previousLists };
+        },
         onSuccess: (_, variables) => {
             toast.success(`Marked as ${variables.status.replace('_', ' ')}`);
-            queryClient.invalidateQueries(['myLists']);
-            queryClient.invalidateQueries(['favoriteBooks']);
 
             // Log activity
             logActivity({
                 actionType: variables.status === 'COMPLETED' ? 'COMPLETE' : 'STATUS_CHANGE',
-                openLibraryId: variables.googleBookId
+                openLibraryId: variables.googleBookId,
+                keyword: variables.title,
+                subjects: variables.subjects
             });
         },
-        onError: () => {
+        onError: (err, variables, context) => {
             toast.error('Failed to update shelf');
+            if (context?.previousLists) {
+                queryClient.setQueryData(['myLists'], context.previousLists);
+            }
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ['myLists'] });
+            queryClient.invalidateQueries({ queryKey: ['favoriteBooks'] });
         }
     });
 
-    const handleShelve = (shelf, bookId) => {
+    const handleShelve = (shelf, bookId, book = null) => {
         if (!user) {
             toast.error('Please log in to shelve books');
             return;
         }
-        updateListMutation.mutate({ googleBookId: bookId, status: shelf });
+
+        const title = book?.volumeInfo?.title || book?.title;
+        const subjects = book?.volumeInfo?.categories || book?.subjects;
+
+        updateListMutation.mutate({
+            googleBookId: bookId,
+            status: shelf,
+            title,
+            subjects
+        });
     };
 
     return (
@@ -236,7 +271,7 @@ const ExplorePage = () => {
                         ) : (
                             <div className="space-y-4">
                                 {data?.items?.map((book) => (
-                                    <BookListItem key={book.id} book={book} onShelve={handleShelve} />
+                                    <BookListItem key={book.id} book={book} onShelve={(shelf, id) => handleShelve(shelf, id, book)} />
                                 ))}
                             </div>
                         )}

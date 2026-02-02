@@ -103,8 +103,16 @@ const RecommendationsPage = () => {
                                 transition={{ delay: idx * 0.15 }}
                             >
                                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-                                    <div>
-                                        <h2 className="text-3xl font-serif font-bold text-ink-900 mb-2">{section.title}</h2>
+                                    <div className="space-y-1">
+                                        <div className="flex items-center gap-3">
+                                            <h2 className="text-3xl font-serif font-bold text-ink-900">{section.title}</h2>
+                                            <span className={`px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded border ${section.type.startsWith('PERSONAL')
+                                                ? 'bg-teal-50 text-teal-700 border-teal-100 dark:bg-stone-800 dark:text-teal-400 dark:border-stone-700'
+                                                : 'bg-paper-100 text-ink-400 border-paper-200 dark:bg-stone-800 dark:text-stone-500 dark:border-stone-700'
+                                                }`}>
+                                                {section.type.startsWith('PERSONAL') ? 'Personalized' : 'Discover'}
+                                            </span>
+                                        </div>
                                         <p className="text-ink-500 font-medium">{section.description}</p>
                                     </div>
                                     <div className="h-0.5 flex-1 bg-paper-100 mx-8 hidden md:block"></div>

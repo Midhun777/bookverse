@@ -27,6 +27,7 @@ const getBookById = async (req, res) => {
 const addToFavorites = async (req, res) => {
     try {
         const { googleBookId, title, authors, thumbnail, categories, rating } = req.body;
+        console.log(`[FAVORITE] Adding book: ${googleBookId} for user: ${req.user._id}`);
 
         const existingBook = await Favorite.findOne({ userId: req.user._id, googleBookId });
 
@@ -55,6 +56,7 @@ const addToFavorites = async (req, res) => {
 
         res.status(201).json(favorite);
     } catch (error) {
+        console.error(`[FAVORITE ERROR] Add failed:`, error);
         res.status(500).json({ message: error.message });
     }
 };
@@ -64,6 +66,7 @@ const addToFavorites = async (req, res) => {
 // @access  Private
 const removeFromFavorites = async (req, res) => {
     try {
+        console.log(`[FAVORITE] Removing book: ${req.params.googleBookId} for user: ${req.user._id}`);
         const book = await Favorite.findOneAndDelete({
             userId: req.user._id,
             googleBookId: req.params.googleBookId
@@ -75,6 +78,7 @@ const removeFromFavorites = async (req, res) => {
 
         res.json({ message: 'Book removed from favorites' });
     } catch (error) {
+        console.error(`[FAVORITE ERROR] Remove failed:`, error);
         res.status(500).json({ message: error.message });
     }
 };

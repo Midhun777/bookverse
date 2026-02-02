@@ -6,11 +6,13 @@ const BookMaster = require('../models/BookMaster');
 // @access  Private
 const logActivity = async (req, res) => {
     try {
-        const { actionType, keyword, openLibraryId } = req.body;
+        const { actionType, keyword, openLibraryId, subjects: bodySubjects } = req.body;
 
-        let subjects = [];
-        if (openLibraryId) {
-            const book = await BookMaster.findOne({ openLibraryId });
+        let subjects = bodySubjects || [];
+        if (!subjects.length && openLibraryId) {
+            // Normalizing ID (removing /works/ if present)
+            const cleanId = openLibraryId.includes('/works/') ? openLibraryId.split('/works/')[1] : openLibraryId;
+            const book = await BookMaster.findOne({ openLibraryId: cleanId });
             if (book) {
                 subjects = book.subjects || [];
             }

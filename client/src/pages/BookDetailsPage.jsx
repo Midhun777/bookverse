@@ -78,18 +78,50 @@ const BookDetailsPage = () => {
                 });
             }
         },
+        onMutate: async () => {
+            // Cancel any outgoing refetches
+            await queryClient.cancelQueries({ queryKey: ['favoriteBooks'] });
+
+            // Snapshot the previous value
+            const previousFavorites = queryClient.getQueryData(['favoriteBooks']);
+
+            // Optimistically update to the new value
+            queryClient.setQueryData(['favoriteBooks'], (old) => {
+                if (isBookFavorited) {
+                    return old?.filter(b => b.googleBookId !== id);
+                } else {
+                    return [...(old || []), {
+                        googleBookId: id,
+                        title: book.volumeInfo.title,
+                        thumbnail: book.volumeInfo.imageLinks?.thumbnail,
+                        authors: book.volumeInfo.authors
+                    }];
+                }
+            });
+
+            return { previousFavorites };
+        },
         onSuccess: () => {
             const status = isBookFavorited ? 'Removed from favorites' : 'Added to favorites';
             toast.success(status);
-            queryClient.invalidateQueries(['favoriteBooks']);
 
             if (!isBookFavorited) {
                 logActivity({
                     actionType: 'SAVE',
                     openLibraryId: id,
-                    keyword: book?.volumeInfo?.title
+                    keyword: book?.volumeInfo?.title,
+                    subjects: book?.volumeInfo?.categories
                 });
             }
+        },
+        onError: (err, variables, context) => {
+            toast.error(err.response?.data?.message || 'Failed to update favorites');
+            if (context?.previousFavorites) {
+                queryClient.setQueryData(['favoriteBooks'], context.previousFavorites);
+            }
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ['favoriteBooks'] });
         }
     });
 
@@ -100,17 +132,45 @@ const BookDetailsPage = () => {
                 status: newStatus
             });
         },
+        onMutate: async (newStatus) => {
+            // Cancel any outgoing refetches
+            await queryClient.cancelQueries({ queryKey: ['myLists'] });
+
+            // Snapshot the previous value
+            const previousLists = queryClient.getQueryData(['myLists']);
+
+            // Optimistically update to the new value
+            queryClient.setQueryData(['myLists'], (old) => {
+                const existing = old?.find(b => b.googleBookId === id);
+                if (existing) {
+                    return old.map(b => b.googleBookId === id ? { ...b, status: newStatus } : b);
+                } else {
+                    return [...(old || []), { googleBookId: id, status: newStatus }];
+                }
+            });
+
+            return { previousLists };
+        },
         onSuccess: (_, newStatus) => {
             toast.success(`Moved to ${newStatus.replace('_', ' ')}`);
-            queryClient.invalidateQueries(['myLists']);
-            queryClient.invalidateQueries(['favoriteBooks']);
 
             // Log activity
             logActivity({
                 actionType: newStatus === 'COMPLETED' ? 'COMPLETE' : 'STATUS_CHANGE',
                 openLibraryId: id,
-                keyword: book?.volumeInfo?.title
+                keyword: book?.volumeInfo?.title,
+                subjects: book?.volumeInfo?.categories
             });
+        },
+        onError: (err, variables, context) => {
+            toast.error(err.response?.data?.message || 'Failed to update shelf');
+            if (context?.previousLists) {
+                queryClient.setQueryData(['myLists'], context.previousLists);
+            }
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ['myLists'] });
+            queryClient.invalidateQueries({ queryKey: ['favoriteBooks'] });
         }
     });
 
