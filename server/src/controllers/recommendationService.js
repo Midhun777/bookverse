@@ -119,24 +119,35 @@ const getRecommendations = async (userId) => {
         .map(g => g[0]);
 
     // 2. Build sections for TOP 2 genres
+    const seenTitles = new Set();
+
     for (const genre of sortedGenres.slice(0, 2)) {
         const books = await BookMaster.find({
             subjects: genre,
             openLibraryId: { $nin: excludeIds }
-        }).limit(6);
+        }).limit(10); // Fetch more to allow for title filtering
 
-        if (books.length > 0) {
+        const uniqueBooks = [];
+        for (const b of books) {
+            if (!seenTitles.has(b.title.toLowerCase())) {
+                uniqueBooks.push(b);
+                seenTitles.add(b.title.toLowerCase());
+                if (uniqueBooks.length >= 6) break;
+            }
+        }
+
+        if (uniqueBooks.length > 0) {
             sections.push({
                 title: `Because you like ${genre}`,
                 description: `Recommendations based on your interest in ${genre}.`,
-                books: books.map(b => ({
+                books: uniqueBooks.map(b => ({
                     ...b.toObject(),
                     reasons: [`Recommended for ${genre} fans`]
                 })),
                 type: 'PERSONAL_GENRE'
             });
             // Update excludeIds to avoid duplication between sections
-            books.forEach(b => excludeIds.push(b.openLibraryId));
+            uniqueBooks.forEach(b => excludeIds.push(b.openLibraryId));
         }
     }
 
