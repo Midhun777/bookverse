@@ -18,9 +18,9 @@ const DiscoverPage = () => {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-paper-50 pt-12 text-center">
+            <div className="min-h-screen bg-paper-50 dark:bg-stone-950 pt-12 text-center">
                 <div className="animate-pulse space-y-12 max-w-7xl mx-auto px-6">
-                    <div className="h-10 bg-paper-200 w-1/4 rounded mx-auto mb-12"></div>
+                    <div className="h-10 bg-paper-200 dark:bg-stone-800 w-1/4 rounded mx-auto mb-12"></div>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
                         {[...Array(6)].map((_, i) => (
                             <div key={i} className="h-14 bg-paper-200 rounded-xl"></div>
@@ -33,7 +33,7 @@ const DiscoverPage = () => {
 
     if (isError) {
         return (
-            <div className="min-h-screen bg-paper-50 flex items-center justify-center text-ink-500">
+            <div className="min-h-screen bg-paper-50 dark:bg-stone-950 flex items-center justify-center text-ink-500">
                 <p>Failed to load the Discovery Hub.</p>
             </div>
         );
@@ -42,9 +42,9 @@ const DiscoverPage = () => {
     const { feed, categories } = data || {};
 
     return (
-        <div className="min-h-screen bg-paper-50 pb-20">
+        <div className="min-h-screen bg-paper-50 dark:bg-stone-950 pb-20">
             {/* Minimalist Hero */}
-            <header className="pt-20 pb-16 px-6 text-center bg-paper-50 dark:bg-stone-900 border-b border-paper-100">
+            <header className="pt-20 pb-16 px-6 text-center bg-paper-50 dark:bg-stone-900 border-b border-paper-100 dark:border-stone-800">
                 <div className="max-w-4xl mx-auto">
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
@@ -66,9 +66,9 @@ const DiscoverPage = () => {
 
                 {/* Categories Grid */}
                 <section>
-                    <div className="flex items-center gap-3 mb-10 pb-4 border-b border-paper-100">
+                    <div className="flex items-center gap-3 mb-10 pb-4 border-b border-paper-100 dark:border-stone-800">
                         <TrendingUp size={22} className="text-teal-600" />
-                        <h2 className="text-2xl font-serif font-bold text-ink-900">Browse Categories</h2>
+                        <h2 className="text-2xl font-serif font-bold text-ink-900 dark:text-stone-100">Browse Categories</h2>
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                         {categories?.map((cat, idx) => (
@@ -77,8 +77,8 @@ const DiscoverPage = () => {
                                 key={idx}
                                 className="group p-6 rounded-2xl bg-white border border-paper-200 hover:border-teal-500 hover:shadow-soft transition-all text-center dark:bg-stone-900 dark:border-stone-800"
                             >
-                                <span className="text-sm font-bold text-ink-900 group-hover:text-teal-600 block mb-1 uppercase tracking-widest">{cat.name}</span>
-                                <span className="text-[10px] text-ink-400 font-bold">{cat.count} BOOKS</span>
+                                <span className="text-sm font-bold text-ink-900 dark:text-stone-200 group-hover:text-teal-600 dark:group-hover:text-teal-400 block mb-1 uppercase tracking-widest">{cat.name}</span>
+                                <span className="text-[10px] text-ink-400 dark:text-stone-500 font-bold">{cat.count} BOOKS</span>
                             </Link>
                         ))}
                     </div>
@@ -93,12 +93,12 @@ const DiscoverPage = () => {
                         viewport={{ once: true }}
                         transition={{ delay: idx * 0.1 }}
                     >
-                        <div className="flex items-end justify-between mb-10 pb-4 border-b border-paper-100">
+                        <div className="flex items-end justify-between mb-10 pb-4 border-b border-paper-100 dark:border-stone-800">
                             <div>
-                                <h2 className="text-3xl font-serif font-bold text-ink-900 tracking-tight">
+                                <h2 className="text-3xl font-serif font-bold text-ink-900 dark:text-stone-100 tracking-tight">
                                     {section.title}
                                 </h2>
-                                <p className="text-ink-500 font-medium mt-1">{section.description}</p>
+                                <p className="text-ink-500 dark:text-stone-400 font-medium mt-1">{section.description}</p>
                             </div>
                             <Link to="/explore" className="text-sm font-bold text-teal-600 hover:text-teal-800 flex items-center gap-1 transition-colors group">
                                 View All <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />

@@ -32,7 +32,7 @@ const BookListItem = ({ book, onShelve }) => {
     return (
         <div className="flex gap-5 p-4 bg-paper-50 border border-paper-200 rounded-lg mb-4 group hover:shadow-card hover:border-paper-300 transition-all dark:bg-stone-900 dark:border-stone-800">
             {/* 1. Cover Image (Small) */}
-            <Link to={`/book/${id}`} className="shrink-0 w-24 h-36 rounded shadow-md overflow-hidden border border-paper-200 group-hover:-translate-y-1 transition-transform duration-300">
+            <Link to={`/book/${id}`} className="shrink-0 w-24 h-36 rounded shadow-md overflow-hidden border border-paper-200 dark:border-stone-800 group-hover:-translate-y-1 transition-transform duration-300">
                 <img
                     src={thumbnail?.replace('http:', 'https:') || 'https://via.placeholder.com/96x144?text=No+Cover'}
                     alt={title}
@@ -43,31 +43,31 @@ const BookListItem = ({ book, onShelve }) => {
             {/* 2. Metadata & Actions */}
             <div className="flex-1 flex flex-col justify-between py-1">
                 <div>
-                    <h3 className="font-bold text-ink-900 text-lg font-serif hover:text-teal-700 transition-colors leading-tight mb-1">
+                    <h3 className="font-bold text-ink-900 dark:text-stone-100 text-lg font-serif hover:text-teal-700 dark:hover:text-teal-400 transition-colors leading-tight mb-1">
                         <Link to={`/book/${id}`}>{title}</Link>
                     </h3>
-                    <p className="text-sm text-ink-500 mb-2">by <span className="text-ink-900 font-medium">{authorText}</span></p>
+                    <p className="text-sm text-ink-500 dark:text-stone-400 mb-2">by <span className="text-ink-900 dark:text-stone-200 font-medium">{authorText}</span></p>
 
                     {/* Rating Line */}
                     <div className="flex items-center gap-2 mb-3">
                         <div className="flex text-amber-500">
                             <Star size={14} className="fill-current" />
-                            <span className="ml-1 text-sm font-bold text-ink-900">{avgRating ? avgRating.toFixed(2) : '3.50'}</span>
+                            <span className="ml-1 text-sm font-bold text-ink-900 dark:text-stone-200">{avgRating ? avgRating.toFixed(2) : '3.50'}</span>
                         </div>
-                        <span className="text-xs text-ink-400">&mdash; {ratingsCount ? ratingsCount.toLocaleString() : '125'} ratings</span>
+                        <span className="text-xs text-ink-400 dark:text-stone-500">&mdash; {ratingsCount ? ratingsCount.toLocaleString() : '125'} ratings</span>
                     </div>
 
                     {/* Blurb */}
-                    <p className="text-sm text-ink-600 leading-relaxed line-clamp-2 md:line-clamp-3 max-w-2xl font-serif">
+                    <p className="text-sm text-ink-600 dark:text-stone-400 leading-relaxed line-clamp-2 md:line-clamp-3 max-w-2xl font-serif">
                         {cleanDesc}
                     </p>
                 </div>
 
                 {/* 3. Action Links (Text based) */}
-                <div className="flex items-center gap-6 mt-4 text-xs font-bold uppercase tracking-wider text-ink-400">
-                    <button onClick={() => onShelve('TO_READ', id)} className="hover:text-teal-600 transition-colors">Want to Read</button>
-                    <button onClick={() => onShelve('READING', id)} className="hover:text-teal-600 transition-colors">Currently Reading</button>
-                    <button onClick={() => onShelve('COMPLETED', id)} className="hover:text-teal-600 transition-colors">Read</button>
+                <div className="flex items-center gap-6 mt-4 text-xs font-bold uppercase tracking-wider text-ink-400 dark:text-stone-500">
+                    <button onClick={() => onShelve('TO_READ', id)} className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">Want to Read</button>
+                    <button onClick={() => onShelve('READING', id)} className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">Currently Reading</button>
+                    <button onClick={() => onShelve('COMPLETED', id)} className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">Read</button>
                 </div>
             </div>
         </div>

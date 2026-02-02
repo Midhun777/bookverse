@@ -15,110 +15,112 @@ dotenv.config({ path: './.env' });
 const DATASET = [
     // --- FINANCE / MONEY ---
     {
-        openLibraryId: "OL2621W",
-        title: "Rich Dad Poor Dad",
-        authors: ["Robert T. Kiyosaki"],
-        subjects: ["Finance", "Money", "Personal Finance", "Wealth"],
-        description: "A book about financial literacy and wealth building.",
-        coverImage: "https://covers.openlibrary.org/b/id/12911224-L.jpg",
-        popularityScore: 95,
-        isTrending: true
-    },
-    {
-        openLibraryId: "OL19732159W",
+        openLibraryId: "OL21640039W",
         title: "The Psychology of Money",
         authors: ["Morgan Housel"],
-        subjects: ["Finance", "Psychology", "Money"],
-        description: "Lessons on wealth, greed, and happiness.",
-        coverImage: "https://covers.openlibrary.org/b/id/10543202-L.jpg",
+        subjects: ["Finance", "Personal Finance", "Money", "Psychology"],
+        description: "Timeless lessons on wealth, greed, and happiness.",
+        coverImage: "https://covers.openlibrary.org/b/id/10582294-L.jpg",
         popularityScore: 92,
         isTrending: true
     },
     {
-        openLibraryId: "OL270119W",
+        openLibraryId: "OL273184W",
         title: "The Intelligent Investor",
         authors: ["Benjamin Graham"],
-        subjects: ["Finance", "Investing", "Stock Market"],
+        subjects: ["Finance", "Investment", "Money", "Business"],
         description: "The definitive book on value investing.",
-        coverImage: "https://covers.openlibrary.org/b/id/12046890-L.jpg",
+        coverImage: "https://covers.openlibrary.org/b/id/9028886-L.jpg",
         popularityScore: 88,
-        isClassic: true
+        isTrending: true
+    },
+    {
+        openLibraryId: "OL15570083W",
+        title: "Rich Dad Poor Dad",
+        authors: ["Robert T. Kiyosaki"],
+        subjects: ["Finance", "Money", "Personal Finance", "Wealth"],
+        description: "What the rich teach their kids about money that the poor and middle class do not!",
+        coverImage: "https://covers.openlibrary.org/b/id/14801279-L.jpg",
+        popularityScore: 95,
+        isTrending: true
     },
 
-    // --- SELF-HELP / PRODUCTIVITY ---
+    // --- PRODUCTIVITY / SELF-HELP ---
     {
-        openLibraryId: "OL19553W",
+        openLibraryId: "OL17930368W",
         title: "Atomic Habits",
         authors: ["James Clear"],
-        subjects: ["Self-Improvement", "Habits", "Productivity"],
-        description: "Tiny changes, remarkable results.",
-        coverImage: "https://covers.openlibrary.org/b/id/12864380-L.jpg",
+        subjects: ["Productivity", "Self-Help", "Habits", "Psychology"],
+        description: "An easy & proven way to build good habits & break bad ones.",
+        coverImage: "https://covers.openlibrary.org/b/id/15165583-L.jpg",
         popularityScore: 98,
         isTrending: true
     },
     {
-        openLibraryId: "OL16314811W",
+        openLibraryId: "OL17713267W",
         title: "Deep Work",
         authors: ["Cal Newport"],
-        subjects: ["Productivity", "Focus", "Business"],
+        subjects: ["Productivity", "Focus", "Self-Help", "Business"],
         description: "Rules for focused success in a distracted world.",
-        coverImage: "https://covers.openlibrary.org/b/id/12675661-L.jpg",
+        coverImage: "https://covers.openlibrary.org/b/id/8272535-L.jpg",
         popularityScore: 85,
         isTrending: false
     },
     {
-        openLibraryId: "OL1952136W",
-        title: "The 7 Habits of Highly Effective People",
-        authors: ["Stephen R. Covey"],
-        subjects: ["Self-Improvement", "Leadership", "Productivity"],
-        description: "Powerful lessons in personal change.",
-        coverImage: "https://covers.openlibrary.org/b/id/12574972-L.jpg",
+        openLibraryId: "OL26848149M",
+        title: "The Subtle Art of Not Giving a F*ck",
+        authors: ["Mark Manson"],
+        subjects: ["Self-Help", "Psychology", "Happiness", "Productivity"],
+        description: "A counterintuitive approach to living a good life.",
+        coverImage: "https://covers.openlibrary.org/b/id/8292850-L.jpg",
         popularityScore: 90,
-        isClassic: true
+        isTrending: true
     },
 
-    // --- PSYCHOLOGY / SCIENCE ---
+    // --- HISTORY / SCIENCE ---
     {
-        openLibraryId: "OL16157303W",
+        openLibraryId: "OL28227306M",
+        title: "Sapiens: A Brief History of Humankind",
+        authors: ["Yuval Noah Harari"],
+        subjects: ["History", "Evolution", "Science", "Anthropology"],
+        description: "The history of our species, from ancient humans to the present day.",
+        coverImage: "https://covers.openlibrary.org/b/id/15094106-L.jpg",
+        popularityScore: 96,
+        isTrending: true
+    },
+    {
+        openLibraryId: "OL25270150M",
         title: "Thinking, Fast and Slow",
         authors: ["Daniel Kahneman"],
-        subjects: ["Psychology", "Decision Making", "Science"],
-        description: "A masterpiece on how the human mind works.",
-        coverImage: "https://covers.openlibrary.org/b/id/12711739-L.jpg",
-        popularityScore: 89,
+        subjects: ["Psychology", "Science", "Economics", "Decision Making"],
+        description: "A deep dive into the two systems that drive the way we think.",
+        coverImage: "https://covers.openlibrary.org/b/id/7992922-L.jpg",
+        popularityScore: 91,
         isTrending: false
     },
-    {
-        openLibraryId: "OL25367621W",
-        title: "Sapiens",
-        authors: ["Yuval Noah Harari"],
-        subjects: ["History", "Science", "Anthropology"],
-        description: "A brief history of humankind.",
-        coverImage: "https://covers.openlibrary.org/b/id/12411545-L.jpg",
-        popularityScore: 94,
-        isTrending: true
-    },
 
-    // --- FANTASY / ADVENTURE ---
+    // --- CLASSICS / PHILOSOPHY ---
     {
-        openLibraryId: "OL23919W",
-        title: "The Hobbit",
-        authors: ["J.R.R. Tolkien"],
-        subjects: ["Fantasy", "Adventure", "Fiction"],
-        description: "In a hole in the ground there lived a hobbit.",
-        coverImage: "https://covers.openlibrary.org/b/id/12662055-L.jpg",
-        popularityScore: 96,
+        openLibraryId: "OL24227393M",
+        title: "Meditations",
+        authors: ["Marcus Aurelius"],
+        subjects: ["Philosophy", "Stoicism", "Classics", "Self-Help"],
+        description: "The personal reflections of the Roman Emperor on living a virtuous life.",
+        coverImage: "https://covers.openlibrary.org/b/id/11181286-L.jpg",
+        popularityScore: 82,
+        isTrending: false,
         isClassic: true
     },
     {
-        openLibraryId: "OL82501W",
-        title: "Harry Potter and the Sorcerer's Stone",
-        authors: ["J.K. Rowling"],
-        subjects: ["Fantasy", "Magic", "Young Adult"],
-        description: "The boy who lived.",
-        coverImage: "https://covers.openlibrary.org/b/id/10521270-L.jpg",
-        popularityScore: 99,
-        isTrending: true
+        openLibraryId: "OL19056463M",
+        title: "The Great Gatsby",
+        authors: ["F. Scott Fitzgerald"],
+        subjects: ["Classics", "Fiction", "Literature", "History"],
+        description: "A tragic story of obsession and the American Dream.",
+        coverImage: "https://covers.openlibrary.org/b/id/905696-L.jpg",
+        popularityScore: 85,
+        isTrending: false,
+        isClassic: true
     }
 ];
 

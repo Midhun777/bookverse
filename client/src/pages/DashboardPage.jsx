@@ -32,11 +32,16 @@ const DashboardPage = () => {
     const toReadItems = myLists?.filter(l => l.status === 'TO_READ') || [];
     const completedItems = myLists?.filter(l => l.status === 'COMPLETED') || [];
 
-    const { data: myRecs } = useQuery({
+    const { data: myRecsData } = useQuery({
         queryKey: ['myRecommendations'],
-        queryFn: import('../services/recommendationService').then(m => m.getMyRecommendations),
+        queryFn: async () => {
+            const res = await api.get('/recommendations/my');
+            return res.data;
+        },
         enabled: !!user,
     });
+
+    const myRecs = myRecsData?.feed?.[0]?.books || [];
 
     const { data: globalRecs } = useQuery({
         queryKey: ['globalRecommendations'],
@@ -57,8 +62,8 @@ const DashboardPage = () => {
         <div className="max-w-4xl mx-auto space-y-24 pb-20">
             {/* Simple Greeting */}
             <header className="space-y-4 pt-12 transition-colors duration-300">
-                <h1 className="text-4xl lg:text-5xl font-bold text-ink-900 serif">Hello, {user?.name.split(' ')[0]}</h1>
-                <p className="text-lg text-ink-600 font-medium italic">Your personal reading journal at a glance.</p>
+                <h1 className="text-4xl lg:text-5xl font-bold text-ink-900 dark:text-stone-100 serif">Hello, {user?.name.split(' ')[0]}</h1>
+                <p className="text-lg text-ink-600 dark:text-stone-400 font-medium italic">Your personal reading journal at a glance.</p>
                 <div className="flex flex-wrap gap-4 pt-4">
                     <button onClick={() => scrollTo(readingRef)} className="flex items-center space-x-2 text-sm font-bold text-blue-600 bg-blue-50 px-4 py-2 rounded-full border border-blue-100 hover:bg-blue-100 transition-colors dark:bg-blue-900/20 dark:border-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/40">
                         <BookOpen size={16} /> <span>Reading ({readingItems.length})</span>
@@ -77,27 +82,43 @@ const DashboardPage = () => {
                 <section className="space-y-6">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
-                            <Sparkles size={20} className="text-yellow-500" />
-                            <h2 className="text-2xl font-bold serif text-ink-900">Recommended for You</h2>
+                            <Sparkles size={20} className="text-amber-500" />
+                            <h2 className="text-2xl font-bold serif text-ink-900 dark:text-stone-100">Recommended for You</h2>
                         </div>
                     </div>
                     <div className="flex gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x">
-                        {myRecs.map(book => (
-                            <Link key={book.id} to={`/book/${book.id}`} className="min-w-[140px] w-[140px] snap-start group space-y-2">
-                                <div className="aspect-[2/3] rounded-lg overflow-hidden border border-gray-100 shadow-sm transition-transform group-hover:-translate-y-1 group-hover:shadow-md relative">
-                                    <img src={book.volumeInfo.imageLinks?.thumbnail?.replace('http:', 'https:')} alt={book.volumeInfo.title} className="w-full h-full object-cover" />
-                                    {book.reasons && book.reasons[0] && (
-                                        <div className="absolute inset-x-0 bottom-0 bg-black/70 backdrop-blur-sm p-2">
-                                            <p className="text-[9px] text-white font-medium leading-tight line-clamp-2">{book.reasons[0]}</p>
-                                        </div>
-                                    )}
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-gray-900 text-xs truncate serif">{book.volumeInfo.title}</h3>
-                                    <p className="text-[10px] text-gray-400 truncate">{book.volumeInfo.authors?.[0]}</p>
-                                </div>
-                            </Link>
-                        ))}
+                        {myRecs.map(book => {
+                            const isFlat = !!(book.title && (Array.isArray(book.authors) || typeof book.authors === 'string'));
+                            const title = isFlat ? book.title : book.volumeInfo?.title;
+                            const authors = isFlat ? book.authors : book.volumeInfo?.authors;
+                            const thumbnail = book.coverImage || book.thumbnail || (isFlat ? null : book.volumeInfo?.imageLinks?.thumbnail);
+                            const id = book.openLibraryId || book.id || (isFlat ? null : book.id);
+
+                            return (
+                                <Link key={id} to={`/book/${id}`} className="min-w-[140px] w-[140px] snap-start group space-y-2">
+                                    <div className="aspect-[2/3] rounded-lg overflow-hidden border border-gray-100 dark:border-stone-800 shadow-sm transition-transform group-hover:-translate-y-1 group-hover:shadow-md relative bg-paper-100 dark:bg-stone-800">
+                                        <img
+                                            src={thumbnail?.replace('http:', 'https:') || 'https://via.placeholder.com/140x210?text=No+Cover'}
+                                            alt={title}
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => {
+                                                e.target.onerror = null;
+                                                e.target.src = 'https://via.placeholder.com/140x210?text=No+Cover';
+                                            }}
+                                        />
+                                        {book.reasons && book.reasons[0] && (
+                                            <div className="absolute inset-x-0 bottom-0 bg-black/70 backdrop-blur-sm p-2">
+                                                <p className="text-[9px] text-white font-medium leading-tight line-clamp-2">{book.reasons[0]}</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-gray-900 dark:text-stone-100 text-xs truncate serif">{title}</h3>
+                                        <p className="text-[10px] text-gray-400 dark:text-stone-500 truncate">{Array.isArray(authors) ? authors[0] : authors}</p>
+                                    </div>
+                                </Link>
+                            );
+                        })}
                     </div>
                 </section>
             )}
@@ -108,18 +129,26 @@ const DashboardPage = () => {
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                             <Star size={20} className="text-purple-500" />
-                            <h2 className="text-2xl font-bold serif text-ink-900">Trending on Bookverse</h2>
+                            <h2 className="text-2xl font-bold serif text-ink-900 dark:text-stone-100">Trending on Bookverse</h2>
                         </div>
                     </div>
                     <div className="flex gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x">
                         {globalRecs.map(book => (
                             <Link key={book.id} to={`/book/${book.id}`} className="min-w-[140px] w-[140px] snap-start group space-y-2">
-                                <div className="aspect-[2/3] rounded-lg overflow-hidden border border-gray-100 shadow-sm transition-transform group-hover:-translate-y-1 group-hover:shadow-md">
-                                    <img src={book.volumeInfo.imageLinks?.thumbnail?.replace('http:', 'https:')} alt={book.volumeInfo.title} className="w-full h-full object-cover" />
+                                <div className="aspect-[2/3] rounded-lg overflow-hidden border border-gray-100 dark:border-stone-800 shadow-sm transition-transform group-hover:-translate-y-1 group-hover:shadow-md bg-paper-100 dark:bg-stone-800">
+                                    <img
+                                        src={book.volumeInfo.imageLinks?.thumbnail?.replace('http:', 'https:') || 'https://via.placeholder.com/140x210?text=No+Cover'}
+                                        alt={book.volumeInfo.title}
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                            e.target.onerror = null;
+                                            e.target.src = 'https://via.placeholder.com/140x210?text=No+Cover';
+                                        }}
+                                    />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-gray-900 text-xs truncate serif">{book.volumeInfo.title}</h3>
-                                    <p className="text-[10px] text-gray-400 truncate">{book.volumeInfo.authors?.[0]}</p>
+                                    <h3 className="font-bold text-gray-900 dark:text-stone-100 text-xs truncate serif">{book.volumeInfo.title}</h3>
+                                    <p className="text-[10px] text-gray-400 dark:text-stone-500 truncate">{book.volumeInfo.authors?.[0]}</p>
                                 </div>
                             </Link>
                         ))}
@@ -129,22 +158,22 @@ const DashboardPage = () => {
 
             {/* Currently Reading */}
             <section ref={readingRef} className="space-y-10 scroll-mt-32">
-                <div className="flex items-center justify-between border-b border-gray-100 pb-4">
-                    <h2 className="text-2xl font-bold serif">Currently Reading</h2>
-                    <Link to="/lists" className="text-sm font-semibold text-gray-400 hover:text-gray-900 flex items-center gap-1 transition-colors">
+                <div className="flex items-center justify-between border-b border-gray-100 dark:border-stone-800 pb-4">
+                    <h2 className="text-2xl font-bold serif text-ink-900 dark:text-stone-100">Currently Reading</h2>
+                    <Link to="/lists" className="text-sm font-semibold text-gray-400 dark:text-stone-500 hover:text-gray-900 dark:hover:text-stone-300 flex items-center gap-1 transition-colors">
                         Manage all lists <ChevronRight size={16} />
                     </Link>
                 </div>
                 {readingItems.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {readingItems.map(item => (
-                            <ListBookCard key={item._id} item={item} dark={false} />
+                            <ListBookCard key={item._id} item={item} dark={true} />
                         ))}
                     </div>
                 ) : (
-                    <div className="py-20 text-center bg-paper-50 rounded-2xl border border-dashed border-paper-200">
-                        <p className="text-ink-400 font-medium italic">You're not reading anything at the moment.</p>
-                        <Link to="/explore" className="text-teal-600 font-bold text-sm block mt-4">Browse library</Link>
+                    <div className="py-20 text-center bg-paper-50 dark:bg-stone-900/50 rounded-2xl border border-dashed border-paper-200 dark:border-stone-800">
+                        <p className="text-ink-400 dark:text-stone-500 font-medium italic">You're not reading anything at the moment.</p>
+                        <Link to="/explore" className="text-teal-600 dark:text-teal-500 font-bold text-sm block mt-4">Browse library</Link>
                     </div>
                 )}
             </section>
@@ -170,27 +199,27 @@ const DashboardPage = () => {
 
             {/* Completed Archive */}
             <section ref={completedRef} className="space-y-10 scroll-mt-32">
-                <div className="flex items-center justify-between border-b border-gray-100 pb-4">
-                    <h2 className="text-2xl font-bold serif">Finished</h2>
-                    <p className="text-sm font-semibold text-gray-400 italic">Total of {completedItems.length} books read</p>
+                <div className="flex items-center justify-between border-b border-gray-100 dark:border-stone-800 pb-4">
+                    <h2 className="text-2xl font-bold serif text-ink-900 dark:text-stone-100">Finished</h2>
+                    <p className="text-sm font-semibold text-gray-400 dark:text-stone-500 italic">Total of {completedItems.length} books read</p>
                 </div>
                 {completedItems.length > 0 ? (
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8">
                         {completedItems.map(item => (
                             <Link key={item._id} to={`/book/${item.googleBookId}`} className="group space-y-3">
-                                <div className="aspect-[2/3] rounded-lg overflow-hidden border border-paper-200 shadow-sm transition-transform group-hover:-translate-y-1 group-hover:shadow-md">
+                                <div className="aspect-[2/3] rounded-lg overflow-hidden border border-paper-200 dark:border-stone-800 shadow-sm transition-transform group-hover:-translate-y-1 group-hover:shadow-md bg-paper-100 dark:bg-stone-800">
                                     <ShelfItem googleBookId={item.googleBookId} />
                                 </div>
                                 <div className="text-center">
-                                    <p className="text-[10px] font-bold uppercase tracking-widest text-green-600">Completed</p>
-                                    <p className="text-xs text-ink-400 mt-1">{new Date(item.completedAt).toLocaleDateString()}</p>
+                                    <p className="text-[10px] font-bold uppercase tracking-widest text-green-600 dark:text-green-500">Completed</p>
+                                    <p className="text-xs text-ink-400 dark:text-stone-500 mt-1">{new Date(item.completedAt).toLocaleDateString()}</p>
                                 </div>
                             </Link>
                         ))}
                     </div>
                 ) : (
-                    <div className="py-20 text-center bg-paper-50 rounded-2xl border border-dashed border-paper-200">
-                        <p className="text-ink-400 font-medium italic">You haven't added any completed books yet.</p>
+                    <div className="py-20 text-center bg-paper-50 dark:bg-stone-900/50 rounded-2xl border border-dashed border-paper-200 dark:border-stone-800">
+                        <p className="text-ink-400 dark:text-stone-500 font-medium italic">You haven't added any completed books yet.</p>
                     </div>
                 )}
             </section>
@@ -205,7 +234,7 @@ const ShelfItem = ({ googleBookId }) => {
         staleTime: 1000 * 60 * 60,
     });
 
-    if (!bookDetails) return <div className="w-full h-full bg-gray-50 animate-pulse" />;
+    if (!bookDetails) return <div className="w-full h-full bg-gray-50 dark:bg-stone-800 animate-pulse" />;
 
     const thumbnail = bookDetails.volumeInfo.imageLinks?.thumbnail?.replace('http:', 'https:');
     const rating = bookDetails.volumeInfo.averageRating;

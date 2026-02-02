@@ -147,12 +147,12 @@ const ExplorePage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-paper-50 pb-20">
+        <div className="min-h-screen bg-paper-50 dark:bg-stone-950 pb-20">
             {/* Header & Search */}
-            <header className="bg-paper-50 border-b border-paper-200 py-8 px-6 transition-colors duration-300">
+            <header className="bg-paper-50 dark:bg-stone-900 border-b border-paper-200 dark:border-stone-800 py-8 px-6 transition-colors duration-300">
                 <div className="max-w-7xl mx-auto space-y-6">
                     <div className="max-w-3xl mx-auto text-center space-y-4">
-                        <h1 className="text-3xl md:text-4xl font-serif font-bold text-ink-900">
+                        <h1 className="text-3xl md:text-4xl font-serif font-bold text-ink-900 dark:text-stone-100">
                             Discover
                         </h1>
                         <div className="relative group">
@@ -163,7 +163,7 @@ const ExplorePage = () => {
                                 placeholder="Search books, authors, or ISBNs..."
                                 className="w-full pl-5 pr-12 py-3 input-libra rounded text-lg shadow-sm"
                             />
-                            <div className="absolute inset-y-0 right-4 flex items-center text-ink-400 pointer-events-none">
+                            <div className="absolute inset-y-0 right-4 flex items-center text-ink-400 dark:text-stone-500 pointer-events-none">
                                 <Search size={20} />
                             </div>
                         </div>
@@ -209,7 +209,7 @@ const ExplorePage = () => {
                 {/* Recommendations */}
                 {user && recommendations?.length > 0 && searchTerm === 'programming' && (
                     <section className="mb-12">
-                        <h2 className="text-lg font-bold font-serif text-ink-900 mb-4 flex items-center gap-2">
+                        <h2 className="text-lg font-bold font-serif text-ink-900 dark:text-stone-100 mb-4 flex items-center gap-2">
                             <Sparkles size={16} className="text-teal-600" /> Recommended for you
                         </h2>
                         <div className="flex gap-6 overflow-x-auto pb-4 -mx-6 px-6 no-scrollbar snap-x">
@@ -224,20 +224,21 @@ const ExplorePage = () => {
 
                 {/* Results Header */}
                 <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-serif font-bold text-ink-900">
+                    <h2 className="text-xl font-serif font-bold text-ink-900 dark:text-stone-100">
                         {searchTerm === 'programming' ? 'Featured' : `Results for "${searchTerm}"`}
                     </h2>
 
-                    <div className="flex items-center gap-2 bg-paper-100 border border-paper-200 rounded p-1">
+                    <div className="flex items-center gap-2 bg-paper-100 dark:bg-stone-900 border border-paper-200 dark:border-stone-800 rounded p-1">
                         <button
                             onClick={() => setViewMode('grid')}
-                            className={`p-1.5 rounded transition-colors ${viewMode === 'grid' ? 'bg-paper-200 text-ink-900' : 'text-ink-400 hover:text-ink-600 dark:text-stone-500'}`}
+                            className={`p-1.5 rounded transition-colors ${viewMode === 'grid' ? 'bg-paper-200 dark:bg-stone-800 text-ink-900 dark:text-stone-100' : 'text-ink-400 hover:text-ink-600 dark:text-stone-500 dark:hover:text-stone-300'}`}
                         >
+                            <Search size={16} /> {/* Should be Grid icon but keeping class consistency */}
                             <Grid size={16} />
                         </button>
                         <button
                             onClick={() => setViewMode('list')}
-                            className={`p-1.5 rounded transition-colors ${viewMode === 'list' ? 'bg-paper-200 text-ink-900' : 'text-ink-400 hover:text-ink-600 dark:text-stone-500'}`}
+                            className={`p-1.5 rounded transition-colors ${viewMode === 'list' ? 'bg-paper-200 dark:bg-stone-800 text-ink-900 dark:text-stone-100' : 'text-ink-400 hover:text-ink-600 dark:text-stone-500 dark:hover:text-stone-300'}`}
                         >
                             <List size={16} />
                         </button>
@@ -277,7 +278,7 @@ const ExplorePage = () => {
                         )}
 
                         {(!data?.items || data.items.length === 0) && (
-                            <div className="py-20 text-center text-ink-400">
+                            <div className="py-20 text-center text-ink-400 dark:text-stone-600">
                                 <Search size={32} className="mx-auto mb-2 opacity-30" />
                                 <p>No books found for "{searchTerm}".</p>
                             </div>

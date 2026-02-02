@@ -211,24 +211,32 @@ const BookDetailsPage = () => {
     };
 
     if (isLoading) return <div className="flex justify-center items-center h-screen"><Loader2 className="animate-spin text-teal-600 w-10 h-10" /></div>;
-    if (isError || !book) return <div className="text-center py-40 text-ink-400 font-serif">Book details not found.</div>;
+    if (isError || !book) return <div className="text-center py-40 text-ink-400 dark:text-stone-500 font-serif">Book details not found.</div>;
 
     const volumeInfo = book.volumeInfo;
     const thumbnail = volumeInfo.imageLinks?.thumbnail?.replace('http:', 'https:') || 'https://via.placeholder.com/300x450?text=No+Cover';
 
     return (
-        <div className="min-h-screen bg-paper-50 pb-20">
+        <div className="min-h-screen bg-paper-50 dark:bg-stone-950 pb-20">
             <div className="max-w-6xl mx-auto px-6 pt-8">
                 {/* Back Link */}
-                <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-ink-500 hover:text-ink-900 mb-6 transition-colors group text-sm font-bold uppercase tracking-wider">
+                <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-ink-500 dark:text-stone-500 hover:text-ink-900 dark:hover:text-stone-200 mb-6 transition-colors group text-sm font-bold uppercase tracking-wider">
                     <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back
                 </button>
 
                 <div className="grid md:grid-cols-12 gap-10">
                     {/* LEFT: Cover & Actions */}
                     <div className="md:col-span-4 lg:col-span-3 space-y-6">
-                        <div className="relative rounded-r md:rounded shadow-lg border-l-4 border-paper-300 overflow-hidden bg-paper-50 dark:bg-stone-900">
-                            <img src={thumbnail.replace('zoom=1', 'zoom=3')} alt={volumeInfo.title} className="w-full h-auto object-cover" />
+                        <div className="relative rounded md:rounded shadow-lg border border-paper-200 dark:border-stone-800 overflow-hidden bg-paper-100 dark:bg-stone-800">
+                            <img
+                                src={thumbnail.replace('zoom=1', 'zoom=3')}
+                                alt={volumeInfo.title}
+                                className="w-full h-auto object-cover"
+                                onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.src = 'https://via.placeholder.com/300x450?text=No+Cover';
+                                }}
+                            />
                         </div>
 
                         {/* Action Buttons */}
@@ -305,34 +313,34 @@ const BookDetailsPage = () => {
                     {/* RIGHT: Metadata & Content */}
                     <div className="md:col-span-8 lg:col-span-9 space-y-8">
                         <div>
-                            <h1 className="text-3xl md:text-4xl font-serif font-bold text-ink-900 leading-tight mb-2">{volumeInfo.title}</h1>
-                            <p className="text-xl text-ink-600 font-serif">
-                                by <span className="text-ink-900 font-bold hover:underline cursor-pointer">{volumeInfo.authors?.join(', ')}</span>
+                            <h1 className="text-3xl md:text-4xl font-serif font-bold text-ink-900 dark:text-stone-100 leading-tight mb-2">{volumeInfo.title}</h1>
+                            <p className="text-xl text-ink-600 dark:text-stone-400 font-serif">
+                                by <span className="text-ink-900 dark:text-stone-200 font-bold hover:underline cursor-pointer">{volumeInfo.authors?.join(', ')}</span>
                             </p>
                         </div>
 
                         {/* Description */}
-                        <div className="prose prose-stone prose-sm max-w-none text-ink-800 leading-relaxed font-sans">
+                        <div className="prose prose-stone dark:prose-invert prose-sm max-w-none text-ink-800 dark:text-stone-300 leading-relaxed font-sans">
                             <div dangerouslySetInnerHTML={{ __html: volumeInfo.description || '<p>No description available.</p>' }} />
                         </div>
 
                         {/* Metadata Grid */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 py-6 border-y border-paper-200">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 py-6 border-y border-paper-200 dark:border-stone-800">
                             <div>
-                                <p className="text-xs text-ink-500 uppercase font-bold tracking-wider">Pages</p>
-                                <p className="text-ink-900 font-medium">{volumeInfo.pageCount || 'Unknown'}</p>
+                                <p className="text-xs text-ink-500 dark:text-stone-500 uppercase font-bold tracking-wider">Pages</p>
+                                <p className="text-ink-900 dark:text-stone-200 font-medium">{volumeInfo.pageCount || 'Unknown'}</p>
                             </div>
                             <div>
-                                <p className="text-xs text-ink-500 uppercase font-bold tracking-wider">Format</p>
-                                <p className="text-ink-900 font-medium">Digital / Print</p>
+                                <p className="text-xs text-ink-500 dark:text-stone-500 uppercase font-bold tracking-wider">Format</p>
+                                <p className="text-ink-900 dark:text-stone-200 font-medium">Digital / Print</p>
                             </div>
                             <div>
-                                <p className="text-xs text-ink-500 uppercase font-bold tracking-wider">Published</p>
-                                <p className="text-ink-900 font-medium">{volumeInfo.publishedDate?.substring(0, 4)}</p>
+                                <p className="text-xs text-ink-500 dark:text-stone-500 uppercase font-bold tracking-wider">Published</p>
+                                <p className="text-ink-900 dark:text-stone-200 font-medium">{volumeInfo.publishedDate?.substring(0, 4)}</p>
                             </div>
                             <div>
-                                <p className="text-xs text-ink-500 uppercase font-bold tracking-wider">ISBN</p>
-                                <p className="text-ink-900 font-medium whitespace-nowrap overflow-hidden text-ellipsis">{volumeInfo.industryIdentifiers?.[0]?.identifier || 'N/A'}</p>
+                                <p className="text-xs text-ink-500 dark:text-stone-500 uppercase font-bold tracking-wider">ISBN</p>
+                                <p className="text-ink-900 dark:text-stone-200 font-medium whitespace-nowrap overflow-hidden text-ellipsis">{volumeInfo.industryIdentifiers?.[0]?.identifier || 'N/A'}</p>
                             </div>
                         </div>
 

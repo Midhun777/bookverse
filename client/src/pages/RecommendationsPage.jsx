@@ -37,12 +37,12 @@ const RecommendationsPage = () => {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-paper-50 pt-12 text-center">
+            <div className="min-h-screen bg-paper-50 dark:bg-stone-950 pt-12 text-center">
                 <div className="animate-pulse space-y-8 max-w-7xl mx-auto px-6">
-                    <div className="h-8 bg-paper-200 w-1/4 rounded"></div>
+                    <div className="h-8 bg-paper-200 dark:bg-stone-800 w-1/4 rounded"></div>
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
                         {[...Array(5)].map((_, i) => (
-                            <div key={i} className="aspect-[2/3] bg-paper-200 rounded-md"></div>
+                            <div key={i} className="aspect-[2/3] bg-paper-200 dark:bg-stone-800 rounded-md"></div>
                         ))}
                     </div>
                 </div>
@@ -54,9 +54,9 @@ const RecommendationsPage = () => {
     const hasData = feed && feed.length > 0;
 
     return (
-        <div className="min-h-screen bg-paper-50 pb-20">
+        <div className="min-h-screen bg-paper-50 dark:bg-stone-950 pb-20">
             {/* Header */}
-            <header className="bg-paper-50 border-b border-paper-200 pt-16 pb-12 px-6 mb-12 relative overflow-hidden">
+            <header className="bg-paper-50 dark:bg-stone-900 border-b border-paper-200 dark:border-stone-800 pt-16 pb-12 px-6 mb-12 relative overflow-hidden">
                 <div className="max-w-7xl mx-auto relative z-10">
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
@@ -66,10 +66,10 @@ const RecommendationsPage = () => {
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 border border-teal-100 text-teal-700 text-xs font-bold uppercase tracking-widest mb-4 dark:bg-stone-800 dark:border-stone-700 dark:text-teal-500">
                             <Sparkles size={14} className="animate-pulse" /> Curated for {user?.name}
                         </div>
-                        <h1 className="text-4xl md:text-6xl font-serif font-bold text-ink-900 mb-6 leading-tight">
+                        <h1 className="text-4xl md:text-6xl font-serif font-bold text-ink-900 dark:text-stone-100 mb-6 leading-tight">
                             Recommended <span className="text-teal-600 italic">For You</span>
                         </h1>
-                        <p className="text-xl text-ink-600 font-serif leading-relaxed">
+                        <p className="text-xl text-ink-600 dark:text-stone-400 font-serif leading-relaxed">
                             Our engine analyzes your library, searches, and reading habits to surface books you'll genuinely love.
                         </p>
                     </motion.div>
@@ -77,7 +77,7 @@ const RecommendationsPage = () => {
 
                 {/* Decorative Pattern */}
                 <div className="absolute top-0 right-0 w-1/3 h-full opacity-5 pointer-events-none">
-                    <Sparkles size={300} className="text-ink-900" />
+                    <Sparkles size={300} className="text-ink-900 dark:text-white" />
                 </div>
             </header>
 

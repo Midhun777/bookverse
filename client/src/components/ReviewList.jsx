@@ -18,10 +18,10 @@ const ReviewList = ({ reviews, user, onAddReview, onDeleteReview }) => {
     return (
         <div className="max-w-4xl">
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-paper-200 pb-4 mb-8">
-                <h3 className="text-xl font-bold font-serif text-ink-900">
+            <div className="flex items-center justify-between border-b border-paper-200 dark:border-stone-800 pb-4 mb-8">
+                <h3 className="text-xl font-bold font-serif text-ink-900 dark:text-stone-100">
                     Community Reviews
-                    <span className="ml-2 text-sm font-sans font-normal text-ink-500 bg-paper-100 px-2 py-0.5 rounded-full">
+                    <span className="ml-2 text-sm font-sans font-normal text-ink-500 dark:text-stone-400 bg-paper-100 dark:bg-stone-800 px-2 py-0.5 rounded-full">
                         {reviews.length}
                     </span>
                 </h3>
@@ -29,27 +29,27 @@ const ReviewList = ({ reviews, user, onAddReview, onDeleteReview }) => {
 
             {/* Input Area */}
             {user && (
-                <div className="mb-10 flex gap-4 bg-paper-100/50 p-6 rounded-xl border border-paper-200">
+                <div className="mb-10 flex gap-4 bg-paper-100/50 dark:bg-stone-900/50 p-6 rounded-xl border border-paper-200 dark:border-stone-800">
                     <div className="shrink-0">
-                        <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-800 font-bold border border-teal-200">
+                        <div className="w-10 h-10 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center text-teal-800 dark:text-teal-400 font-bold border border-teal-200 dark:border-teal-800">
                             {user.name?.charAt(0)}
                         </div>
                     </div>
                     <div className="flex-1 space-y-3">
                         <textarea
-                            className="w-full input-libra rounded-lg p-3 text-sm min-h-[100px] resize-none"
+                            className="w-full input-libra dark:bg-stone-800 dark:text-stone-100 dark:border-stone-700 rounded-lg p-3 text-sm min-h-[100px] resize-none"
                             placeholder="Share your thoughts on this book..."
                             value={reviewText}
                             onChange={e => setReviewText(e.target.value)}
                         />
                         <div className="flex justify-between items-center">
                             <div className="flex items-center gap-2">
-                                <span className="text-xs font-bold text-ink-400 uppercase tracking-wider mr-2">Your Rating:</span>
+                                <span className="text-xs font-bold text-ink-400 dark:text-stone-500 uppercase tracking-wider mr-2">Your Rating:</span>
                                 {[1, 2, 3, 4, 5].map(s => (
                                     <button
                                         key={s}
                                         onClick={() => setRating(s)}
-                                        className={`transition-all hover:scale-110 ${s <= rating ? "text-amber-400" : "text-ink-400/30 hover:text-amber-200"}`}
+                                        className={`transition-all hover:scale-110 ${s <= rating ? "text-amber-400" : "text-ink-400/30 dark:text-stone-700 hover:text-amber-200"}`}
                                     >
                                         <Star size={20} fill="currentColor" />
                                     </button>
@@ -79,9 +79,9 @@ const ReviewList = ({ reviews, user, onAddReview, onDeleteReview }) => {
                         />
                     ))
                 ) : (
-                    <div className="text-center py-12 bg-paper-50 rounded-lg border border-dashed border-paper-200">
-                        <p className="text-ink-500 italic font-serif">No reviews yet.</p>
-                        <p className="text-xs text-ink-400 mt-1">Be the first to share your opinion!</p>
+                    <div className="text-center py-12 bg-paper-50 dark:bg-stone-900/50 rounded-lg border border-dashed border-paper-200 dark:border-stone-800">
+                        <p className="text-ink-500 dark:text-stone-400 italic font-serif">No reviews yet.</p>
+                        <p className="text-xs text-ink-400 dark:text-stone-500 mt-1">Be the first to share your opinion!</p>
                     </div>
                 )}
             </div>

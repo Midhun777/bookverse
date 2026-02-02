@@ -114,29 +114,33 @@ const BookCard = ({ book, className = "w-32 md:w-40" }) => {
 
     return (
         <Link to={`/book/${id}`} className={`block group shrink-0 ${className} relative`}>
-            <div className="relative aspect-[2/3] rounded overflow-hidden mb-2 shadow-card border border-paper-200 group-hover:shadow-soft group-hover:-translate-y-1 transition-all duration-300 bg-paper-100">
+            <div className="relative aspect-[2/3] rounded overflow-hidden mb-2 shadow-card border border-paper-200 dark:border-stone-800 group-hover:shadow-soft group-hover:-translate-y-1 transition-all duration-300 bg-paper-100 dark:bg-stone-800">
                 {/* Image */}
                 <img
                     src={thumbnail?.replace('http:', 'https:') || 'https://via.placeholder.com/176x264?text=No+Cover'}
                     alt={title}
                     className="w-full h-full object-cover"
                     loading="lazy"
+                    onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = 'https://via.placeholder.com/176x264?text=No+Cover';
+                    }}
                 />
 
                 {/* Overlays */}
                 <div className="absolute inset-x-0 top-0 p-2 flex justify-between items-start opacity-0 group-hover:opacity-100 transition-opacity z-10">
                     {/* Rating Badge */}
                     {avgRating ? (
-                        <div className="bg-white/90 backdrop-blur px-1.5 py-0.5 rounded shadow-sm flex items-center gap-1">
+                        <div className="bg-white/95 dark:bg-stone-900/95 backdrop-blur px-1.5 py-0.5 rounded shadow-sm flex items-center gap-1">
                             <Star size={10} className="text-amber-500 fill-amber-500" />
-                            <span className="text-[10px] font-bold text-ink-900">{avgRating.toFixed(1)}</span>
+                            <span className="text-[10px] font-bold text-ink-900 dark:text-stone-100">{avgRating.toFixed(1)}</span>
                         </div>
                     ) : <div />}
 
                     {/* Heart Button */}
                     <button
                         onClick={(e) => toggleFavoriteMutation.mutate(e)}
-                        className={`p-1.5 rounded-full shadow-sm transition-transform hover:scale-110 ${isFavorited ? 'bg-white text-red-500 opacity-100' : 'bg-white/90 text-slate-400 hover:text-red-500'}`}
+                        className={`p-1.5 rounded-full shadow-sm transition-transform hover:scale-110 ${isFavorited ? 'bg-white dark:bg-stone-800 text-red-500 opacity-100' : 'bg-white/90 dark:bg-stone-900/90 text-slate-400 hover:text-red-500'}`}
                     >
                         <Heart size={14} fill={isFavorited ? "currentColor" : "none"} />
                     </button>

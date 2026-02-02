@@ -112,7 +112,7 @@ const Navbar = () => {
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: 10 }}
-                                    className="absolute top-full left-0 right-0 mt-2 bg-white border border-paper-200 rounded-lg shadow-xl overflow-hidden z-50 max-h-96 overflow-y-auto"
+                                    className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-stone-900 border border-paper-200 dark:border-stone-800 rounded-lg shadow-xl overflow-hidden z-50 max-h-96 overflow-y-auto"
                                 >
                                     {isSearching ? (
                                         <div className="p-4 text-center text-xs text-ink-400">Searching...</div>
@@ -137,8 +137,18 @@ const Navbar = () => {
                                                             onClick={() => setIsSearchFocused(false)}
                                                             className="flex items-center gap-3 px-4 py-3 hover:bg-paper-50 transition-colors border-b border-paper-100 last:border-0"
                                                         >
-                                                            <div className="w-8 h-12 bg-paper-200 shrink-0 overflow-hidden rounded shadow-sm">
-                                                                {thumbnail && <img src={thumbnail.replace('http:', 'https:')} className="w-full h-full object-cover" alt="" />}
+                                                            <div className="w-8 h-12 bg-paper-200 dark:bg-stone-800 shrink-0 overflow-hidden rounded shadow-sm">
+                                                                {thumbnail && (
+                                                                    <img
+                                                                        src={thumbnail.replace('http:', 'https:')}
+                                                                        className="w-full h-full object-cover"
+                                                                        alt=""
+                                                                        onError={(e) => {
+                                                                            e.target.onerror = null;
+                                                                            e.target.src = 'https://via.placeholder.com/32x48?text=...';
+                                                                        }}
+                                                                    />
+                                                                )}
                                                             </div>
                                                             <div className="overflow-hidden">
                                                                 <p className="text-sm font-bold text-ink-900 truncate font-serif">{title}</p>
@@ -149,7 +159,7 @@ const Navbar = () => {
                                                 );
                                             })}
                                             <li className="p-2 text-center bg-paper-50 border-t border-paper-200">
-                                                <button onClick={handleSearch} className="text-xs font-bold text-teal-700 hover:underline">
+                                                <button onClick={handleSearch} className="text-xs font-bold text-teal-700 dark:text-teal-400 hover:underline">
                                                     View all results for "{searchQuery}"
                                                 </button>
                                             </li>
@@ -229,7 +239,7 @@ const Navbar = () => {
 
             {/* Mobile Menu */}
             {isOpen && (
-                <div className="lg:hidden bg-white border-b border-paper-200 px-4 py-4 space-y-4">
+                <div className="lg:hidden bg-white dark:bg-stone-900 border-b border-paper-200 dark:border-stone-800 px-4 py-4 space-y-4">
                     <form onSubmit={handleSearch}>
                         <input
                             type="text"

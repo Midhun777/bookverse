@@ -58,7 +58,7 @@ const ChallengesPage = () => {
                 <div className="inline-flex items-center gap-2 bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-500 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
                     <Trophy size={14} /> 2026 Reading Challenge
                 </div>
-                <h1 className="text-4xl md:text-5xl font-serif font-bold text-ink-900 mb-4">
+                <h1 className="text-4xl md:text-5xl font-serif font-bold text-ink-900 dark:text-stone-100 mb-4">
                     Your Reading Journey
                 </h1>
                 <p className="text-ink-500 text-lg font-serif">
@@ -73,7 +73,7 @@ const ChallengesPage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative z-10">
                     <div>
                         <div className="flex items-center justify-between mb-2">
-                            <h2 className="text-xl font-bold text-ink-900 flex items-center gap-2">
+                            <h2 className="text-xl font-bold text-ink-900 dark:text-stone-100 flex items-center gap-2">
                                 <Target className="text-teal-600" />
                                 2026 Goal
                             </h2>
@@ -95,8 +95,8 @@ const ChallengesPage = () => {
                             )}
                         </div>
 
-                        <div className="text-6xl font-serif font-bold text-ink-900 mb-2">
-                            {progress} <span className="text-2xl text-ink-400 font-sans font-normal">/ {goal}</span>
+                        <div className="text-6xl font-serif font-bold text-ink-900 dark:text-stone-100 mb-2">
+                            {progress} <span className="text-2xl text-ink-400 dark:text-stone-500 font-sans font-normal">/ {goal}</span>
                         </div>
                         <p className="text-ink-600 font-medium mb-6">{getStatusMessage()}</p>
 
@@ -116,29 +116,29 @@ const ChallengesPage = () => {
                     </div>
 
                     <div className="grid grid-cols-2 gap-6">
-                        <div className="bg-paper-50 p-6 rounded-xl border border-paper-100 text-center">
+                        <div className="bg-paper-50 dark:bg-stone-900/50 p-6 rounded-xl border border-paper-100 dark:border-stone-800 text-center">
                             <BookOpen size={24} className="mx-auto text-amber-500 mb-2" />
-                            <div className="text-2xl font-bold text-ink-900">
+                            <div className="text-2xl font-bold text-ink-900 dark:text-stone-100">
                                 {profile?.totalPagesRead > 1000 ? `${(profile.totalPagesRead / 1000).toFixed(1)}k` : profile?.totalPagesRead || 0}
                             </div>
-                            <div className="text-xs text-ink-400 font-bold uppercase tracking-wider">Pages Read</div>
+                            <div className="text-xs text-ink-400 dark:text-stone-500 font-bold uppercase tracking-wider">Pages Read</div>
                         </div>
-                        <div className="bg-paper-50 p-6 rounded-xl border border-paper-100 text-center">
+                        <div className="bg-paper-50 dark:bg-stone-900/50 p-6 rounded-xl border border-paper-100 dark:border-stone-800 text-center">
                             <TrendingUp size={24} className="mx-auto text-green-500 mb-2" />
-                            <div className="text-2xl font-bold text-ink-900">{profile?.avgPagesPerDay || 0}</div>
-                            <div className="text-xs text-ink-400 font-bold uppercase tracking-wider">Avg Pages/Day</div>
+                            <div className="text-2xl font-bold text-ink-900 dark:text-stone-100">{profile?.avgPagesPerDay || 0}</div>
+                            <div className="text-xs text-ink-400 dark:text-stone-500 font-bold uppercase tracking-wider">Avg Pages/Day</div>
                         </div>
-                        <div className="bg-paper-50 p-6 rounded-xl border border-paper-100 text-center">
+                        <div className="bg-paper-50 dark:bg-stone-900/50 p-6 rounded-xl border border-paper-100 dark:border-stone-800 text-center">
                             <Calendar size={24} className="mx-auto text-purple-500 mb-2" />
-                            <div className="text-2xl font-bold text-ink-900">{profile?.currentStreak || 0}</div>
-                            <div className="text-xs text-ink-400 font-bold uppercase tracking-wider">Current Streak</div>
+                            <div className="text-2xl font-bold text-ink-900 dark:text-stone-100">{profile?.currentStreak || 0}</div>
+                            <div className="text-xs text-ink-400 dark:text-stone-500 font-bold uppercase tracking-wider">Current Streak</div>
                         </div>
-                        <div className="bg-paper-50 p-6 rounded-xl border border-paper-100 text-center">
+                        <div className="bg-paper-50 dark:bg-stone-900/50 p-6 rounded-xl border border-paper-100 dark:border-stone-800 text-center">
                             <CheckCircle size={24} className="mx-auto text-blue-500 mb-2" />
-                            <div className="text-2xl font-bold text-ink-900">
+                            <div className="text-2xl font-bold text-ink-900 dark:text-stone-100">
                                 {profile?.aheadOfSchedule > 0 ? `+${profile.aheadOfSchedule}` : profile?.aheadOfSchedule || 0}
                             </div>
-                            <div className="text-xs text-ink-400 font-bold uppercase tracking-wider">
+                            <div className="text-xs text-ink-400 dark:text-stone-500 font-bold uppercase tracking-wider">
                                 {profile?.aheadOfSchedule >= 0 ? 'Ahead of Sched' : 'Behind Sched'}
                             </div>
                         </div>
@@ -148,9 +148,9 @@ const ChallengesPage = () => {
 
             {/* Books List */}
             <div>
-                <h3 className="text-2xl font-bold font-serif text-ink-900 mb-6 flex items-center gap-3">
+                <h3 className="text-2xl font-bold font-serif text-ink-900 dark:text-stone-100 mb-6 flex items-center gap-3">
                     Books Read in 2026
-                    <span className="text-sm font-sans font-normal text-ink-500 bg-paper-200 px-2 py-0.5 rounded-full">{readBooks.length}</span>
+                    <span className="text-sm font-sans font-normal text-ink-500 dark:text-stone-400 bg-paper-200 dark:bg-stone-800 px-2 py-0.5 rounded-full">{readBooks.length}</span>
                 </h3>
 
                 {listLoading ? (
@@ -169,10 +169,10 @@ const ChallengesPage = () => {
                         ))}
                     </div>
                 ) : (
-                    <div className="text-center py-20 bg-paper-50 rounded-xl border border-dashed border-paper-200">
-                        <BookOpen size={48} className="mx-auto text-ink-300 mb-4" />
-                        <h3 className="text-lg font-bold text-ink-600 mb-2">No books completed yet</h3>
-                        <p className="text-ink-400 mb-6">Mark a book as "Read" to see it appear here.</p>
+                    <div className="text-center py-20 bg-paper-50 dark:bg-stone-900/50 rounded-xl border border-dashed border-paper-200 dark:border-stone-800">
+                        <BookOpen size={48} className="mx-auto text-ink-300 dark:text-stone-700 mb-4" />
+                        <h3 className="text-lg font-bold text-ink-600 dark:text-stone-400 mb-2">No books completed yet</h3>
+                        <p className="text-ink-400 dark:text-stone-500 mb-6">Mark a book as "Read" to see it appear here.</p>
                         <Link to="/explore" className="btn-primary px-6 py-2">Find Your First Read</Link>
                     </div>
                 )}
