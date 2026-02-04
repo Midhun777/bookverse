@@ -1,0 +1,50 @@
+[
+  {
+    "query": "Dune Frank Herbert",
+    "error": "timeout of 5000ms exceeded"
+  },
+  {
+    "query": "The Subtle Art of Not Giving a F*ck Mark Manson",
+    "error": "timeout of 5000ms exceeded"
+  },
+  {
+    "query": "Brief Answers to the Big Questions Stephen Hawking",
+    "error": "timeout of 5000ms exceeded"
+  },
+  {
+    "query": "The Psychology of Money Morgan Housel",
+    "error": "timeout of 5000ms exceeded"
+  },
+  {
+    "query": "Rich Dad Poor Dad Robert Kiyosaki",
+    "error": "timeout of 5000ms exceeded"
+  },
+  {
+    "query": "Man's Search for Meaning Viktor Frankl",
+    "error": "timeout of 5000ms exceeded"
+  },
+  {
+    "query": "Sapiens Yuval Noah Harari",
+    "error": "timeout of 5000ms exceeded"
+  },
+  {
+    "query": "The Intelligent Investor Benjamin Graham",
+    "error": "timeout of 5000ms exceeded"
+  },
+  {
+    "query": "Principles: Life and Work Ray Dalio",
+    "error": "timeout of 5000ms exceeded"
+  },
+  {
+    "query": "Atomic Habits James Clear",
+    "error": "timeout of 5000ms exceeded"
+  },
+  {
+    "query": "A Brief History of Time Stephen Hawking",
+    "error": "timeout of 5000ms exceeded"
+  },
+  {
+    "query": "Astrophysics for People in a Hurry Neil deGrasse Tyson",
+    "error": "timeout of 5000ms exceeded"
+  }
+]

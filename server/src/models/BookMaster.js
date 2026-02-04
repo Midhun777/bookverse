@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const BookMasterSchema = new mongoose.Schema({
-    openLibraryId: {
+    googleBookId: {
         type: String,
         required: true,
         unique: true,

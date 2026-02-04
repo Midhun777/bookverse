@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../services/api';
 import { Link } from 'react-router-dom';
 import { Trash2, Star, Calendar } from 'lucide-react';
-import { getBookDetails } from "../services/openLibraryService";
+import { getBookDetails } from "../services/googleBooksService";
 import toast from 'react-hot-toast';
 
 const ListBookCard = ({ item, showRemove = true }) => {
@@ -54,7 +54,7 @@ const ListBookCard = ({ item, showRemove = true }) => {
     return (
         <div className="flex items-center gap-4 py-3 border-b border-paper-200 dark:border-stone-800 hover:bg-paper-50 dark:hover:bg-stone-900/50 transition-colors group">
             {/* 1. Cover */}
-            <Link to={`/book/${item.googleBookId}`} className="shrink-0 w-12 h-16 shadow-card border border-paper-200 dark:border-stone-800 bg-paper-100 dark:bg-stone-800">
+            <Link to={`/book/${item.googleBookId}`} className="shrink-0 w-14 h-20 shadow-md group-hover:shadow-xl transition-shadow rounded overflow-hidden border border-paper-200 dark:border-stone-800 bg-paper-100 dark:bg-stone-800 relative">
                 <img
                     src={thumbnail}
                     alt={title}
@@ -69,10 +69,10 @@ const ListBookCard = ({ item, showRemove = true }) => {
             {/* 2. Title & Author (Main Col) */}
             <div className="flex-1 min-w-0 grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
                 <div className="md:col-span-5">
-                    <Link to={`/book/${item.googleBookId}`} className="font-bold text-ink-900 dark:text-stone-100 hover:underline leading-tight block">
+                    <Link to={`/book/${item.googleBookId}`} className="font-bold text-ink-900 dark:text-stone-100 hover:text-teal-600 dark:hover:text-teal-400 transition-colors leading-tight block serif text-base">
                         {title}
                     </Link>
-                    <p className="text-sm text-ink-600 dark:text-stone-400">by {authors?.join(', ')}</p>
+                    <p className="text-sm text-ink-500 dark:text-stone-500 mt-0.5">by <span className="font-medium text-ink-700 dark:text-stone-300">{authors?.join(', ')}</span></p>
                 </div>
 
                 {/* 3. Rating */}
@@ -96,10 +96,10 @@ const ListBookCard = ({ item, showRemove = true }) => {
                     {showRemove && (
                         <button
                             onClick={() => removeMutation.mutate()}
-                            className="p-2 text-ink-400 dark:text-stone-600 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors opacity-0 group-hover:opacity-100"
+                            className="p-2.5 text-ink-400 dark:text-stone-600 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-full transition-all opacity-0 group-hover:opacity-100 hover:scale-110 active:scale-95"
                             title="Remove from shelf"
                         >
-                            <Trash2 size={16} />
+                            <Trash2 size={18} />
                         </button>
                     )}
                 </div>

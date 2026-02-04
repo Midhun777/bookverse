@@ -10,17 +10,51 @@ const getDiscoverFeed = async (req, res) => {
         // 1. Top Categories from BookMaster (aggregated)
         const categories = await BookMaster.aggregate([
             { $unwind: "$subjects" },
-            { $group: { _id: "$subjects", count: { $sum: 1 } } },
+            {
+                $group: {
+                    _id: "$subjects",
+                    count: { $sum: 1 },
+                    avgPopularity: { $avg: "$popularityScore" },
+                    trendingCount: { $sum: { $cond: ["$isTrending", 1, 0] } }
+                }
+            },
             { $sort: { count: -1 } },
             { $limit: 12 }
         ]);
 
         // 2. Global Sections
-        const popularBooks = await BookMaster.find().sort({ popularityScore: -1 }).limit(10);
-        const classics = await BookMaster.find({ isClassic: true }).limit(10);
-        const trending = await BookMaster.find({ isTrending: true }).limit(10);
+        const popularBooks = await BookMaster.find().sort({ popularityScore: -1 }).limit(15);
+        const classics = await BookMaster.find({ isClassic: true }).limit(15);
+        const trending = await BookMaster.find({ isTrending: true }).limit(15);
+
+        // Dynamic: Fresh Discoveries (Random selection from the whole library)
+        const freshDiscoveries = await BookMaster.aggregate([
+            { $sample: { size: 15 } }
+        ]);
+
+        // Category Spotlights
+        const techSpotlight = await BookMaster.find({ subjects: { $in: ["TECHNOLOGY"] } }).limit(10);
+        const selfHelpSpotlight = await BookMaster.find({ subjects: { $in: ["SELF_HELP", "Self-Help"] } }).limit(10);
 
         const hub = [
+            {
+                title: "Trending Now",
+                description: "What readers are picking up right now",
+                books: trending,
+                type: 'GLOBAL'
+            },
+            {
+                title: "Fresh Discoveries",
+                description: "Randomly selected gems for you to explore",
+                books: freshDiscoveries,
+                type: 'DYNAMIC'
+            },
+            {
+                title: "Tech Titans",
+                description: "Master the world of technology",
+                books: techSpotlight,
+                type: 'SPOTLIGHT'
+            },
             {
                 title: "Most Loved Worldwide",
                 description: "Top rated books by the community",
@@ -28,10 +62,10 @@ const getDiscoverFeed = async (req, res) => {
                 type: 'GLOBAL'
             },
             {
-                title: "Trending Now",
-                description: "What readers are picking up right now",
-                books: trending,
-                type: 'GLOBAL'
+                title: "Self-Improvement Essentials",
+                description: "Optimize your life and mindset",
+                books: selfHelpSpotlight,
+                type: 'SPOTLIGHT'
             },
             {
                 title: "Timeless Classics",
@@ -42,8 +76,14 @@ const getDiscoverFeed = async (req, res) => {
         ];
 
         res.json({
-            categories: categories.map(c => ({ name: c._id, count: c.count })),
-            feed: hub
+            categories: categories.map(c => ({
+                name: c._id,
+                count: c.count,
+                avgPopularity: c.avgPopularity,
+                trendingCount: c.trendingCount
+            })),
+            feed: hub,
+            featured: trending[0] // Spotlight the top trending book
         });
 
     } catch (error) {

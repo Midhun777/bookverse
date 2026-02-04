@@ -120,7 +120,7 @@ const RecommendationsPage = () => {
 
                                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-6 gap-y-10">
                                     {section.books.map((book) => (
-                                        <div key={book._id || book.openLibraryId} className="space-y-3">
+                                        <div key={book.googleBookId || book.openLibraryId || book._id} className="space-y-3">
                                             <BookCard book={book} className="w-full" />
                                             {book.reasons && book.reasons.length > 0 && (
                                                 <div className="flex flex-wrap gap-1">

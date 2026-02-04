@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getBookDetails } from '../services/openLibraryService';
+import { getBookDetails } from '../services/googleBooksService';
 import api from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import {
@@ -32,7 +32,10 @@ const BookDetailsPage = () => {
         if (book && user) {
             logActivity({
                 actionType: 'VIEW',
-                openLibraryId: id,
+                googleBookId: id,
+                bookTitle: book.volumeInfo.title,
+                bookAuthor: book.volumeInfo.authors?.[0],
+                bookCover: book.volumeInfo.imageLinks?.thumbnail,
                 subjects: book.volumeInfo.categories
             });
         }
@@ -108,7 +111,10 @@ const BookDetailsPage = () => {
             if (!isBookFavorited) {
                 logActivity({
                     actionType: 'SAVE',
-                    openLibraryId: id,
+                    googleBookId: id,
+                    bookTitle: book?.volumeInfo?.title,
+                    bookAuthor: book?.volumeInfo?.authors?.[0],
+                    bookCover: book?.volumeInfo?.imageLinks?.thumbnail,
                     keyword: book?.volumeInfo?.title,
                     subjects: book?.volumeInfo?.categories
                 });
@@ -157,7 +163,10 @@ const BookDetailsPage = () => {
             // Log activity
             logActivity({
                 actionType: newStatus === 'COMPLETED' ? 'COMPLETE' : 'STATUS_CHANGE',
-                openLibraryId: id,
+                googleBookId: id,
+                bookTitle: book?.volumeInfo?.title,
+                bookAuthor: book?.volumeInfo?.authors?.[0],
+                bookCover: book?.volumeInfo?.imageLinks?.thumbnail,
                 keyword: book?.volumeInfo?.title,
                 subjects: book?.volumeInfo?.categories
             });

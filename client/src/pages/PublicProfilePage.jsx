@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getPublicProfile } from '../services/statsService';
-import { Loader2, Book, Clock, Star, Award, Calendar, CheckCircle, Activity, Bookmark } from 'lucide-react';
+import { Loader2, Book, Clock, Star, Award, Calendar, CheckCircle, Activity, Bookmark, User } from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell, PieChart, Pie } from 'recharts';
 
 const PublicProfilePage = () => {
@@ -196,7 +196,7 @@ const PublicProfilePage = () => {
 const PublicShelfItem = ({ googleBookId }) => {
     const { data: bookDetails } = useQuery({
         queryKey: ['book', googleBookId],
-        queryFn: () => import('../services/openLibraryService').then(m => m.getBookDetails(googleBookId)),
+        queryFn: () => import('../services/googleBooksService').then(m => m.getBookDetails(googleBookId)),
         staleTime: 1000 * 60 * 60,
     });
 

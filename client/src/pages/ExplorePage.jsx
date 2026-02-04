@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
-import { searchBooks } from '../services/openLibraryService';
+import { searchBooks } from '../services/googleBooksService';
 import BookCard from '../components/BookCard';
 import BookListItem from '../components/BookListItem';
 import { Search, Loader2, Sparkles, Filter, X, Grid, List } from 'lucide-react';
@@ -112,7 +112,7 @@ const ExplorePage = () => {
             // Log activity
             logActivity({
                 actionType: variables.status === 'COMPLETED' ? 'COMPLETE' : 'STATUS_CHANGE',
-                openLibraryId: variables.googleBookId,
+                googleBookId: variables.googleBookId,
                 keyword: variables.title,
                 subjects: variables.subjects
             });
@@ -207,7 +207,7 @@ const ExplorePage = () => {
             <div className="max-w-7xl mx-auto px-6 py-8">
 
                 {/* Recommendations */}
-                {user && recommendations?.length > 0 && searchTerm === 'programming' && (
+                {user && recommendations?.length > 0 && (
                     <section className="mb-12">
                         <h2 className="text-lg font-bold font-serif text-ink-900 dark:text-stone-100 mb-4 flex items-center gap-2">
                             <Sparkles size={16} className="text-teal-600" /> Recommended for you

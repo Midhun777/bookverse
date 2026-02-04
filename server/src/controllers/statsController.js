@@ -61,9 +61,9 @@ const getPublicProfile = async (req, res) => {
 
         // Fetch book details for completed books to get page counts
         const googleBookIds = completedBooks.map(b => b.googleBookId);
-        const books = await BookMaster.find({ openLibraryId: { $in: googleBookIds } });
+        const books = await BookMaster.find({ googleBookId: { $in: googleBookIds } });
         const bookMap = {};
-        books.forEach(b => bookMap[b.openLibraryId] = b);
+        books.forEach(b => bookMap[b.googleBookId] = b);
 
         const totalPagesRead = completedBooks.reduce((acc, b) => acc + (bookMap[b.googleBookId]?.pageCount || 0), 0);
 

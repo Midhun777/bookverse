@@ -18,10 +18,19 @@ const BookCard = ({ book, className = "w-32 md:w-40" }) => {
     }
 
     // Normalize data
-    const isFlat = !!(book.title && (Array.isArray(book.authors) || typeof book.authors === 'string'));
+    const isFlat = !!book.title;
     const title = isFlat ? book.title : book.volumeInfo?.title;
-    const authors = isFlat ? book.authors : book.volumeInfo?.authors;
-    const thumbnail = book.coverImage || book.thumbnail || (isFlat ? null : book.volumeInfo?.imageLinks?.thumbnail);
+    const authors = isFlat ? (book.authors || []) : book.volumeInfo?.authors;
+    let thumbnail = book.coverImage || book.thumbnail || (isFlat ? null : book.volumeInfo?.imageLinks?.thumbnail);
+
+    // Force HTTPS and prefer higher resolution if it's a Google Books URL
+    if (thumbnail && typeof thumbnail === 'string') {
+        thumbnail = thumbnail.replace('http:', 'https:');
+        if (thumbnail.includes('googleusercontent.com') || thumbnail.includes('books.google.com')) {
+            thumbnail = thumbnail.replace('zoom=1', 'zoom=2').replace('zoom=5', 'zoom=2');
+        }
+    }
+
     const avgRating = book.averageRating || book.volumeInfo?.averageRating;
     const categories = book.subjects || book.categories || book.volumeInfo?.categories;
 
@@ -89,7 +98,10 @@ const BookCard = ({ book, className = "w-32 md:w-40" }) => {
             if (action === 'favorited') {
                 logActivity({
                     actionType: 'SAVE',
-                    openLibraryId: id,
+                    googleBookId: id,
+                    bookTitle: title,
+                    bookAuthor: authorText,
+                    bookCover: thumbnail,
                     keyword: title,
                     subjects: Array.isArray(categories) ? categories : [categories].filter(Boolean)
                 });
@@ -117,13 +129,15 @@ const BookCard = ({ book, className = "w-32 md:w-40" }) => {
             <div className="relative aspect-[2/3] rounded overflow-hidden mb-2 shadow-card border border-paper-200 dark:border-stone-800 group-hover:shadow-soft group-hover:-translate-y-1 transition-all duration-300 bg-paper-100 dark:bg-stone-800">
                 {/* Image */}
                 <img
-                    src={thumbnail?.replace('http:', 'https:') || 'https://via.placeholder.com/176x264?text=No+Cover'}
+                    src={thumbnail?.replace('http:', 'https:') || `https://ui-avatars.com/api/?name=${encodeURIComponent(title || 'B')}&background=0D9488&color=fff&size=512&bold=true`}
                     alt={title}
                     className="w-full h-full object-cover"
                     loading="lazy"
                     onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src = 'https://via.placeholder.com/176x264?text=No+Cover';
+                        const colors = ['0D9488', '0891B2', '4F46E5', '7C3AED', 'DB2777', '2563EB'];
+                        const fallbackIdx = Math.abs(id?.charCodeAt(0) || 0) % colors.length;
+                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(title || 'B')}&background=${colors[fallbackIdx]}&color=fff&size=512&bold=true`;
                     }}
                 />
 

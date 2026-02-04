@@ -8,10 +8,19 @@ const ActivitySchema = new mongoose.Schema({
     },
     actionType: {
         type: String,
-        enum: ['SEARCH', 'VIEW', 'SAVE', 'STATUS_CHANGE', 'COMPLETE'],
+        enum: ['SEARCH', 'VIEW', 'SAVE', 'STATUS_CHANGE', 'COMPLETE', 'LIKE'],
         required: true
     },
-    openLibraryId: {
+    googleBookId: {
+        type: String
+    },
+    bookTitle: {
+        type: String
+    },
+    bookAuthor: {
+        type: String
+    },
+    bookCover: {
         type: String
     },
     keyword: {

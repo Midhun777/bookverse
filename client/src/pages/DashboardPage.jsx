@@ -41,11 +41,14 @@ const DashboardPage = () => {
         enabled: !!user,
     });
 
-    const myRecs = myRecsData?.feed?.[0]?.books || [];
+    const recommendations = myRecsData?.feed || [];
 
     const { data: globalRecs } = useQuery({
         queryKey: ['globalRecommendations'],
-        queryFn: import('../services/recommendationService').then(m => m.getGlobalRecommendations),
+        queryFn: async () => {
+            const res = await api.get('/recommendations/global');
+            return res.data;
+        }
     });
 
     const scrollTo = (ref) => {
@@ -59,97 +62,114 @@ const DashboardPage = () => {
     );
 
     return (
-        <div className="max-w-4xl mx-auto space-y-24 pb-20">
+        <div className="max-w-4xl mx-auto space-y-20 pb-24 px-4 overflow-hidden">
             {/* Simple Greeting */}
             <header className="space-y-4 pt-12 transition-colors duration-300">
                 <h1 className="text-4xl lg:text-5xl font-bold text-ink-900 dark:text-stone-100 serif">Hello, {user?.name.split(' ')[0]}</h1>
                 <p className="text-lg text-ink-600 dark:text-stone-400 font-medium italic">Your personal reading journal at a glance.</p>
                 <div className="flex flex-wrap gap-4 pt-4">
-                    <button onClick={() => scrollTo(readingRef)} className="flex items-center space-x-2 text-sm font-bold text-blue-600 bg-blue-50 px-4 py-2 rounded-full border border-blue-100 hover:bg-blue-100 transition-colors dark:bg-blue-900/20 dark:border-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/40">
+                    <button onClick={() => scrollTo(readingRef)} className="flex items-center space-x-2 text-sm font-bold text-teal-600 bg-teal-50 px-4 py-2 rounded-full border border-teal-100 hover:bg-teal-100 transition-colors dark:bg-teal-900/20 dark:border-teal-900/30 dark:text-teal-400 dark:hover:bg-teal-900/40">
                         <BookOpen size={16} /> <span>Reading ({readingItems.length})</span>
                     </button>
                     <button onClick={() => scrollTo(toReadRef)} className="flex items-center space-x-2 text-sm font-bold text-ink-600 bg-paper-100 px-4 py-2 rounded-full border border-paper-200 hover:bg-paper-200 transition-colors dark:bg-stone-800 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-700">
                         <Clock size={16} /> <span>To Read ({toReadItems.length})</span>
                     </button>
-                    <button onClick={() => scrollTo(completedRef)} className="flex items-center space-x-2 text-sm font-bold text-green-600 bg-green-50 px-4 py-2 rounded-full border border-green-100 hover:bg-green-100 transition-colors dark:bg-green-900/20 dark:border-green-900/30 dark:text-green-400 dark:hover:bg-green-900/40">
+                    <button onClick={() => scrollTo(completedRef)} className="flex items-center space-x-2 text-sm font-bold text-blue-600 bg-blue-50 px-4 py-2 rounded-full border border-blue-100 hover:bg-blue-100 transition-colors dark:bg-blue-900/20 dark:border-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/40">
                         <CheckCircle size={16} /> <span>Completed ({completedItems.length})</span>
                     </button>
                 </div>
             </header>
 
-            {/* Personalized Recommendations */}
-            {myRecs && myRecs.length > 0 && (
-                <section className="space-y-6">
+            {/* Combined Recommendations Feed */}
+            {recommendations.length > 0 && recommendations.map((section, idx) => (
+                <section key={idx} className="space-y-6">
                     <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                            <Sparkles size={20} className="text-amber-500" />
-                            <h2 className="text-2xl font-bold serif text-ink-900 dark:text-stone-100">Recommended for You</h2>
+                        <div className="flex items-center space-x-3">
+                            {section.type === 'GLOBAL' ? (
+                                <Star size={24} className="text-purple-500 fill-purple-500/10" />
+                            ) : (
+                                <Sparkles size={24} className="text-amber-500 fill-amber-500/10" />
+                            )}
+                            <div>
+                                <h2 className="text-2xl font-bold serif text-ink-900 dark:text-stone-100">{section.title}</h2>
+                                <p className="text-xs text-ink-400 dark:text-stone-500 font-medium italic">{section.description}</p>
+                            </div>
                         </div>
                     </div>
-                    <div className="flex gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x">
-                        {myRecs.map(book => {
+                    <div className="flex gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x -mx-4 px-4">
+                        {section.books.map(book => {
                             const isFlat = !!(book.title && (Array.isArray(book.authors) || typeof book.authors === 'string'));
                             const title = isFlat ? book.title : book.volumeInfo?.title;
                             const authors = isFlat ? book.authors : book.volumeInfo?.authors;
-                            const thumbnail = book.coverImage || book.thumbnail || (isFlat ? null : book.volumeInfo?.imageLinks?.thumbnail);
-                            const id = book.openLibraryId || book.id || (isFlat ? null : book.id);
+
+                            // High quality thumbnail handling
+                            let thumbnail = book.coverImage || book.thumbnail || (isFlat ? null : book.volumeInfo?.imageLinks?.thumbnail);
+                            if (thumbnail) {
+                                thumbnail = thumbnail.replace('http:', 'https:').replace('zoom=1', 'zoom=2');
+                            } else {
+                                thumbnail = `https://via.placeholder.com/300x450?text=${encodeURIComponent(title || 'No Cover')}`;
+                            }
+
+                            const id = book.googleBookId || book.id || (isFlat ? null : book.id);
 
                             return (
-                                <Link key={id} to={`/book/${id}`} className="min-w-[140px] w-[140px] snap-start group space-y-2">
-                                    <div className="aspect-[2/3] rounded-lg overflow-hidden border border-gray-100 dark:border-stone-800 shadow-sm transition-transform group-hover:-translate-y-1 group-hover:shadow-md relative bg-paper-100 dark:bg-stone-800">
+                                <Link key={id} to={`/book/${id}`} className="min-w-[140px] w-[140px] snap-start group space-y-3">
+                                    <div className="aspect-[2/3] rounded-xl overflow-hidden border border-gray-100 dark:border-stone-800 shadow-sm transition-all group-hover:-translate-y-2 group-hover:shadow-xl relative bg-paper-100 dark:bg-stone-800">
                                         <img
-                                            src={thumbnail?.replace('http:', 'https:') || 'https://via.placeholder.com/140x210?text=No+Cover'}
+                                            src={thumbnail}
                                             alt={title}
                                             className="w-full h-full object-cover"
+                                            loading="lazy"
                                             onError={(e) => {
                                                 e.target.onerror = null;
-                                                e.target.src = 'https://via.placeholder.com/140x210?text=No+Cover';
+                                                const fallbackIdx = (idx + (title?.length || 0)) % 4;
+                                                const colors = ['teal', 'indigo', 'amber', 'rose'];
+                                                e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(title || 'B')}&background=${colors[fallbackIdx]}&color=fff&size=512&bold=true`;
                                             }}
                                         />
                                         {book.reasons && book.reasons[0] && (
-                                            <div className="absolute inset-x-0 bottom-0 bg-black/70 backdrop-blur-sm p-2">
-                                                <p className="text-[9px] text-white font-medium leading-tight line-clamp-2">{book.reasons[0]}</p>
+                                            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-3 pt-6">
+                                                <p className="text-[10px] text-white/90 font-bold leading-tight line-clamp-2 uppercase tracking-wider">{book.reasons[0]}</p>
                                             </div>
                                         )}
+                                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <div className="bg-white/90 backdrop-blur-sm p-1.5 rounded-full shadow-lg">
+                                                <ChevronRight size={14} className="text-teal-600" />
+                                            </div>
+                                        </div>
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-gray-900 dark:text-stone-100 text-xs truncate serif">{title}</h3>
-                                        <p className="text-[10px] text-gray-400 dark:text-stone-500 truncate">{Array.isArray(authors) ? authors[0] : authors}</p>
+                                        <h3 className="font-bold text-gray-900 dark:text-stone-100 text-[13px] leading-tight line-clamp-2 serif group-hover:text-teal-600 transition-colors">{title}</h3>
+                                        <p className="text-[11px] text-gray-400 dark:text-stone-500 mt-1 truncate">{Array.isArray(authors) ? authors[0] : authors}</p>
                                     </div>
                                 </Link>
                             );
                         })}
                     </div>
                 </section>
-            )}
+            ))}
 
-            {/* Global Trending */}
-            {globalRecs && globalRecs.length > 0 && (
+            {/* Fallback Trending if no specific recs (though we should always have some) */}
+            {recommendations.length === 0 && globalRecs && globalRecs.length > 0 && (
                 <section className="space-y-6">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
-                            <Star size={20} className="text-purple-500" />
-                            <h2 className="text-2xl font-bold serif text-ink-900 dark:text-stone-100">Trending on Bookverse</h2>
+                            <Star size={24} className="text-purple-500" />
+                            <h2 className="text-2xl font-bold serif text-ink-900 dark:text-stone-100">Popular on Bookverse</h2>
                         </div>
                     </div>
                     <div className="flex gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x">
                         {globalRecs.map(book => (
-                            <Link key={book.id} to={`/book/${book.id}`} className="min-w-[140px] w-[140px] snap-start group space-y-2">
+                            <Link key={book.googleBookId} to={`/book/${book.googleBookId}`} className="min-w-[140px] w-[140px] snap-start group space-y-2">
                                 <div className="aspect-[2/3] rounded-lg overflow-hidden border border-gray-100 dark:border-stone-800 shadow-sm transition-transform group-hover:-translate-y-1 group-hover:shadow-md bg-paper-100 dark:bg-stone-800">
                                     <img
-                                        src={book.volumeInfo.imageLinks?.thumbnail?.replace('http:', 'https:') || 'https://via.placeholder.com/140x210?text=No+Cover'}
-                                        alt={book.volumeInfo.title}
+                                        src={book.coverImage?.replace('zoom=1', 'zoom=2') || 'https://via.placeholder.com/200x300'}
+                                        alt={book.title}
                                         className="w-full h-full object-cover"
-                                        onError={(e) => {
-                                            e.target.onerror = null;
-                                            e.target.src = 'https://via.placeholder.com/140x210?text=No+Cover';
-                                        }}
                                     />
                                 </div>
-                                <div>
-                                    <h3 className="font-bold text-gray-900 dark:text-stone-100 text-xs truncate serif">{book.volumeInfo.title}</h3>
-                                    <p className="text-[10px] text-gray-400 dark:text-stone-500 truncate">{book.volumeInfo.authors?.[0]}</p>
-                                </div>
+                                <h3 className="font-bold text-gray-900 dark:text-stone-100 text-xs truncate serif">{book.title}</h3>
+                                <p className="text-[10px] text-gray-400 dark:text-stone-500 truncate">{book.authors?.[0]}</p>
                             </Link>
                         ))}
                     </div>
@@ -230,13 +250,13 @@ const DashboardPage = () => {
 const ShelfItem = ({ googleBookId }) => {
     const { data: bookDetails } = useQuery({
         queryKey: ['book', googleBookId],
-        queryFn: () => import('../services/openLibraryService').then(m => m.getBookDetails(googleBookId)),
+        queryFn: () => import('../services/googleBooksService').then(m => m.getBookDetails(googleBookId)),
         staleTime: 1000 * 60 * 60,
     });
 
     if (!bookDetails) return <div className="w-full h-full bg-gray-50 dark:bg-stone-800 animate-pulse" />;
 
-    const thumbnail = bookDetails.volumeInfo.imageLinks?.thumbnail?.replace('http:', 'https:');
+    const thumbnail = bookDetails.volumeInfo.imageLinks?.thumbnail?.replace('http:', 'https:').replace('zoom=1', 'zoom=2');
     const rating = bookDetails.volumeInfo.averageRating;
 
     return (

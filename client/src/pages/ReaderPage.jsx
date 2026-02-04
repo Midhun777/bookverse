@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { getBookDetails } from '../services/openLibraryService';
+import { getBookDetails } from '../services/googleBooksService';
 import { getProgress, updateProgress } from '../services/progressService';
 import { updateReadingSession } from '../services/statsService';
 import { ChevronLeft, ChevronRight, Settings, Moon, Sun, Type, Loader2, X } from 'lucide-react';

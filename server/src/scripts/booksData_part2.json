@@ -1,0 +1,158 @@
+[
+    {
+        "googleBookId": "91PqZ7y6YkQC",
+        "title": "A Random Walk Down Wall Street",
+        "authors": [
+            "Burton G. Malkiel"
+        ],
+        "subjects": [
+            "FINANCE"
+        ],
+        "description": "The best investment guide money can buy.",
+        "coverImage": "https://books.google.com/books/content?id=91PqZ7y6YkQC&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 88
+    },
+    {
+        "googleBookId": "s7U6EAAAQBAJ",
+        "title": "Die With Zero",
+        "authors": [
+            "Bill Perkins"
+        ],
+        "subjects": [
+            "FINANCE"
+        ],
+        "description": "Getting all you can from your money and your life.",
+        "coverImage": "https://books.google.com/books/content?id=s7U6EAAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 85
+    },
+    {
+        "googleBookId": "8sc-AAAAYAAJ",
+        "title": "Pride and Prejudice",
+        "authors": [
+            "Jane Austen"
+        ],
+        "subjects": [
+            "LOVE"
+        ],
+        "description": "The classic tale of manners and marriage.",
+        "coverImage": "https://books.google.com/books/content?id=8sc-AAAAYAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 96
+    },
+    {
+        "googleBookId": "T9U6EAAAQBAJ",
+        "title": "The Notebook",
+        "authors": [
+            "Nicholas Sparks"
+        ],
+        "subjects": [
+            "LOVE"
+        ],
+        "description": "A moving story of enduring love.",
+        "coverImage": "https://books.google.com/books/content?id=T9U6EAAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 94
+    },
+    {
+        "googleBookId": "v8mSDAAAQBAL",
+        "title": "Jane Eyre",
+        "authors": [
+            "Charlotte Brontë"
+        ],
+        "subjects": [
+            "LOVE"
+        ],
+        "description": "A gothic romance about a governess and her employer.",
+        "coverImage": "https://books.google.com/books/content?id=v8mSDAAAQBAL&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 92
+    },
+    {
+        "googleBookId": "9sc-AAAAYAAJ",
+        "title": "Wuthering Heights",
+        "authors": [
+            "Emily Brontë"
+        ],
+        "subjects": [
+            "LOVE"
+        ],
+        "description": "A passionate story of love and revenge on the moors.",
+        "coverImage": "https://books.google.com/books/content?id=9sc-AAAAYAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 90
+    },
+    {
+        "googleBookId": "8sc-AAAAYAAK",
+        "title": "Gone with the Wind",
+        "authors": [
+            "Margaret Mitchell"
+        ],
+        "subjects": [
+            "LOVE"
+        ],
+        "description": "An epic romance set during the American Civil War.",
+        "coverImage": "https://books.google.com/books/content?id=8sc-AAAAYAAK&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 93
+    },
+    {
+        "googleBookId": "v8mSDAAAQBAJ",
+        "title": "A Game of Thrones",
+        "authors": [
+            "George R.R. Martin"
+        ],
+        "subjects": [
+            "FANTASY"
+        ],
+        "description": "The first book in A Song of Ice and Fire.",
+        "coverImage": "https://books.google.com/books/content?id=v8mSDAAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 99
+    },
+    {
+        "googleBookId": "HP_vAwAAQBAK",
+        "title": "The Name of the Wind",
+        "authors": [
+            "Patrick Rothfuss"
+        ],
+        "subjects": [
+            "FANTASY"
+        ],
+        "description": "The story of Kvothe, a legendary figure in his own time.",
+        "coverImage": "https://books.google.com/books/content?id=HP_vAwAAQBAK&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 95
+    },
+    {
+        "googleBookId": "v8mSDAAAQBAM",
+        "title": "Storm Front",
+        "authors": [
+            "Jim Butcher"
+        ],
+        "subjects": [
+            "FANTASY"
+        ],
+        "description": "The first case of Harry Dresden, wizard for hire.",
+        "coverImage": "https://books.google.com/books/content?id=v8mSDAAAQBAM&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 88
+    },
+    {
+        "googleBookId": "8sc-AAAAYAAL",
+        "title": "The Blade Itself",
+        "authors": [
+            "Joe Abercrombie"
+        ],
+        "subjects": [
+            "FANTASY"
+        ],
+        "description": "Logen Ninefingers, infamous barbarian, has finally run out of luck.",
+        "coverImage": "https://books.google.com/books/content?id=8sc-AAAAYAAL&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 87
+    },
+    {
+        "googleBookId": "v8mSDAAAQBAN",
+        "title": "Mistborn: The Final Empire",
+        "authors": [
+            "Brandon Sanderson"
+        ],
+        "subjects": [
+            "FANTASY"
+        ],
+        "description": "What if the Dark Lord won?",
+        "coverImage": "https://books.google.com/books/content?id=v8mSDAAAQBAN&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 96
+    }
+]

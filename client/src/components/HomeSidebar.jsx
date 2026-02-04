@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, Trophy, Target, ArrowRight } from 'lucide-react';
+import { BookOpen, Trophy, Target, ArrowRight, Heart } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { useQuery } from '@tanstack/react-query';
 import { getFavoriteBooks } from '../services/bookService';
@@ -115,6 +115,32 @@ const HomeSidebar = () => {
                         <Link to="/challenges" className="text-xs text-teal-600 font-bold hover:underline mt-1 block">View Challenge</Link>
                     </div>
                 </div>
+            </div>
+
+            {/* 3. Favorites Link */}
+            <div className="card-libra p-4">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <Heart size={20} className="text-rose-500 fill-rose-500" />
+                        <h3 className="font-bold text-ink-900 text-sm uppercase tracking-wider">Favorites</h3>
+                    </div>
+                    <Link to="/favorites" className="text-xs text-teal-600 font-bold hover:underline">View All</Link>
+                </div>
+                {favoriteBooks && favoriteBooks.length > 0 ? (
+                    <div className="mt-3 flex -space-x-2">
+                        {favoriteBooks.slice(0, 5).map((book, i) => (
+                            <Link key={book._id} to={`/book/${book.googleBookId}`} title={book.title}>
+                                <img
+                                    src={book.thumbnail || "https://via.placeholder.com/32x48?text=?"}
+                                    className="w-8 h-12 rounded border-2 border-white dark:border-stone-900 object-cover shadow-sm hover:-translate-y-1 transition-transform"
+                                    alt={book.title}
+                                />
+                            </Link>
+                        ))}
+                    </div>
+                ) : (
+                    <p className="text-[10px] text-ink-500 mt-2">No favorites added yet.</p>
+                )}
             </div>
 
             <div className="text-xs text-ink-400 text-center px-4">

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getBookDetails } from "../services/openLibraryService";
+import { getBookDetails } from "../services/googleBooksService";
 import BookCard from './BookCard';
 
 const ChallengeBookCard = ({ googleBookId }) => {

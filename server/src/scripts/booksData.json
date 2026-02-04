@@ -1,0 +1,509 @@
+[
+    {
+        "googleBookId": "P_e-EAAAQBAJ",
+        "title": "The Psychology of Money",
+        "authors": [
+            "Morgan Housel"
+        ],
+        "subjects": [
+            "FINANCE"
+        ],
+        "description": "Timeless lessons on wealth, greed, and happiness.",
+        "coverImage": "https://books.google.com/books/content?id=P_e-EAAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 95
+    },
+    {
+        "googleBookId": "reY8DwAAQBAJ",
+        "title": "Rich Dad Poor Dad",
+        "authors": [
+            "Robert T. Kiyosaki"
+        ],
+        "subjects": [
+            "FINANCE"
+        ],
+        "description": "What the rich teach their kids about money that the poor and middle class do not.",
+        "coverImage": "https://books.google.com/books/content?id=reY8DwAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 98
+    },
+    {
+        "googleBookId": "98mSDAAAQBAJ",
+        "title": "The Intelligent Investor",
+        "authors": [
+            "Benjamin Graham"
+        ],
+        "subjects": [
+            "FINANCE"
+        ],
+        "description": "The definitive book on value investing.",
+        "coverImage": "https://books.google.com/books/content?id=98mSDAAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 90
+    },
+    {
+        "googleBookId": "f0m6DwAAQBAJ",
+        "title": "Think and Grow Rich",
+        "authors": [
+            "Napoleon Hill"
+        ],
+        "subjects": [
+            "FINANCE"
+        ],
+        "description": "The landmark bestseller on personal success.",
+        "coverImage": "https://books.google.com/books/content?id=f0m6DwAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 88
+    },
+    {
+        "googleBookId": "_S-uDwAAQBAJ",
+        "title": "The Richest Man in Babylon",
+        "authors": [
+            "George S. Clason"
+        ],
+        "subjects": [
+            "FINANCE"
+        ],
+        "description": "Financial parables from ancient Babylon.",
+        "coverImage": "https://books.google.com/books/content?id=_S-uDwAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 92
+    },
+    {
+        "googleBookId": "v-t_BAAAQBAJ",
+        "title": "Principles: Life and Work",
+        "authors": [
+            "Ray Dalio"
+        ],
+        "subjects": [
+            "FINANCE"
+        ],
+        "description": "A radical way of thinking about work and life.",
+        "coverImage": "https://books.google.com/books/content?id=v-t_BAAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 94
+    },
+    {
+        "googleBookId": "77mSDAAAQBAJ",
+        "title": "The Millionaire Next Door",
+        "authors": [
+            "Thomas J. Stanley"
+        ],
+        "subjects": [
+            "FINANCE"
+        ],
+        "description": "The surprising secrets of America's wealthy.",
+        "coverImage": "https://books.google.com/books/content?id=77mSDAAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 87
+    },
+    {
+        "googleBookId": "9_N5DAAAQBAJ",
+        "title": "I Will Teach You to Be Rich",
+        "authors": [
+            "Ramit Sethi"
+        ],
+        "subjects": [
+            "FINANCE"
+        ],
+        "description": "A 6-week program that works.",
+        "coverImage": "https://books.google.com/books/content?id=9_N5DAAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 89
+    },
+    {
+        "googleBookId": "lK3pDAAAQBAJ",
+        "title": "The Total Money Makeover",
+        "authors": [
+            "Dave Ramsey"
+        ],
+        "subjects": [
+            "FINANCE"
+        ],
+        "description": "A proven plan for financial fitness.",
+        "coverImage": "https://books.google.com/books/content?id=lK3pDAAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 91
+    },
+    {
+        "googleBookId": "rA73DAAAQBAJ",
+        "title": "A Random Walk Down Wall Street",
+        "authors": [
+            "Burton G. Malkiel"
+        ],
+        "subjects": [
+            "FINANCE"
+        ],
+        "description": "The best investment guide money can buy.",
+        "coverImage": "https://books.google.com/books/content?id=rA73DAAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 86
+    },
+    {
+        "googleBookId": "HPvjDwAAQBAJ",
+        "title": "Atomic Habits",
+        "authors": [
+            "James Clear"
+        ],
+        "subjects": [
+            "SELF_HELP"
+        ],
+        "description": "An easy and proven way to build good habits.",
+        "coverImage": "https://books.google.com/books/content?id=HPvjDwAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 99
+    },
+    {
+        "googleBookId": "6-f_DwAAQBAJ",
+        "title": "The 7 Habits of Highly Effective People",
+        "authors": [
+            "Stephen R. Covey"
+        ],
+        "subjects": [
+            "SELF_HELP"
+        ],
+        "description": "Powerful lessons in personal change.",
+        "coverImage": "https://books.google.com/books/content?id=6-f_DwAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 97
+    },
+    {
+        "googleBookId": "Sj_vAwAAQBAJ",
+        "title": "Deep Work",
+        "authors": [
+            "Cal Newport"
+        ],
+        "subjects": [
+            "SELF_HELP"
+        ],
+        "description": "Rules for focused success in a distracted world.",
+        "coverImage": "https://books.google.com/books/content?id=Sj_vAwAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 88
+    },
+    {
+        "googleBookId": "U_pNDwAAQBAJ",
+        "title": "Indistractable",
+        "authors": [
+            "Nir Eyal"
+        ],
+        "subjects": [
+            "SELF_HELP"
+        ],
+        "description": "How to control your attention and choose your life.",
+        "coverImage": "https://books.google.com/books/content?id=U_pNDwAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 85
+    },
+    {
+        "googleBookId": "8sc_CQAAQBAJ",
+        "title": "Can't Hurt Me",
+        "authors": [
+            "David Goggins"
+        ],
+        "subjects": [
+            "SELF_HELP"
+        ],
+        "description": "Master your mind and defy the odds.",
+        "coverImage": "https://books.google.com/books/content?id=8sc_CQAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 96
+    },
+    {
+        "googleBookId": "v8mSDAAAQBAJ",
+        "title": "How to Win Friends and Influence People",
+        "authors": [
+            "Dale Carnegie"
+        ],
+        "subjects": [
+            "SELF_HELP"
+        ],
+        "description": "The most famous confidence-boosting book ever published.",
+        "coverImage": "https://books.google.com/books/content?id=v8mSDAAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 95
+    },
+    {
+        "googleBookId": "HP93DAAAQBAJ",
+        "title": "The Subtle Art of Not Giving a F*ck",
+        "authors": [
+            "Mark Manson"
+        ],
+        "subjects": [
+            "SELF_HELP"
+        ],
+        "description": "A counterintuitive approach to living a good life.",
+        "coverImage": "https://books.google.com/books/content?id=HP93DAAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 94
+    },
+    {
+        "googleBookId": "5sc_CQAAQBAJ",
+        "title": "The Power of Now",
+        "authors": [
+            "Eckhart Tolle"
+        ],
+        "subjects": [
+            "SELF_HELP"
+        ],
+        "description": "A guide to spiritual enlightenment.",
+        "coverImage": "https://books.google.com/books/content?id=5sc_CQAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 92
+    },
+    {
+        "googleBookId": "rS_vAwAAQBAJ",
+        "title": "Daring Greatly",
+        "authors": [
+            "Brené Brown"
+        ],
+        "subjects": [
+            "SELF_HELP"
+        ],
+        "description": "How the courage to be vulnerable transforms the way we live.",
+        "coverImage": "https://books.google.com/books/content?id=rS_vAwAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 90
+    },
+    {
+        "googleBookId": "9sc_CQAAQBAJ",
+        "title": "The Alchemist",
+        "authors": [
+            "Paulo Coelho"
+        ],
+        "subjects": [
+            "FANTASY"
+        ],
+        "description": "A magical story about following your dreams.",
+        "coverImage": "https://books.google.com/books/content?id=9sc_CQAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 98
+    },
+    {
+        "googleBookId": "8sc-AAAAYAAJ",
+        "title": "Pride and Prejudice",
+        "authors": [
+            "Jane Austen"
+        ],
+        "subjects": [
+            "LOVE"
+        ],
+        "description": "The classic tale of love and social standing.",
+        "coverImage": "https://books.google.com/books/content?id=8sc-AAAAYAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 96
+    },
+    {
+        "googleBookId": "HP_vAwAAQBAJ",
+        "title": "The Notebook",
+        "authors": [
+            "Nicholas Sparks"
+        ],
+        "subjects": [
+            "LOVE"
+        ],
+        "description": "A moving story of enduring love.",
+        "coverImage": "https://books.google.com/books/content?id=HP_vAwAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 93
+    },
+    {
+        "googleBookId": "v8mSDAAAQBAK",
+        "title": "Jane Eyre",
+        "authors": [
+            "Charlotte Brontë"
+        ],
+        "subjects": [
+            "LOVE"
+        ],
+        "description": "A gothic romance about a strong-willed governess.",
+        "coverImage": "https://books.google.com/books/content?id=v8mSDAAAQBAK&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 91
+    },
+    {
+        "googleBookId": "8sc-AAAAYAAJ",
+        "title": "Harry Potter and the Sorcerer's Stone",
+        "authors": [
+            "J.K. Rowling"
+        ],
+        "subjects": [
+            "FANTASY"
+        ],
+        "description": "The boy who lived and the beginning of a magical journey.",
+        "coverImage": "https://books.google.com/books/content?id=8sc-AAAAYAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 100
+    },
+    {
+        "googleBookId": "9sc-AAAAYAAJ",
+        "title": "The Hobbit",
+        "authors": [
+            "J.R.R. Tolkien"
+        ],
+        "subjects": [
+            "FANTASY"
+        ],
+        "description": "A classic adventure in Middle-earth.",
+        "coverImage": "https://books.google.com/books/content?id=9sc-AAAAYAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 96
+    },
+    {
+        "googleBookId": "v8mSDAAAQBAJ",
+        "title": "A Game of Thrones",
+        "authors": [
+            "George R.R. Martin"
+        ],
+        "subjects": [
+            "FANTASY"
+        ],
+        "description": "The epic struggle for power in Westeros.",
+        "coverImage": "https://books.google.com/books/content?id=v8mSDAAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 95
+    },
+    {
+        "googleBookId": "HP_vAwAAQBAK",
+        "title": "Mistborn: The Final Empire",
+        "authors": [
+            "Brandon Sanderson"
+        ],
+        "subjects": [
+            "FANTASY"
+        ],
+        "description": "A unique magic system and a heist for the ages.",
+        "coverImage": "https://books.google.com/books/content?id=HP_vAwAAQBAK&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 92
+    },
+    {
+        "googleBookId": "v8mSDAAAQBAL",
+        "title": "Gone Girl",
+        "authors": [
+            "Gillian Flynn"
+        ],
+        "subjects": [
+            "MYSTERY"
+        ],
+        "description": "A psychological thriller about a marriage gone wrong.",
+        "coverImage": "https://books.google.com/books/content?id=v8mSDAAAQBAL&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 94
+    },
+    {
+        "googleBookId": "8sc-AAAAYAAK",
+        "title": "The Girl with the Dragon Tattoo",
+        "authors": [
+            "Stieg Larsson"
+        ],
+        "subjects": [
+            "MYSTERY"
+        ],
+        "description": "A dark mystery involving a missing person and industrial secrets.",
+        "coverImage": "https://books.google.com/books/content?id=8sc-AAAAYAAK&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 93
+    },
+    {
+        "googleBookId": "9sc-AAAAYAAK",
+        "title": "The Da Vinci Code",
+        "authors": [
+            "Dan Brown"
+        ],
+        "subjects": [
+            "MYSTERY"
+        ],
+        "description": "A high-stakes puzzle in the heart of Paris.",
+        "coverImage": "https://books.google.com/books/content?id=9sc-AAAAYAAK&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 91
+    },
+    {
+        "googleBookId": "v8mSDAAAQBAM",
+        "title": "A Brief History of Time",
+        "authors": [
+            "Stephen Hawking"
+        ],
+        "subjects": [
+            "SCIENCE"
+        ],
+        "description": "Exploring the origins and fate of the universe.",
+        "coverImage": "https://books.google.com/books/content?id=v8mSDAAAQBAM&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 92
+    },
+    {
+        "googleBookId": "8sc-AAAAYAAL",
+        "title": "Cosmos",
+        "authors": [
+            "Carl Sagan"
+        ],
+        "subjects": [
+            "SCIENCE"
+        ],
+        "description": "A magnificent overview of science and the universe.",
+        "coverImage": "https://books.google.com/books/content?id=8sc-AAAAYAAL&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 95
+    },
+    {
+        "googleBookId": "9sc-AAAAYAAL",
+        "title": "Sapiens",
+        "authors": [
+            "Yuval Noah Harari"
+        ],
+        "subjects": [
+            "SCIENCE"
+        ],
+        "description": "A brief history of humankind.",
+        "coverImage": "https://books.google.com/books/content?id=9sc-AAAAYAAL&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 98
+    },
+    {
+        "googleBookId": "v8mSDAAAQBAN",
+        "title": "The Guns of August",
+        "authors": [
+            "Barbara W. Tuchman"
+        ],
+        "subjects": [
+            "HISTORY"
+        ],
+        "description": "The events leading up to World War I.",
+        "coverImage": "https://books.google.com/books/content?id=v8mSDAAAQBAN&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 89
+    },
+    {
+        "googleBookId": "8sc-AAAAYAAM",
+        "title": "A People's History of the United States",
+        "authors": [
+            "Howard Zinn"
+        ],
+        "subjects": [
+            "HISTORY"
+        ],
+        "description": "American history from the perspective of the marginalized.",
+        "coverImage": "https://books.google.com/books/content?id=8sc-AAAAYAAM&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 87
+    },
+    {
+        "googleBookId": "9sc-AAAAYAAM",
+        "title": "Team of Rivals",
+        "authors": [
+            "Doris Kearns Goodwin"
+        ],
+        "subjects": [
+            "HISTORY"
+        ],
+        "description": "The political genius of Abraham Lincoln.",
+        "coverImage": "https://books.google.com/books/content?id=9sc-AAAAYAAM&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 91
+    },
+    {
+        "googleBookId": "v8mSDAAAQBAO",
+        "title": "Clean Code",
+        "authors": [
+            "Robert C. Martin"
+        ],
+        "subjects": [
+            "TECHNOLOGY"
+        ],
+        "description": "A handbook of agile software craftsmanship.",
+        "coverImage": "https://books.google.com/books/content?id=v8mSDAAAQBAO&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 96
+    },
+    {
+        "googleBookId": "8sc-AAAAYAAN",
+        "title": "The Pragmatic Programmer",
+        "authors": [
+            "Andrew Hunt"
+        ],
+        "subjects": [
+            "TECHNOLOGY"
+        ],
+        "description": "From journeyman to master.",
+        "coverImage": "https://books.google.com/books/content?id=8sc-AAAAYAAN&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 94
+    },
+    {
+        "googleBookId": "9sc-AAAAYAAN",
+        "title": "Code: The Hidden Language",
+        "authors": [
+            "Charles Petzold"
+        ],
+        "subjects": [
+            "TECHNOLOGY"
+        ],
+        "description": "How computer hardware and software interact.",
+        "coverImage": "https://books.google.com/books/content?id=9sc-AAAAYAAN&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "popularityScore": 92
+    }
+]

@@ -8,8 +8,8 @@ const Activity = require('../models/Activity');
 const getBookById = async (req, res) => {
     try {
         const { id } = req.params;
-        // Search by openLibraryId (which now stores Google ID or OL ID)
-        const book = await BookMaster.findOne({ openLibraryId: id });
+        // Search by googleBookId (which now stores Google ID or OL ID)
+        const book = await BookMaster.findOne({ googleBookId: id });
 
         if (!book) {
             return res.status(404).json({ message: 'Book not found' });

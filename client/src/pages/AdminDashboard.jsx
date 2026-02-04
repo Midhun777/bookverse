@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../services/api';
-import { Loader2, Trash2, Ban, CheckCircle, TrendingUp, Star, Heart, MessageSquare, Settings as SettingsIcon } from 'lucide-react';
+import { Loader2, Trash2, Ban, CheckCircle, TrendingUp, Star, Heart, MessageSquare, Settings as SettingsIcon, BookOpen } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, PieChart, Pie, LineChart, Line, CartesianGrid, Legend } from 'recharts';
 
@@ -32,6 +32,15 @@ const AdminDashboard = () => {
             return res.data;
         },
         enabled: activeTab === 'reviews'
+    });
+
+    const { data: seedBooks, isLoading: isLoadingSeedBooks } = useQuery({
+        queryKey: ['seedBooks'],
+        queryFn: async () => {
+            const res = await api.get('/admin/books');
+            return res.data;
+        },
+        enabled: activeTab === 'books'
     });
 
     const [settingsData, setSettingsData] = React.useState({
@@ -118,6 +127,12 @@ const AdminDashboard = () => {
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition whitespace-nowrap ${activeTab === 'reviews' ? 'bg-white dark:bg-stone-800 text-teal-600 shadow-sm' : 'text-ink-600 hover:text-ink-900'}`}
                     >
                         Moderation
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('books')}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition whitespace-nowrap ${activeTab === 'books' ? 'bg-white dark:bg-stone-800 text-teal-600 shadow-sm' : 'text-ink-600 hover:text-ink-900'}`}
+                    >
+                        Seed Books
                     </button>
                     <button
                         onClick={() => setActiveTab('settings')}
@@ -306,54 +321,83 @@ const AdminDashboard = () => {
                 </div>
             )}
 
-            {activeTab === 'reviews' && (
+            {activeTab === 'books' && (
                 <div className="card-libra overflow-hidden animate-in fade-in duration-500">
-                    <div className="px-6 py-4 border-b border-paper-100">
-                        <h2 className="text-xl font-bold text-ink-900">Review Moderation</h2>
+                    <div className="px-6 py-4 border-b border-paper-100 flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                            <div className="p-2 bg-teal-50 dark:bg-teal-900/30 text-teal-600 rounded-lg">
+                                <BookOpen size={20} />
+                            </div>
+                            <h2 className="text-xl font-bold text-ink-900">Recommendation Dataset</h2>
+                        </div>
+                        <span className="bg-teal-50 dark:bg-teal-900/30 text-teal-600 px-3 py-1 rounded-full text-xs font-bold">{seedBooks?.length || 0} Books</span>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full text-left">
                             <thead className="bg-paper-100 text-ink-600 text-sm">
                                 <tr>
-                                    <th className="px-6 py-3">Book</th>
-                                    <th className="px-6 py-3">Author</th>
-                                    <th className="px-6 py-3">Rating</th>
-                                    <th className="px-6 py-3">Review</th>
-                                    <th className="px-6 py-3 text-right">Actions</th>
+                                    <th className="px-6 py-3">Book Details</th>
+                                    <th className="px-6 py-3">Categories</th>
+                                    <th className="px-6 py-3 text-center">Score</th>
+                                    <th className="px-6 py-3">Language</th>
+                                    <th className="px-6 py-3 text-right">Added On</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-paper-100">
-                                {allReviews?.map(review => (
-                                    <tr key={review._id} className="hover:bg-paper-50 transition">
-                                        <td className="px-6 py-4 text-sm font-mono text-ink-400 truncate max-w-[100px]">{review.googleBookId}</td>
+                                {seedBooks?.map(book => (
+                                    <tr key={book._id} className="hover:bg-paper-50 transition">
                                         <td className="px-6 py-4">
-                                            <p className="font-medium text-ink-900">{review.userId?.name || 'Deleted User'}</p>
-                                            <p className="text-xs text-ink-600">{review.userId?.email}</p>
-                                        </td>
-                                        <td className="px-6 py-4 text-amber-500">
-                                            <div className="flex">
-                                                {[...Array(review.rating)].map((_, i) => <Star key={i} size={14} fill="currentColor" />)}
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-12 h-16 rounded-lg overflow-hidden bg-paper-100 flex-shrink-0 shadow-sm border border-paper-200">
+                                                    {book.coverImage ? (
+                                                        <img src={book.coverImage} className="w-full h-full object-cover" alt={book.title} />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center text-ink-300">
+                                                            <BookOpen size={20} />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="min-w-0">
+                                                    <p className="font-bold text-ink-900 truncate max-w-[250px]">{book.title}</p>
+                                                    <p className="text-xs text-ink-500 truncate">{book.authors?.join(', ') || 'Unknown Author'}</p>
+                                                    <p className="text-[10px] font-mono text-ink-300 mt-1 uppercase select-all">ID: {book.googleBookId}</p>
+                                                </div>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 text-sm text-ink-600 max-w-xs truncate">{review.reviewText}</td>
-                                        <td className="px-6 py-4 text-right">
-                                            <button
-                                                onClick={() => {
-                                                    if (confirm('Delete this review?')) deleteReviewMutation.mutate(review._id)
-                                                }}
-                                                className="p-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-xl transition"
-                                            >
-                                                <Trash2 size={18} />
-                                            </button>
+                                        <td className="px-6 py-4">
+                                            <div className="flex flex-wrap gap-1 max-w-[200px]">
+                                                {book.subjects?.slice(0, 3).map((sub, i) => (
+                                                    <span key={i} className="px-2 py-0.5 bg-paper-200 text-ink-600 rounded text-[10px] uppercase font-bold">
+                                                        {sub}
+                                                    </span>
+                                                ))}
+                                                {book.subjects?.length > 3 && (
+                                                    <span className="text-[10px] text-ink-400 font-bold">+{book.subjects.length - 3}</span>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-center">
+                                            <div className="inline-flex items-center gap-1 font-bold text-teal-600 bg-teal-50 px-2 py-1 rounded-lg">
+                                                <TrendingUp size={14} />
+                                                {book.popularityScore}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <span className="text-xs font-bold text-ink-600 uppercase bg-paper-100 px-2 py-1 rounded">
+                                                {book.language || 'eng'}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-right text-sm text-ink-400">
+                                            {new Date(book.createdAt).toLocaleDateString()}
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
-                        {(!allReviews || allReviews.length === 0) && !isLoadingReviews && (
-                            <div className="py-20 text-center text-gray-500">No community reviews found to moderate.</div>
+                        {(!seedBooks || seedBooks.length === 0) && !isLoadingSeedBooks && (
+                            <div className="py-20 text-center text-gray-500">No seeded books found in the dataset.</div>
                         )}
-                        {isLoadingReviews && <div className="flex justify-center py-10"><Loader2 className="animate-spin text-blue-600" /></div>}
+                        {isLoadingSeedBooks && <div className="flex justify-center py-10"><Loader2 className="animate-spin text-blue-600" /></div>}
                     </div>
                 </div>
             )}

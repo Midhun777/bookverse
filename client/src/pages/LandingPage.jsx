@@ -49,7 +49,14 @@ const LandingPage = () => {
     const readingBooks = myLists?.filter(item => item.status === 'READING') || [];
     const toReadBooks = myLists?.filter(item => item.status === 'TO_READ') || [];
     const recentSearches = Array.from(new Set(myActivities?.filter(act => act.actionType === 'SEARCH').map(act => act.keyword))).slice(0, 8);
-    const recentlyViewed = myActivities?.filter(act => act.actionType === 'VIEW').slice(0, 4);
+
+    // Deduplicate recently viewed by googleBookId
+    const seenViewed = new Set();
+    const recentlyViewed = (myActivities?.filter(act => act.actionType === 'VIEW') || []).filter(act => {
+        if (!act.googleBookId || seenViewed.has(act.googleBookId)) return false;
+        seenViewed.add(act.googleBookId);
+        return true;
+    }).slice(0, 4);
 
     if (isLoading) return (
         <div className="grid grid-cols-12 gap-8 animate-pulse">
@@ -303,8 +310,9 @@ const LandingPage = () => {
                                 <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 gap-6">
                                     {recentlyViewed.map(act => (
                                         <BookCard key={act._id} book={{
-                                            googleBookId: act.openLibraryId,
+                                            googleBookId: act.googleBookId,
                                             title: act.bookTitle,
+                                            authors: act.bookAuthor ? [act.bookAuthor] : [],
                                             coverImage: act.bookCover
                                         }} />
                                     ))}
@@ -323,14 +331,26 @@ const LandingPage = () => {
 const PublicShelfItem = ({ googleBookId }) => {
     const { data: bookDetails } = useQuery({
         queryKey: ['book', googleBookId],
-        queryFn: () => import('../services/openLibraryService').then(m => m.getBookDetails(googleBookId)),
+        queryFn: () => import('../services/googleBooksService').then(m => m.getBookDetails(googleBookId)),
         staleTime: 1000 * 60 * 60,
     });
 
     if (!bookDetails) return <div className="w-full h-full bg-paper-100 dark:bg-stone-900 animate-pulse" />;
 
-    const thumbnail = bookDetails.volumeInfo.imageLinks?.thumbnail?.replace('http:', 'https:');
-    return <img src={thumbnail} alt={bookDetails.volumeInfo.title} className="w-full h-full object-cover" />;
+    const thumbnail = bookDetails.volumeInfo.imageLinks?.thumbnail?.replace('http:', 'https:').replace('zoom=1', 'zoom=2');
+    return (
+        <img
+            src={thumbnail || `https://ui-avatars.com/api/?name=${encodeURIComponent(bookDetails.volumeInfo.title || 'B')}&background=0D9488&color=fff&size=512&bold=true`}
+            alt={bookDetails.volumeInfo.title}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+                e.target.onerror = null;
+                const colors = ['0D9488', '0891B2', '4F46E5', '7C3AED', 'DB2777', '2563EB'];
+                const fallbackIdx = Math.abs(googleBookId?.charCodeAt(0) || 0) % colors.length;
+                e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(bookDetails.volumeInfo.title || 'B')}&background=${colors[fallbackIdx]}&color=fff&size=512&bold=true`;
+            }}
+        />
+    );
 };
 
 export default LandingPage;

@@ -60,17 +60,17 @@ const POPULAR_BOOKS = [
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-const fetchBookFromOL = async (title, author) => {
+const fetchBookFromGoogle = async (title, author) => {
     try {
-        console.log(`Fetching: ${title}...`);
-        const query = `title:${title} author:${author}`;
-        const response = await axios.get(`https://openlibrary.org/search.json`, {
-            params: { q: query, limit: 1 },
+        console.log(`Fetching: ${title} by ${author}...`);
+        const query = `intitle:${title} inauthor:${author}`;
+        const response = await axios.get(`https://www.googleapis.com/books/v1/volumes`, {
+            params: { q: query, maxResults: 1 },
             timeout: 10000
         });
 
-        if (response.data.docs && response.data.docs.length > 0) {
-            return response.data.docs[0];
+        if (response.data.items && response.data.items.length > 0) {
+            return response.data.items[0];
         }
         return null;
     } catch (error) {
@@ -79,35 +79,45 @@ const fetchBookFromOL = async (title, author) => {
     }
 };
 
-const normalizeAndSaveBook = async (olData, manualThemes) => {
-    if (!olData) return null;
+const normalizeAndSaveBook = async (googleData, manualThemes) => {
+    if (!googleData) return null;
 
-    const { key, title, author_name, cover_i, subject, ratings_average, ratings_count, first_publish_year, number_of_pages_median } = olData;
+    const { id, volumeInfo } = googleData;
+    const {
+        title,
+        authors,
+        description,
+        categories,
+        averageRating,
+        ratingsCount,
+        publishedDate,
+        pageCount,
+        imageLinks
+    } = volumeInfo;
+    const publishedYear = publishedDate ? parseInt(publishedDate.split('-')[0]) : null;
 
-    // Check if exists
-    const existing = await BookMaster.findOne({ openLibraryId: key });
-    if (existing) return existing;
-
-    const book = new BookMaster({
-        openLibraryId: key,
-        title: title,
-        authors: author_name || ['Unknown'],
-        description: `First published in ${first_publish_year}. A classic work.`, // Placeholder as OL search doesn't verify desc
-        subjects: subject ? subject.slice(0, 10) : [],
-        themes: manualThemes || [],
-        firstPublishYear: first_publish_year,
-        pageCount: number_of_pages_median || 0,
-        averageRating: ratings_average ? parseFloat(ratings_average.toFixed(1)) : 0,
-        ratingsCount: ratings_count || 0,
-        coverImage: cover_i ? `https://covers.openlibrary.org/b/id/${cover_i}-L.jpg` : null,
-        popularityScore: (ratings_count || 0) + (ratings_average || 0) * 10,
-        isClassic: first_publish_year < 1980,
-        isTrending: (ratings_count > 1000),
-        isPublicDomain: first_publish_year < 1928,
-        source: 'open_library'
-    });
-
-    await book.save();
+    const book = await BookMaster.findOneAndUpdate(
+        { googleBookId: id },
+        {
+            googleBookId: id,
+            title: title,
+            authors: authors || ['Unknown'],
+            description: description || `A fascinating book about ${manualThemes?.[0] || 'various topics'}.`,
+            subjects: categories || [],
+            themes: manualThemes || [],
+            firstPublishYear: publishedYear,
+            pageCount: pageCount || 0,
+            averageRating: averageRating || 0,
+            ratingsCount: ratingsCount || 0,
+            coverImage: imageLinks?.thumbnail?.replace('http:', 'https:') || null,
+            popularityScore: (ratingsCount || 0) + (averageRating || 0) * 10,
+            isClassic: publishedYear && publishedYear < 1980,
+            isTrending: ratingsCount > 1000,
+            isPublicDomain: publishedYear && publishedYear < 1928,
+            source: 'google_books'
+        },
+        { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
     return book;
 };
 
@@ -119,9 +129,9 @@ const seed = async () => {
     // 1. Seed Books
     const seededBooks = [];
     for (const bookInfo of POPULAR_BOOKS) {
-        const olData = await fetchBookFromOL(bookInfo.title, bookInfo.author);
-        if (olData) {
-            const savedBook = await normalizeAndSaveBook(olData, bookInfo.themes);
+        const googleData = await fetchBookFromGoogle(bookInfo.title, bookInfo.author);
+        if (googleData) {
+            const savedBook = await normalizeAndSaveBook(googleData, bookInfo.themes);
             if (savedBook) seededBooks.push(savedBook);
         }
         await sleep(500); // Be rate limit friendly
@@ -137,7 +147,7 @@ const seed = async () => {
             username: 'demoreader',
             name: 'Demo Reader',
             email: SEED_USER_EMAIL,
-            password: 'password123', // Ideally hashed, but this is a rough seed script
+            password: 'password123',
             isAdmin: false
         });
         console.log('Created Demo User.');
@@ -156,8 +166,7 @@ const seed = async () => {
         activityLog.push({
             userId: user._id,
             actionType: action,
-            openLibraryId: book.openLibraryId,
-            googleBookId: book.openLibraryId, // Legacy compat
+            googleBookId: book.googleBookId,
             authors: book.authors,
             category: book.subjects?.[0] || 'General',
             ...extra
@@ -173,7 +182,7 @@ const seed = async () => {
 
     // B. Likes (Fiction)
     const fantasyBooks = seededBooks.filter(b => b.themes.includes('Fantasy'));
-    fantasyBooks.slice(0, 3).forEach(b => log('LIKE', b));
+    fantasyBooks.slice(0, 3).forEach(b => log('SAVE', b));
 
     // C. Views (Recent exploration)
     const recentViews = seededBooks.slice(0, 5);

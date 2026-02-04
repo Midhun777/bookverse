@@ -29,8 +29,8 @@ const getUserProfile = async (userId) => {
     if (activities.length === 0) return null;
 
     activities.forEach(act => {
-        if (act.openLibraryId && (act.actionType === 'SAVE' || act.actionType === 'COMPLETE')) {
-            profile.excludeIds.add(act.openLibraryId);
+        if (act.googleBookId && (act.actionType === 'SAVE' || act.actionType === 'COMPLETE')) {
+            profile.excludeIds.add(act.googleBookId);
         }
 
         if (act.keyword) {
@@ -120,12 +120,15 @@ const getRecommendations = async (userId) => {
 
     // 2. Build sections for TOP 2 genres
     const seenTitles = new Set();
+    const topActivities = await Activity.find({ userId, actionType: 'SEARCH' })
+        .sort({ createdAt: -1 })
+        .limit(5);
 
     for (const genre of sortedGenres.slice(0, 2)) {
         const books = await BookMaster.find({
             subjects: genre,
-            openLibraryId: { $nin: excludeIds }
-        }).limit(10); // Fetch more to allow for title filtering
+            googleBookId: { $nin: excludeIds }
+        }).limit(10);
 
         const uniqueBooks = [];
         for (const b of books) {
@@ -137,23 +140,32 @@ const getRecommendations = async (userId) => {
         }
 
         if (uniqueBooks.length > 0) {
+            // Find the specific keyword that triggered this genre
+            const matchingActivity = topActivities.find(act =>
+                act.subjects && act.subjects.includes(genre)
+            );
+
+            const sectionTitle = matchingActivity
+                ? `Because you searched for "${matchingActivity.keyword}"`
+                : `Based on your interest in ${genre}`;
+
             sections.push({
-                title: `Because you like ${genre}`,
-                description: `Recommendations based on your interest in ${genre}.`,
+                title: sectionTitle,
+                description: `Curated ${genre.toLowerCase()} books chosen for you.`,
                 books: uniqueBooks.map(b => ({
                     ...b.toObject(),
-                    reasons: [`Recommended for ${genre} fans`]
+                    reasons: [matchingActivity ? `Matches your search for "${matchingActivity.keyword}"` : `Top pick in ${genre}`]
                 })),
                 type: 'PERSONAL_GENRE'
             });
             // Update excludeIds to avoid duplication between sections
-            uniqueBooks.forEach(b => excludeIds.push(b.openLibraryId));
+            uniqueBooks.forEach(b => excludeIds.push(b.googleBookId));
         }
     }
 
     // 3. "Recommended for You" Mixed section
     const generalCandidates = await BookMaster.find({
-        openLibraryId: { $nin: excludeIds }
+        googleBookId: { $nin: excludeIds }
     }).limit(100);
 
     const personalPicks = scoreBooks(generalCandidates, profile).slice(0, 6);

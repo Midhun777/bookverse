@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import api from '../services/api';
 import { Loader2, BookOpen, Search, Filter } from 'lucide-react';
 import ListBookCard from '../components/ListBookCard';
-import { getFavoriteBooks } from '../services/bookService';
 
 const MyListsPage = () => {
     const [activeTab, setActiveTab] = useState('TO_READ');
@@ -17,23 +16,14 @@ const MyListsPage = () => {
         }
     });
 
-    const { data: favoriteBooks, isLoading: favLoading } = useQuery({
-        queryKey: ['favoriteBooks'],
-        queryFn: getFavoriteBooks,
-        enabled: activeTab === 'FAVORITES'
-    });
+    const isLoading = listLoading;
 
-    const isLoading = listLoading || (activeTab === 'FAVORITES' && favLoading);
-
-    const filteredItems = activeTab === 'FAVORITES'
-        ? (favoriteBooks || []).map(b => ({ ...b, _id: b._id, googleBookId: b.googleBookId }))
-        : listItems?.filter(item => item.status === activeTab) || [];
+    const filteredItems = listItems?.filter(item => item.status === activeTab) || [];
 
     const tabs = [
         { id: 'READING', label: 'Currently Reading', count: listItems?.filter(i => i.status === 'READING').length },
         { id: 'TO_READ', label: 'Want to Read', count: listItems?.filter(i => i.status === 'TO_READ').length },
         { id: 'COMPLETED', label: 'Read', count: listItems?.filter(i => i.status === 'COMPLETED').length },
-        { id: 'FAVORITES', label: 'Favorites', count: favoriteBooks?.length || 0 },
     ];
 
     if (isLoading) return <div className="flex justify-center py-20"><Loader2 className="animate-spin text-teal-600 w-10 h-10" /></div>;
@@ -108,7 +98,7 @@ const MyListsPage = () => {
                     {filteredItems.length > 0 ? (
                         filteredItems.map(item => (
                             <div key={item._id} className="px-4">
-                                <ListBookCard item={item} showRemove={activeTab !== 'FAVORITES'} />
+                                <ListBookCard item={item} showRemove={true} />
                             </div>
                         ))
                     ) : (

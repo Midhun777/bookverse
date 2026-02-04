@@ -1,20 +1,46 @@
 const Activity = require('../models/Activity');
 const BookMaster = require('../models/BookMaster');
+const { detectGenre } = require('../utils/genreMap');
 
 // @desc    Log a user activity
 // @route   POST /api/activities/log
 // @access  Private
 const logActivity = async (req, res) => {
     try {
-        const { actionType, keyword, openLibraryId, subjects: bodySubjects } = req.body;
+        const {
+            actionType,
+            keyword,
+            googleBookId: gId,
+            openLibraryId: oId,
+            subjects: bodySubjects,
+            bookTitle: bTitle,
+            bookAuthor: bAuthor,
+            bookCover: bCover
+        } = req.body;
 
+        const googleBookId = gId || oId;
         let subjects = bodySubjects || [];
-        if (!subjects.length && openLibraryId) {
-            // Normalizing ID (removing /works/ if present)
-            const cleanId = openLibraryId.includes('/works/') ? openLibraryId.split('/works/')[1] : openLibraryId;
-            const book = await BookMaster.findOne({ openLibraryId: cleanId });
+        let bookTitle = bTitle;
+        let bookAuthor = bAuthor;
+        let bookCover = bCover;
+
+        // If it's a SEARCH, try to detect genre from keyword
+        if (actionType === 'SEARCH' && keyword) {
+            const detectedGenre = detectGenre(keyword);
+            if (detectedGenre) {
+                subjects = [detectedGenre];
+            }
+        }
+
+        // Try to enrich from BookMaster if metadata is missing
+        if (googleBookId && (!bookTitle || !bookCover)) {
+            const cleanId = googleBookId.includes('/works/') ? googleBookId.split('/works/')[1] : googleBookId;
+            const book = await BookMaster.findOne({ googleBookId: cleanId });
             if (book) {
-                subjects = book.subjects || [];
+                if (!subjects.length) subjects = book.subjects || [];
+                if (!bookTitle) bookTitle = book.title;
+                if (!bookAuthor) bookAuthor = book.authors?.[0];
+                if (!bookCover) bookCover = book.coverImage;
             }
         }
 
@@ -22,7 +48,10 @@ const logActivity = async (req, res) => {
             userId: req.user._id,
             actionType,
             keyword,
-            openLibraryId,
+            googleBookId,
+            bookTitle,
+            bookAuthor,
+            bookCover,
             subjects
         });
 
@@ -31,6 +60,23 @@ const logActivity = async (req, res) => {
         console.error('Log Activity Error:', error);
         res.status(500).json({ message: 'Server error logging activity' });
     }
+};
+
+const enrichActivities = async (activities) => {
+    return await Promise.all(activities.map(async (act) => {
+        const actObj = act.toObject();
+        if (act.googleBookId && (!actObj.bookTitle || !actObj.bookCover)) {
+            const book = await BookMaster.findOne({ googleBookId: act.googleBookId });
+            if (book) {
+                actObj.bookTitle = actObj.bookTitle || book.title;
+                actObj.bookCover = actObj.bookCover || book.coverImage;
+                actObj.bookAuthor = actObj.bookAuthor || book.authors?.[0];
+            }
+        }
+        // Fallbacks
+        if (!actObj.bookTitle) actObj.bookTitle = act.keyword || 'Unknown Book';
+        return actObj;
+    }));
 };
 
 // @desc    Get user activity history
@@ -42,21 +88,8 @@ const getMyActivities = async (req, res) => {
             .sort({ createdAt: -1 })
             .limit(20);
 
-        const enrichedActivities = await Promise.all(activities.map(async (act) => {
-            const actObj = act.toObject();
-            if (act.openLibraryId) {
-                const book = await BookMaster.findOne({ openLibraryId: act.openLibraryId });
-                if (book) {
-                    actObj.bookTitle = book.title;
-                    actObj.bookCover = book.coverImage;
-                } else if (!actObj.bookTitle) {
-                    actObj.bookTitle = act.keyword || 'Unknown Book';
-                }
-            }
-            return actObj;
-        }));
-
-        res.json(enrichedActivities);
+        const enriched = await enrichActivities(activities);
+        res.json(enriched);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
@@ -73,33 +106,8 @@ const getGlobalActivity = async (req, res) => {
             .limit(20)
             .populate('userId', 'name avatar');
 
-        // Enrich with book details if possible (optional, but good for covers)
-        // For now, rely on stored keyword as title.
-        // If we need covers, we might need to query BookMaster for each googleBookId.
-        // Let's do a quick map if needed, or just send raw activities.
-        // Frontend LaunchPage mapped: item.bookTitle (we can use keyword).
-        // Frontent LaunchPage mapped: item.user.name.
-        // Frontend LaunchPage mapped: item.createdAt.
-        // Frontend LaunchPage mapped: item.googleBookId.
-
-        // Let's attach book titles/covers if missing?
-        // Activity schema has 'keyword' which is usually title.
-
-        const enrichedActivities = await Promise.all(activities.map(async (act) => {
-            const actObj = act.toObject();
-            if (act.googleBookId) {
-                const book = await BookMaster.findOne({ openLibraryId: act.googleBookId });
-                if (book) {
-                    actObj.bookTitle = book.title;
-                    actObj.bookCover = book.coverImage;
-                } else {
-                    actObj.bookTitle = act.keyword || 'Unknown Book';
-                }
-            }
-            return actObj;
-        }));
-
-        res.json(enrichedActivities);
+        const enriched = await enrichActivities(activities);
+        res.json(enriched);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });

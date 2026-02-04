@@ -97,9 +97,9 @@ const getAppStats = async (req, res) => {
             ...likeStats.map(s => s._id)
         ])];
 
-        const books = await BookMaster.find({ openLibraryId: { $in: allBookIds } }).select('openLibraryId title');
+        const books = await BookMaster.find({ googleBookId: { $in: allBookIds } }).select('googleBookId title');
         const bookMap = {};
-        books.forEach(b => bookMap[b.openLibraryId] = b.title);
+        books.forEach(b => bookMap[b.googleBookId] = b.title);
 
         const enrichStats = (stats) => stats.map(s => ({
             _id: bookMap[s._id] || s._id, // Use title if found, else ID
@@ -126,7 +126,12 @@ const getAppStats = async (req, res) => {
         // 5. Categorical Distribution
         const categoryStats = await Favorite.aggregate([
             { $unwind: "$categories" },
-            { $group: { _id: "$categories", count: { $sum: 1 } } },
+            {
+                $group: {
+                    _id: { $toUpper: "$categories" },
+                    count: { $sum: 1 }
+                }
+            },
             { $sort: { count: -1 } },
             { $limit: 10 }
         ]);
@@ -186,15 +191,25 @@ const getSettings = async (req, res) => {
     }
 };
 
-// @desc    Get all reviews for management
+// @desc    Get all reviews
 // @route   GET /api/admin/reviews
 // @access  Private/Admin
 const getAllReviews = async (req, res) => {
     try {
-        const reviews = await Review.find({})
-            .populate('userId', 'name email avatar')
-            .sort({ createdAt: -1 });
+        const reviews = await Review.find({}).sort({ createdAt: -1 });
         res.json(reviews);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Get all books from recommendation dataset
+// @route   GET /api/admin/books
+// @access  Private/Admin
+const getAllSeedBooks = async (req, res) => {
+    try {
+        const books = await BookMaster.find({}).sort({ createdAt: -1 });
+        res.json(books);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -207,5 +222,6 @@ module.exports = {
     updateSettings,
     getAppStats,
     getSettings,
-    getAllReviews
+    getAllReviews,
+    getAllSeedBooks
 };

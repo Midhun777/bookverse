@@ -80,7 +80,7 @@ const getMyLists = async (req, res) => {
 
         const enrichedLists = await Promise.all(lists.map(async (item) => {
             const itemObj = item.toObject();
-            const book = await BookMaster.findOne({ openLibraryId: item.googleBookId });
+            const book = await BookMaster.findOne({ googleBookId: item.googleBookId });
             if (book) {
                 itemObj.bookTitle = book.title;
                 itemObj.bookCover = book.coverImage;
