@@ -6,7 +6,7 @@ import BookCard from '../components/BookCard';
 import HomeSidebar from '../components/HomeSidebar';
 import HeroSection from '../components/HeroSection';
 import { useAuthStore } from '../store/authStore';
-import { TrendingUp, MessageSquare, Star, User, Bookmark, ChevronRight } from 'lucide-react';
+import { TrendingUp, MessageSquare, Star, User, Bookmark, ChevronRight, Sparkles, ArrowRight } from 'lucide-react';
 import api from '../services/api';
 import { getMyActivities } from '../services/activityService';
 import { getMyLists } from '../services/listService';
@@ -164,35 +164,47 @@ const LandingPage = () => {
 
                     {/* Right Column within main */}
                     <aside className="xl:col-span-4 space-y-8">
-                        {/* Weekly Recommendation Card */}
-                        <div className="card-libra p-6 bg-paper-50 border-teal-100 overflow-hidden relative">
-                            <div className="absolute -top-6 -right-6 w-24 h-24 bg-teal-500/10 rounded-full blur-2xl"></div>
-                            <h3 className="font-bold text-ink-900 text-sm border-b border-paper-200 pb-2 mb-4 uppercase tracking-wider">
-                                Weekly Pick
-                            </h3>
-                            {data?.trending?.[4] && (
-                                <div className="space-y-4 relative z-10">
-                                    <div className="flex gap-4">
-                                        <Link to={`/book/${data.trending[4].googleBookId || data.trending[4]._id}`} className="w-20 h-28 bg-paper-200 shrink-0 border border-paper-100 shadow-md rounded-md overflow-hidden group">
-                                            <img src={data.trending[4].coverImage || data.trending[4].thumbnail} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                        {/* Weekly Recommendation Card - Editor's Pick */}
+                        <div className="card-libra p-6 bg-gradient-to-br from-paper-50 to-teal-50/30 border-teal-100 overflow-hidden relative group">
+                            <div className="absolute -top-6 -right-6 w-24 h-24 bg-teal-500/5 rounded-full blur-2xl group-hover:bg-teal-500/10 transition-colors"></div>
+                            <div className="flex items-center justify-between mb-4 border-b border-paper-200 pb-2">
+                                <h3 className="font-bold text-ink-900 text-xs uppercase tracking-[0.2em]">Weekly Pick</h3>
+                                <Sparkles size={14} className="text-teal-600 animate-pulse" />
+                            </div>
+
+                            <div className="space-y-4 relative z-10">
+                                <div className="flex gap-4">
+                                    <Link to="/book/38O0DwAAQBAJ" className="w-24 h-36 bg-paper-200 shrink-0 border border-paper-100 shadow-xl rounded-lg overflow-hidden relative block hover:scale-105 transition-transform duration-500">
+                                        <img
+                                            src="https://books.google.com/books/content?id=38O0DwAAQBAJ&printsec=frontcover&img=1&zoom=2&source=gbs_api"
+                                            alt="Project Hail Mary"
+                                            className="w-full h-full object-cover"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                                    </Link>
+                                    <div className="flex-1 space-y-2">
+                                        <Link to="/book/38O0DwAAQBAJ" className="font-bold text-ink-900 text-base hover:text-teal-700 transition-colors line-clamp-2 leading-tight serif">
+                                            Project Hail Mary
                                         </Link>
-                                        <div className="flex-1">
-                                            <Link to={`/book/${data.trending[4].googleBookId || data.trending[4]._id}`} className="font-bold text-ink-900 hover:underline line-clamp-2 leading-tight">
-                                                {data.trending[4].title}
-                                            </Link>
-                                            <p className="text-xs text-ink-500 mt-1 line-clamp-1">{data.trending[4].authors?.[0]}</p>
-                                            <div className="flex items-center gap-1 mt-2">
-                                                {[...Array(5)].map((_, i) => (
-                                                    <Star key={i} size={10} className={i < 4 ? "fill-amber-400 text-amber-400" : "text-paper-200"} />
-                                                ))}
-                                                <span className="text-[10px] text-ink-400 ml-1">4.0</span>
-                                            </div>
+                                        <p className="text-xs text-ink-500 font-medium">Andy Weir</p>
+                                        <div className="flex items-center gap-1">
+                                            {[...Array(5)].map((_, i) => (
+                                                <Star key={i} size={12} className="fill-amber-400 text-amber-400" />
+                                            ))}
+                                            <span className="text-[10px] font-bold text-ink-900 ml-1">5.0</span>
+                                        </div>
+                                        <div className="pt-1">
+                                            <span className="px-2 py-0.5 bg-teal-600 text-white text-[9px] font-black rounded uppercase tracking-widest">Must Read</span>
                                         </div>
                                     </div>
-                                    <p className="text-xs text-ink-600 line-clamp-3 italic">"A masterful blend of storytelling and profound insights. A must-read for anyone looking to expand their horizons."</p>
-                                    <Link to={`/book/${data.trending[4].googleBookId || data.trending[4]._id}`} className="btn-primary w-full text-center text-xs py-2">Read Now</Link>
                                 </div>
-                            )}
+                                <p className="text-xs text-ink-600 leading-relaxed italic border-l-2 border-teal-200 pl-3">
+                                    "A lone astronaut must save the earth from disaster in this propulsive, mind-bending sci-fi thriller from the author of The Martian."
+                                </p>
+                                <Link to="/book/38O0DwAAQBAJ" className="inline-flex items-center justify-center w-full px-4 py-2 bg-ink-900 hover:bg-teal-700 text-white text-xs font-bold rounded-lg transition-all shadow-lg hover:shadow-teal-500/20 group">
+                                    Read Now <ArrowRight size={14} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                                </Link>
+                            </div>
                         </div>
 
                         {/* Popular Genres Chip List */}

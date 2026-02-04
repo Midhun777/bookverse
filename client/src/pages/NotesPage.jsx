@@ -24,7 +24,7 @@ const NoteItem = ({ note }) => {
         onSuccess: () => {
             toast.success('Note updated');
             setIsEditing(false);
-            queryClient.invalidateQueries(['myNotes']);
+            queryClient.invalidateQueries({ queryKey: ['myNotes'] });
         },
         onError: () => toast.error('Failed to update note')
     });
@@ -35,7 +35,7 @@ const NoteItem = ({ note }) => {
         },
         onSuccess: () => {
             toast.success('Note deleted');
-            queryClient.invalidateQueries(['myNotes']);
+            queryClient.invalidateQueries({ queryKey: ['myNotes'] });
         },
         onError: () => toast.error('Failed to delete note')
     });

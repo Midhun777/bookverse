@@ -83,6 +83,46 @@ const removeFromFavorites = async (req, res) => {
     }
 };
 
+// @desc    Search books in local DB
+// @route   GET /api/books/search
+// @access  Public
+const searchBooks = async (req, res) => {
+    try {
+        const { q } = req.query;
+        if (!q) {
+            return res.status(400).json({ message: 'Query parameter is required' });
+        }
+
+        const searchRegex = new RegExp(q, 'i');
+        const books = await BookMaster.find({
+            $or: [
+                { title: searchRegex },
+                { authors: searchRegex },
+                { subjects: searchRegex }
+            ]
+        }).limit(20);
+
+        // Map to Google Books-like structure for frontend compatibility
+        const formattedBooks = books.map(book => ({
+            id: book.googleBookId || book.openLibraryId,
+            volumeInfo: {
+                title: book.title,
+                authors: book.authors,
+                description: book.description,
+                imageLinks: {
+                    thumbnail: book.coverImage
+                },
+                categories: book.subjects,
+                averageRating: book.popularityScore / 20 // Mocking some rating
+            }
+        }));
+
+        res.json(formattedBooks);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 // @desc    Get all favorite books
 // @route   GET /api/books/favorites
 // @access  Private
@@ -99,5 +139,6 @@ module.exports = {
     getBookById,
     addToFavorites,
     removeFromFavorites,
-    getFavorites
+    getFavorites,
+    searchBooks
 };

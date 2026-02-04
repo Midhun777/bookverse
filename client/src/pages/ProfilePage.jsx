@@ -103,7 +103,7 @@ const ProfilePage = () => {
                     <div className="flex-1 text-center md:text-left space-y-4">
                         <div>
                             <h1 className="text-3xl md:text-4xl font-serif font-bold text-ink-900 dark:text-stone-100 mb-1">{user?.name}</h1>
-                            <p className="text-ink-500 dark:text-stone-400 font-medium">@{user?.username || 'reader'} · <span className="text-teal-600 dark:text-teal-500 font-bold">Level {Math.floor((profile?.totalBooksRead || 0) / 5) + 1} Curator</span></p>
+                            <p className="text-ink-500 dark:text-stone-400 font-medium">@{user?.username || 'reader'}</p>
                         </div>
 
                         <div className="flex flex-wrap justify-center md:justify-start gap-3">

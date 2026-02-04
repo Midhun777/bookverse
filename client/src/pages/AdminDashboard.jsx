@@ -66,7 +66,7 @@ const AdminDashboard = () => {
         },
         onSuccess: () => {
             toast.success('User status updated');
-            queryClient.invalidateQueries(['users']);
+            queryClient.invalidateQueries({ queryKey: ['users'] });
         }
     });
 
@@ -76,7 +76,7 @@ const AdminDashboard = () => {
         },
         onSuccess: () => {
             toast.success('User deleted');
-            queryClient.invalidateQueries(['users']);
+            queryClient.invalidateQueries({ queryKey: ['users'] });
         }
     });
 
@@ -86,8 +86,8 @@ const AdminDashboard = () => {
         },
         onSuccess: () => {
             toast.success('Review deleted');
-            queryClient.invalidateQueries(['allReviews']);
-            queryClient.invalidateQueries(['adminStats']);
+            queryClient.invalidateQueries({ queryKey: ['allReviews'] });
+            queryClient.invalidateQueries({ queryKey: ['adminStats'] });
         }
     });
 
@@ -97,7 +97,7 @@ const AdminDashboard = () => {
         },
         onSuccess: () => {
             toast.success('Settings updated');
-            queryClient.invalidateQueries(['adminSettings']);
+            queryClient.invalidateQueries({ queryKey: ['adminSettings'] });
         }
     });
 
@@ -317,6 +317,73 @@ const AdminDashboard = () => {
                                 ))}
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            )}
+
+            {activeTab === 'reviews' && (
+                <div className="card-libra overflow-hidden animate-in fade-in duration-500">
+                    <div className="px-6 py-4 border-b border-paper-100 flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                            <div className="p-2 bg-red-50 dark:bg-red-900/30 text-red-600 rounded-lg">
+                                <MessageSquare size={20} />
+                            </div>
+                            <h2 className="text-xl font-bold text-ink-900">Review Moderation</h2>
+                        </div>
+                        <span className="bg-red-50 dark:bg-red-900/30 text-red-600 px-3 py-1 rounded-full text-xs font-bold">{allReviews?.length || 0} Total</span>
+                    </div>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left">
+                            <thead className="bg-paper-100 text-ink-600 text-sm">
+                                <tr>
+                                    <th className="px-6 py-3">User</th>
+                                    <th className="px-6 py-3">Book</th>
+                                    <th className="px-6 py-3 text-center">Rating</th>
+                                    <th className="px-6 py-3">Comment</th>
+                                    <th className="px-6 py-3 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-paper-100">
+                                {allReviews?.map(review => (
+                                    <tr key={review._id} className="hover:bg-paper-50 transition align-top">
+                                        <td className="px-6 py-4">
+                                            <div className="text-sm font-bold text-ink-900">{review.userId?.name || 'Anonymous User'}</div>
+                                            <div className="text-[10px] text-ink-400 font-mono select-all">UID: {review.userId?._id || review.userId}</div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="text-xs font-bold text-teal-600 uppercase tracking-wider">{review.googleBookId}</div>
+                                        </td>
+                                        <td className="px-6 py-4 text-center">
+                                            <div className="inline-flex text-amber-500 gap-0.5">
+                                                {[...Array(5)].map((_, i) => (
+                                                    <Star key={i} size={12} fill={i < review.rating ? "currentColor" : "none"} />
+                                                ))}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 max-w-xs">
+                                            <p className="text-sm text-ink-700 dark:text-stone-300 leading-relaxed italic line-clamp-2" title={review.reviewText}>
+                                                "{review.reviewText}"
+                                            </p>
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            <button
+                                                onClick={() => {
+                                                    if (confirm('Delete this review permanently?')) deleteReviewMutation.mutate(review._id)
+                                                }}
+                                                className="p-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-xl transition"
+                                                title="Delete Review"
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        {(!allReviews || allReviews.length === 0) && !isLoadingReviews && (
+                            <div className="py-20 text-center text-gray-500 italic">No reviews found for moderation.</div>
+                        )}
+                        {isLoadingReviews && <div className="flex justify-center py-10"><Loader2 className="animate-spin text-blue-600" /></div>}
                     </div>
                 </div>
             )}

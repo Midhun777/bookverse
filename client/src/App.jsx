@@ -10,7 +10,6 @@ import MyListsPage from './pages/MyListsPage';
 import NotesPage from './pages/NotesPage';
 import ProfilePage from './pages/ProfilePage';
 import AdminDashboard from './pages/AdminDashboard';
-import ReaderPage from './pages/ReaderPage';
 import PublicProfilePage from './pages/PublicProfilePage';
 import DiscoverPage from './pages/DiscoverPage';
 import RecommendationsPage from './pages/RecommendationsPage';
@@ -42,7 +41,6 @@ function App() {
             <Route path="notes" element={<NotesPage />} />
             <Route path="admin/dashboard" element={<AdminDashboard />} />
             <Route path="profile" element={<ProfilePage />} />
-            <Route path="reader/:id" element={<ReaderPage />} />
             <Route path="users/:username" element={<PublicProfilePage />} />
           </Route>
         </Routes>

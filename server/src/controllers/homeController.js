@@ -1,78 +1,42 @@
 const Review = require('../models/Review');
 const Activity = require('../models/Activity');
 const AdminSettings = require('../models/AdminSettings');
-const axios = require('axios');
-const cache = require('../utils/cache');
+const BookMaster = require('../models/BookMaster');
 
-// Helper to fetch OpenLibrary Data
-const fetchBookDetails = async (bookId) => {
-    try {
-        const cacheKey = `book_details_${bookId}`;
-        const cachedData = cache.get(cacheKey);
-
-        if (cachedData) {
-            return cachedData;
-        }
-
-        let query = `key:${bookId}`;
-        const response = await axios.get(`https://openlibrary.org/search.json`, {
-            params: {
-                q: query,
-                limit: 1
-            }
-        });
-        const data = response.data.docs ? response.data.docs[0] : null;
-
-        if (data) {
-            cache.set(cacheKey, data);
-        }
-
-        return data;
-
-    } catch (error) {
-        console.error(`Error fetching OpenLibrary details for ${bookId}:`, error.message);
-        return null;
-    }
-};
-
-// Standardize book object for Home API (OpenLibrary version)
-const formatBook = (olData, internalStats = null) => {
-    if (!olData) return null;
-
-    // OpenLibrary fields
-    const { key, title, author_name, cover_i, subject, ratings_average, ratings_count, first_publish_year } = olData;
-
-    // Attempt to parse ratings
-    const avgRating = ratings_average ? parseFloat(ratings_average) : null;
-    const count = ratings_count ? parseInt(ratings_count) : 0;
+/**
+ * Standardize book object for Home API (Local BookMaster version)
+ */
+const formatBook = (book, internalStats = null) => {
+    if (!book) return null;
 
     return {
-        googleBookId: key, // Keeping field name for frontend compatibility
-        title: title,
-        authors: author_name || ['Unknown Author'],
-        thumbnail: cover_i ? `https://covers.openlibrary.org/b/id/${cover_i}-M.jpg` : 'https://via.placeholder.com/128x192?text=No+Cover',
-        categories: subject ? subject.slice(0, 5) : [],
-        averageRating: avgRating,
-        ratingsCount: count,
-        ratingSource: avgRating ? 'OPENLIBRARY' : 'NONE',
+        googleBookId: book.googleBookId,
+        title: book.title,
+        authors: book.authors || ['Unknown Author'],
+        thumbnail: book.coverImage || 'https://via.placeholder.com/128x192?text=No+Cover',
+        categories: book.subjects ? book.subjects.slice(0, 5) : [],
+        averageRating: book.averageRating || (book.popularityScore / 20),
+        ratingsCount: book.ratingsCount || 0,
+        popularityScore: book.popularityScore,
+        isTrending: book.isTrending,
         internalReviewsCount: internalStats ? internalStats.count : 0,
-        isFreeToRead: first_publish_year < 1928, // Rough approximation for public domain
-        description: `Published in ${first_publish_year || 'Unknown'}` // OL Search doesn't return full description usually
+        description: book.description || ''
     };
 };
 
 const getHomeBooks = async (req, res) => {
     try {
-        // 1. Trending Books (Top 10 most viewed/searched)
-        // Group by googleBookId (which are now OL keys in the DB)
+        // 1. Aggregation: Find IDs for Trending, Top Rated, and Recent Activity
+
+        // Trending: Top 10 by View/Search activity (only considering those that exist in BookMaster)
         const trendingIds = await Activity.aggregate([
             { $match: { actionType: { $in: ['VIEW', 'SEARCH'] } } },
             { $group: { _id: '$googleBookId', count: { $sum: 1 } } },
             { $sort: { count: -1 } },
-            { $limit: 10 }
+            { $limit: 15 }
         ]);
 
-        // 2. Top Rated Books (Internal Reviews average >= 4.0)
+        // Top Rated: Internal average >= 4.0
         const topRatedStats = await Review.aggregate([
             { $group: { _id: '$googleBookId', average: { $avg: '$rating' }, count: { $sum: 1 } } },
             { $match: { average: { $gte: 4.0 } } },
@@ -80,7 +44,7 @@ const getHomeBooks = async (req, res) => {
             { $limit: 10 }
         ]);
 
-        // 3. Recently Reviewed
+        // Recently Reviewed
         const recentlyReviewedResults = await Review.find()
             .populate('userId', 'name avatar')
             .sort({ createdAt: -1 })
@@ -88,50 +52,61 @@ const getHomeBooks = async (req, res) => {
 
         const uniqueRecentIds = [...new Set(recentlyReviewedResults.map(r => r.googleBookId))].slice(0, 6);
 
-        // Fetch details for all identified books
-        const allIds = [
+        // 2. Data Fetching: Retrieve metadata from BookMaster
+        const allTargetIds = [
             ...trendingIds.map(t => t._id),
             ...topRatedStats.map(tr => tr._id),
             ...uniqueRecentIds
-        ].filter(id => id); // Remove null/undefined
+        ].filter(id => id);
 
-        const uniqueAllIds = [...new Set(allIds)];
-        const detailsMap = {};
+        const booksFromMaster = await BookMaster.find({
+            googleBookId: { $in: [...new Set(allTargetIds)] }
+        });
 
-        // Parallel fetch
-        // Note: OL Search API might rate limit if we spam individual ID requests.
-        // Ideally we'd use a bulk fetch if possible, but OL doesn't have a simple "ids=a,b,c" search endpoint.
-        // We will fetch individually for now.
-        await Promise.all(uniqueAllIds.map(async (id) => {
-            if (!id) return;
-            const data = await fetchBookDetails(id);
-            if (data) detailsMap[id] = data;
-        }));
+        // Create a map for quick metadata lookup
+        const masterMap = {};
+        booksFromMaster.forEach(b => masterMap[b.googleBookId] = b);
 
-        // Internal reviews map for quick lookup
+        // Internal reviews map
         const internalStatsMap = {};
         const allInternalStats = await Review.aggregate([
             { $group: { _id: '$googleBookId', average: { $avg: '$rating' }, count: { $sum: 1 } } }
         ]);
         allInternalStats.forEach(s => internalStatsMap[s._id] = { average: s.average.toFixed(1), count: s.count });
 
-        // Build Sections
+        // 3. Section Building
+
+        // Trending Books (Sorted by activity, filtered by existence in Master)
         const trending = trendingIds
-            .map(t => formatBook(detailsMap[t._id], internalStatsMap[t._id]))
-            .filter(b => b);
+            .map(t => formatBook(masterMap[t._id], internalStatsMap[t._id]))
+            .filter(b => b)
+            .slice(0, 10);
 
+        // If trending is empty (e.g., first run or legacy IDs), fall back to isTrending flag
+        if (trending.length < 4) {
+            const fallbackTrending = await BookMaster.find({ isTrending: true }).limit(8);
+            fallbackTrending.forEach(b => {
+                if (!trending.find(ex => ex.googleBookId === b.googleBookId)) {
+                    trending.push(formatBook(b, internalStatsMap[b.googleBookId]));
+                }
+            });
+        }
+
+        // Top Rated
         const topRated = topRatedStats
-            .map(tr => formatBook(detailsMap[tr._id], internalStatsMap[tr._id]))
+            .map(tr => formatBook(masterMap[tr._id], internalStatsMap[tr._id]))
             .filter(b => b);
 
+        // Recently Reviewed (with reviewer info)
         const recentlyReviewed = uniqueRecentIds
             .map(id => {
-                const book = formatBook(detailsMap[id], internalStatsMap[id]);
+                const book = formatBook(masterMap[id], internalStatsMap[id]);
                 if (book) {
                     const review = recentlyReviewedResults.find(r => r.googleBookId === id);
                     book.latestReview = {
                         text: review.reviewText,
-                        user: review.userId?.name,
+                        user: review.userId?.name || 'Anonymous',
+                        userAvatar: review.userId?.avatar,
                         rating: review.rating
                     };
                 }
@@ -139,38 +114,22 @@ const getHomeBooks = async (req, res) => {
             })
             .filter(b => b);
 
-        // 4. Free to Read / Popular on OpenLibrary
-        // Use a generic search for highly rated fiction
-        let freeToReadData;
-        const freeToReadCacheKey = 'home_free_books_fiction';
-        const cachedFreeBooks = cache.get(freeToReadCacheKey);
+        // 4. "Featured Classics" (Replacing Free to Read OpenLibrary Search)
+        const freeToRead = await BookMaster.find({
+            $or: [{ isClassic: true }, { isPublicDomain: true }]
+        })
+            .sort({ popularityScore: -1 })
+            .limit(10)
+            .then(books => books.map(b => formatBook(b, internalStatsMap[b.googleBookId])));
 
-        if (cachedFreeBooks) {
-            freeToReadData = cachedFreeBooks;
-        } else {
-            const freeSearchResponse = await axios.get(`https://openlibrary.org/search.json`, {
-                params: {
-                    q: 'subject:fiction',
-                    sort: 'rating',
-                    limit: 10
-                }
-            });
-            freeToReadData = freeSearchResponse.data.docs || [];
-            cache.set(freeToReadCacheKey, freeToReadData, 3600 * 24); // Cache for 24h
-        }
-
-        const freeToRead = freeToReadData
-            .map(item => formatBook(item, internalStatsMap[item.key]))
-            .filter(b => b);
-
-        // 5. Fetch Admin Settings
+        // 5. Admin Settings
         let settings = await AdminSettings.findOne();
         if (!settings) {
             settings = await AdminSettings.create({});
         }
 
         res.json({
-            trending,
+            trending: trending.slice(0, 10),
             topRated,
             recentlyReviewed,
             freeToRead,

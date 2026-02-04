@@ -2,6 +2,7 @@ import axios from 'axios';
 import api from './api';
 
 const GOOGLE_BOOKS_BASE_URL = 'https://www.googleapis.com/books/v1/volumes';
+const API_KEY = import.meta.env.VITE_GOOGLE_BOOKS_API_KEY;
 
 export const getBookDetails = async (bookId) => {
     try {
@@ -37,7 +38,7 @@ export const getBookDetails = async (bookId) => {
         }
 
         // 2. Fallback to Google Books API
-        const response = await axios.get(`${GOOGLE_BOOKS_BASE_URL}/${bookId}`);
+        const response = await axios.get(`${GOOGLE_BOOKS_BASE_URL}/${bookId}${API_KEY ? `?key=${API_KEY}` : ''}`);
         const data = response.data;
 
         // Force HTTPS in Google Response too
@@ -57,28 +58,62 @@ export const getBookDetails = async (bookId) => {
 
 export const searchBooks = async (query) => {
     try {
-        const response = await axios.get(GOOGLE_BOOKS_BASE_URL, {
+        // Detect if query is a category match from Browse page
+        const categories = ["Fiction", "Science", "Business", "History", "Psychology", "Technology", "Art", "Mystery", "Romance", "Fantasy"];
+        let finalQuery = query;
+        if (categories.some(cat => cat.toLowerCase() === query.toLowerCase())) {
+            finalQuery = `subject:${query}`;
+        }
+
+        // 1. Fetch from Google Books
+        const googlePromise = axios.get(GOOGLE_BOOKS_BASE_URL, {
             params: {
-                q: query,
-                maxResults: 20
+                q: finalQuery,
+                maxResults: 20,
+                key: API_KEY
             }
         });
 
-        if (response.data.items && response.data.items.length > 0) {
-            return { items: response.data.items };
+        // 2. Fetch from Local Database
+        const localPromise = api.get(`/books/search?q=${query}`);
+
+        // Wait for both (but don't fail if one fails)
+        const [googleRes, localRes] = await Promise.allSettled([googlePromise, localPromise]);
+
+        let combinedItems = [];
+
+        // Handle Google Results
+        if (googleRes.status === 'fulfilled' && googleRes.value.data.items) {
+            combinedItems = [...googleRes.value.data.items];
+        } else if (googleRes.status === 'rejected') {
+            const status = googleRes.reason?.response?.status;
+            if (status === 429) {
+                console.warn('Google Books API rate limit reached (429).');
+                // We'll rely on local results only
+            } else {
+                console.error('Google Books Search Error:', googleRes.reason?.message);
+            }
         }
 
-        // Fallback to local search if Google returns nothing
-        throw new Error('No items from Google');
+        // Handle Local Results
+        if (localRes.status === 'fulfilled' && localRes.value.data) {
+            const localItems = localRes.value.data;
+            // Merge and deduplicate by ID
+            localItems.forEach(localBook => {
+                const exists = combinedItems.find(gBook => gBook.id === localBook.id);
+                if (!exists) {
+                    combinedItems.unshift(localBook); // Put local/curated books at the top
+                }
+            });
+        }
+
+        return {
+            items: combinedItems,
+            isLimited: googleRes.status === 'rejected' && googleRes.reason?.response?.status === 429
+        };
 
     } catch (error) {
-        console.warn('Google Search unavailable/empty, falling back to local DB:', error.message);
-        try {
-            const localRes = await api.get(`/books/search?q=${query}`);
-            return { items: localRes.data || [] };
-        } catch (localErr) {
-            console.error('Local Search Error:', localErr);
-            return { items: [] };
-        }
+        console.error('Unified Search Error:', error);
+        return { items: [] };
     }
 };

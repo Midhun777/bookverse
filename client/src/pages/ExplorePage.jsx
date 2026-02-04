@@ -233,7 +233,6 @@ const ExplorePage = () => {
                             onClick={() => setViewMode('grid')}
                             className={`p-1.5 rounded transition-colors ${viewMode === 'grid' ? 'bg-paper-200 dark:bg-stone-800 text-ink-900 dark:text-stone-100' : 'text-ink-400 hover:text-ink-600 dark:text-stone-500 dark:hover:text-stone-300'}`}
                         >
-                            <Search size={16} /> {/* Should be Grid icon but keeping class consistency */}
                             <Grid size={16} />
                         </button>
                         <button
@@ -281,6 +280,11 @@ const ExplorePage = () => {
                             <div className="py-20 text-center text-ink-400 dark:text-stone-600">
                                 <Search size={32} className="mx-auto mb-2 opacity-30" />
                                 <p>No books found for "{searchTerm}".</p>
+                                {data?.isLimited && (
+                                    <p className="mt-2 text-amber-600 dark:text-amber-500 text-xs font-bold uppercase tracking-widest">
+                                        Server busy. Showing only local results.
+                                    </p>
+                                )}
                             </div>
                         )}
                     </>

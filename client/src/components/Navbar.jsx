@@ -68,12 +68,17 @@ const Navbar = () => {
                             <div className="relative">
                                 <button
                                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                                    className="flex items-center gap-2 hover:bg-paper-100 rounded-full p-1 pr-3 transition-colors"
+                                    className={`flex items-center gap-3 rounded-full p-1.5 pr-4 transition-all border ${user.role === 'ADMIN' ? 'bg-teal-50/80 border-teal-200 dark:bg-teal-900/20 dark:border-teal-800' : 'hover:bg-paper-100 dark:hover:bg-stone-800 border-transparent'}`}
                                 >
-                                    <div className="w-8 h-8 rounded-full bg-paper-200 dark:bg-stone-800 overflow-hidden border border-paper-300 dark:border-stone-700 flex items-center justify-center">
+                                    <div className={`w-8 h-8 rounded-full bg-paper-200 dark:bg-stone-800 overflow-hidden border transition-all ${user.role === 'ADMIN' ? 'border-teal-500 shadow-[0_0_15px_rgba(20,184,166,0.3)]' : 'border-paper-300 dark:border-stone-700'}`}>
                                         {user.avatar ? <img src={user.avatar} className="w-full h-full object-cover" alt="" /> : <User size={20} strokeWidth={2.5} className="text-ink-400 dark:text-stone-500" />}
                                     </div>
-                                    <span className="text-sm font-bold text-ink-900 dark:text-stone-100">{user.name.split(' ')[0]}</span>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-sm font-bold text-ink-900 dark:text-stone-100">{user.name.split(' ')[0]}</span>
+                                        {user.role === 'ADMIN' && (
+                                            <span className="px-1.5 py-0.5 bg-teal-600 text-white text-[9px] font-black rounded uppercase tracking-widest shadow-sm">Admin</span>
+                                        )}
+                                    </div>
                                 </button>
 
                                 <AnimatePresence>
@@ -86,9 +91,14 @@ const Navbar = () => {
                                                 exit={{ opacity: 0, y: 10 }}
                                                 className="absolute top-full right-0 mt-2 w-56 bg-white border border-paper-200 rounded shadow-card z-20 py-2 dark:bg-stone-900 dark:border-stone-800"
                                             >
-                                                <div className="px-4 py-2 border-b border-paper-100 mb-2 dark:border-stone-800">
-                                                    <p className="font-bold text-ink-900 text-sm dark:text-stone-100">{user.name}</p>
-                                                    <p className="text-xs text-ink-400 dark:text-stone-500">@{user.username}</p>
+                                                <div className="px-4 py-2 border-b border-paper-100 mb-2 dark:border-stone-800 flex justify-between items-start">
+                                                    <div>
+                                                        <p className="font-bold text-ink-900 text-sm dark:text-stone-100">{user.name}</p>
+                                                        <p className="text-xs text-ink-400 dark:text-stone-500">@{user.username}</p>
+                                                    </div>
+                                                    {user.role === 'ADMIN' && (
+                                                        <span className="px-1.5 py-0.5 bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-400 text-[8px] font-black rounded uppercase tracking-wider border border-teal-200 dark:border-teal-800">Admin</span>
+                                                    )}
                                                 </div>
 
                                                 <Link to="/profile" className="block px-4 py-2 text-sm text-ink-600 hover:bg-paper-50 hover:text-teal-600 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-teal-500">Profile</Link>

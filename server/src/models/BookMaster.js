@@ -53,14 +53,7 @@ const BookMasterSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    isPublicDomain: {
-        type: Boolean,
-        default: false
-    },
     coverImage: {
-        type: String
-    },
-    readUrl: {
         type: String
     },
     source: {

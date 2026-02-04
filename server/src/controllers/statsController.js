@@ -164,10 +164,6 @@ const getPublicProfile = async (req, res) => {
 
         const favoriteGenres = genreDistribution.slice(0, 3).map(g => g.name);
 
-        if (favoriteGenres.length === 0) {
-            favoriteGenres.push('Fiction', 'Science', 'History');
-        }
-
         res.json({
             user,
             totalReadingTime,

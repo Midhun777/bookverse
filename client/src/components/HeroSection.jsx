@@ -60,7 +60,7 @@ const HeroSection = ({ settings }) => {
 
                 {/* Search Container */}
                 <form onSubmit={handleSearch} className="w-full max-w-lg relative group">
-                    <div className="absolute inset-0 bg-teal-500/20 blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-700 rounded-full"></div>
+                    <div className="absolute inset-0 bg-teal-500/20 blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-700 rounded-full pointer-events-none"></div>
                     <div className="relative flex items-center bg-white/95 dark:bg-stone-900/95 backdrop-blur-xl rounded-xl p-1 shadow-2xl border border-white/20">
                         <div className="pl-3 text-teal-600/50">
                             <Search size={18} />
@@ -81,7 +81,7 @@ const HeroSection = ({ settings }) => {
                     </div>
 
                     {/* Quick Tags */}
-                    <div className="mt-4 flex flex-wrap justify-center gap-4 text-[10px] font-black">
+                    <div className="mt-4 flex flex-wrap justify-center gap-4 text-[10px] font-black relative">
                         <span className="text-teal-200/20 uppercase tracking-[0.2em]">Quick Search:</span>
                         {(settings?.featuredCategories?.length > 0 ? settings.featuredCategories.slice(0, 4) : ['Fiction', 'Sci-Fi', 'Mystery', 'History']).map((tag) => (
                             <Link

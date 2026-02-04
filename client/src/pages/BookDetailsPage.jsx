@@ -14,7 +14,7 @@ import { getMyLists, addToList } from '../services/listService';
 import { logActivity } from '../services/activityService';
 import ReviewList from '../components/ReviewList';
 import ReadingProgressModal from '../components/ReadingProgressModal';
-import { updateProgress } from '../services/progressService';
+import { updateProgress, getProgress } from '../services/progressService';
 
 const BookDetailsPage = () => {
     const { id } = useParams();
@@ -26,6 +26,13 @@ const BookDetailsPage = () => {
     const { data: book, isLoading, isError } = useQuery({
         queryKey: ['book', id],
         queryFn: () => getBookDetails(id),
+    });
+
+    // Fetch existing progress
+    const { data: progressData } = useQuery({
+        queryKey: ['progress', id],
+        queryFn: () => getProgress(id),
+        enabled: !!user && !!id
     });
 
     useEffect(() => {
@@ -208,12 +215,17 @@ const BookDetailsPage = () => {
         setIsListOpen(false);
     };
 
-    const handleProgressUpdate = async (page) => {
+    const handleProgressUpdate = async (page, totalPages) => {
         try {
-            await updateProgress({ googleBookId: id, currentPage: page });
+            await updateProgress({
+                googleBookId: id,
+                currentPage: page,
+                totalPages: totalPages
+            });
             toast.success('Progress updated!');
-            queryClient.invalidateQueries(['book', id]);
-            queryClient.invalidateQueries(['favoriteBooks']); // Invalidate favoriteBooks to reflect status change
+            queryClient.invalidateQueries({ queryKey: ['progress', id] });
+            queryClient.invalidateQueries({ queryKey: ['book', id] });
+            queryClient.invalidateQueries({ queryKey: ['favoriteBooks'] }); // Invalidate favoriteBooks to reflect status change
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to update progress');
         }
@@ -309,11 +321,6 @@ const BookDetailsPage = () => {
                                 </Link>
                             )}
 
-                            {book.accessInfo?.embeddable && (
-                                <Link to={`/reader/${id}`} className="block w-full text-center py-2 border border-teal-600 text-teal-700 bg-paper-50 font-bold text-sm hover:bg-teal-50 transition-colors rounded dark:bg-stone-900 dark:text-teal-500 dark:hover:bg-stone-800">
-                                    Read Sample
-                                </Link>
-                            )}
                         </div>
 
 
@@ -381,10 +388,12 @@ const BookDetailsPage = () => {
                 isOpen={isProgressModalOpen}
                 onClose={() => setIsProgressModalOpen(false)}
                 book={{
-                    ...book,
-                    // If backend return saved state merged, use it, else default
-                    currentPage: book.currentPage || 0, // Assuming API returns this on book object if saved
-                    pageCount: volumeInfo.pageCount
+                    googleBookId: id,
+                    title: volumeInfo.title,
+                    authors: volumeInfo.authors,
+                    coverImage: thumbnail,
+                    pageCount: volumeInfo.pageCount,
+                    currentPage: progressData?.currentPage || 0
                 }}
                 onUpdate={handleProgressUpdate}
             />

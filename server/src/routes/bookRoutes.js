@@ -4,7 +4,8 @@ const {
     getBookById,
     addToFavorites,
     removeFromFavorites,
-    getFavorites
+    getFavorites,
+    searchBooks
 } = require('../controllers/bookController');
 const { protect } = require('../middlewares/authMiddleware');
 
@@ -13,7 +14,8 @@ router.post('/favorites', protect, addToFavorites);
 router.delete('/favorites/:googleBookId', protect, removeFromFavorites);
 router.get('/favorites', protect, getFavorites);
 
-// Public route (Must be last to avoid conflict with 'favorites' if it was parameterized, though here it's static)
+// Public routes
+router.get('/search', searchBooks);
 router.get('/:id', getBookById);
 
 module.exports = router;

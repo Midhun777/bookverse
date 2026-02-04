@@ -49,34 +49,34 @@ const DiscoverPage = () => {
                 <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-teal-500/10 blur-[60px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/2" />
                 <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-indigo-500/10 blur-[60px] rounded-full pointer-events-none translate-y-1/2 -translate-x-1/2" />
 
-                <div className="max-w-7xl mx-auto relative z-10">
-                    <div className="flex flex-col lg:flex-row items-center gap-6">
+                <div className="max-w-5xl mx-auto relative z-10">
+                    <div className="flex flex-col lg:flex-row items-center gap-10">
                         {/* Text Content */}
-                        <div className="flex-1 text-center lg:text-left space-y-2">
+                        <div className="flex-1 text-center lg:text-left space-y-3">
                             <motion.div
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-white/5 border border-white/10 rounded-full text-teal-400 text-[7px] font-black uppercase tracking-[0.2em] backdrop-blur-md"
+                                className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full text-teal-400 text-[9px] font-black uppercase tracking-[0.25em] backdrop-blur-md"
                             >
-                                <Sparkles size={8} className="animate-pulse" />
+                                <Sparkles size={10} className="animate-pulse" />
                                 Discovery
                             </motion.div>
                             <motion.h1
                                 initial={{ opacity: 0, y: 15 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.1 }}
-                                className="text-2xl md:text-3xl font-serif font-black text-white tracking-tighter leading-[1]"
+                                className="text-3xl md:text-4xl font-serif font-black text-white tracking-tighter leading-[1.1]"
                             >
                                 Explore the <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-300 italic pr-2 text-3xl md:text-4xl">Bookverse</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-300 italic pr-2 text-4xl md:text-5xl">Bookverse</span>
                             </motion.h1>
                             <motion.p
                                 initial={{ opacity: 0, y: 15 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.2 }}
-                                className="text-xs md:text-sm text-ink-300/70 font-serif max-w-sm leading-relaxed"
+                                className="text-sm md:text-base text-ink-300/80 font-serif max-w-sm leading-relaxed"
                             >
-                                Find your next favorite masterpiece from 200+ titles.
+                                Find your next favorite masterpiece from 200+ curated titles.
                             </motion.p>
                         </div>
 
@@ -100,17 +100,15 @@ const DiscoverPage = () => {
                                                 }}
                                             />
                                         </div>
-                                        <div className="flex-1 space-y-2">
-                                            <div className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-teal-500/10 text-teal-400 rounded-full text-[7px] font-black uppercase tracking-widest border border-teal-500/10">
-                                                Spotlight
+                                        <div className="flex-1 min-w-0 space-y-2">
+                                            <div className="flex items-center gap-2">
+                                                <span className="px-2 py-0.5 bg-teal-500/20 text-teal-400 rounded-full text-[9px] font-bold tracking-widest uppercase">Spotlight</span>
                                             </div>
-                                            <h2 className="text-base md:text-lg font-serif font-bold text-white line-clamp-1 leading-tight tracking-tight">{featured.title}</h2>
-                                            <p className="text-ink-400 font-medium text-[10px]">{featured.authors?.[0]}</p>
-                                            <div className="pt-0.5">
-                                                <div className="inline-flex items-center gap-1 px-2 py-0.5 bg-white/5 hover:bg-white/10 text-white rounded text-[8px] font-black transition-all">
-                                                    <TrendingUp size={8} className="text-teal-400" />
-                                                    TRENDING
-                                                </div>
+                                            <h2 className="text-lg md:text-xl font-serif font-bold text-white line-clamp-2 leading-tight tracking-tight">{featured.title}</h2>
+                                            <p className="text-sm text-ink-300 font-medium opacity-80">{featured.authors?.[0]}</p>
+                                            <div className="inline-flex items-center gap-1.5 px-2 py-1 bg-white/5 rounded-lg border border-white/10">
+                                                <TrendingUp size={12} className="text-teal-400" />
+                                                <span className="text-[10px] text-white font-bold uppercase tracking-wider">Trending Item</span>
                                             </div>
                                         </div>
                                     </div>
@@ -187,8 +185,8 @@ const DiscoverPage = () => {
                     <div className="inline-block p-3 bg-teal-500/20 rounded-2xl backdrop-blur-xl">
                         <Sparkles size={32} className="text-teal-400 animate-pulse" />
                     </div>
-                    <h2 className="text-3xl md:text-5xl font-serif font-bold leading-tight">Ready for your <span className="italic text-teal-400">Next Chapter</span>?</h2>
-                    <p className="text-base text-ink-300 font-serif leading-relaxed max-w-xl mx-auto">
+                    <h2 className="text-3xl md:text-5xl font-serif font-bold leading-tight text-white">Ready for your <span className="italic text-teal-400">Next Chapter</span>?</h2>
+                    <p className="text-base text-stone-300 font-serif leading-relaxed max-w-xl mx-auto">
                         Your library is unique. We analyze your reading patterns across 11+ genres to find the books you actually want to read.
                     </p>
                     <Link to="/recommendations" className="inline-flex items-center gap-2 px-8 py-4 bg-teal-600 hover:bg-teal-500 text-white rounded-full font-bold text-lg transition-all shadow-2xl hover:scale-105 active:scale-95">

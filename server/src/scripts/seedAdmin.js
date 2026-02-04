@@ -17,11 +17,14 @@ const seedAdmin = async () => {
         }
 
         const admin = new User({
-            name: 'Admin User',
+            name: 'Project Libra',
             email: 'admin@bookverse.com',
             username: 'admin',
-            password: 'admin123', // Admin credentials
-            role: 'ADMIN'
+            password: 'admin123',
+            role: 'ADMIN',
+            avatar: 'https://ui-avatars.com/api/?name=Libra&background=0D9488&color=fff&size=512&bold=true',
+            bio: 'Chief Librarian & System Architect. Overseeing the ultimate digital library experience.',
+            location: 'The Verse'
         });
 
         await admin.save();

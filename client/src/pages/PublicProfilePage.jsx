@@ -23,18 +23,7 @@ const PublicProfilePage = () => {
         '#EC4899', '#06B6D4', '#F97316', '#6366F1', '#14B8A6'
     ];
 
-    const genreData = profile.genreDistribution?.length > 0 ? profile.genreDistribution : [
-        { name: 'BUSINESS', value: 45 },
-        { name: 'FANTASY', value: 25 },
-        { name: 'FICTION', value: 15 },
-        { name: 'FINANCE', value: 15 },
-        { name: 'HISTORY', value: 10 },
-        { name: 'PHILOSOPHY', value: 10 },
-        { name: 'PSYCHOLOGY', value: 10 },
-        { name: 'SCIENCE', value: 10 },
-        { name: 'SELF-HELP', value: 10 },
-        { name: 'SUCCESS', value: 10 },
-    ];
+    const genreData = profile.genreDistribution || [];
 
     const weeklyActivity = profile.weeklyActivity || [];
 
@@ -47,7 +36,7 @@ const PublicProfilePage = () => {
                 </div>
                 <div className="space-y-3">
                     <h1 className="text-5xl font-bold text-ink-900 dark:text-stone-100 serif">{profile.user.name}</h1>
-                    <p className="text-xl text-ink-400 dark:text-stone-500 font-medium italic serif">Dedicated Reader</p>
+                    <p className="text-xl text-ink-400 dark:text-stone-500 font-medium italic serif">Member of Bookverse</p>
                     <div className="flex justify-center gap-3 pt-4">
                         {profile.user.role === 'ADMIN' && <span className="px-5 py-1.5 bg-ink-900 dark:bg-stone-100 text-white dark:text-stone-900 rounded-full text-[10px] font-bold uppercase tracking-widest">Admin</span>}
                         <span className="px-5 py-1.5 bg-white dark:bg-stone-900 text-ink-500 dark:text-stone-400 border border-paper-200 dark:border-stone-700 rounded-full text-[10px] font-bold uppercase tracking-widest">Member since {new Date(profile.user.createdAt).getFullYear()}</span>
@@ -75,59 +64,73 @@ const PublicProfilePage = () => {
                             <h3 className="text-xl font-bold text-ink-900 dark:text-stone-100 serif flex items-center gap-3 border-b border-paper-50 dark:border-stone-800 pb-4">
                                 <Activity size={20} className="text-ink-400 dark:text-stone-500" /> Activity
                             </h3>
-                            <div className="h-48">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <BarChart data={weeklyActivity}>
-                                        <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#a8a29e' }} />
-                                        <Tooltip
-                                            cursor={{ fill: 'transparent' }}
-                                            contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', backgroundColor: '#fafaf9', color: '#1c1917' }}
-                                            itemStyle={{ color: '#0d9488' }}
-                                        />
-                                        <Bar dataKey="minutes" fill="#1c1917" radius={[4, 4, 4, 4]} className="fill-ink-900 dark:fill-stone-200" />
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            </div>
+                            {weeklyActivity.length > 0 && weeklyActivity.some(d => d.minutes > 0) ? (
+                                <div className="h-48">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <BarChart data={weeklyActivity}>
+                                            <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#a8a29e' }} />
+                                            <Tooltip
+                                                cursor={{ fill: 'transparent' }}
+                                                contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', backgroundColor: '#fafaf9', color: '#1c1917' }}
+                                                itemStyle={{ color: '#0d9488' }}
+                                            />
+                                            <Bar dataKey="minutes" fill="#1c1917" radius={[4, 4, 4, 4]} className="fill-ink-900 dark:fill-stone-200" />
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            ) : (
+                                <div className="h-48 flex flex-col items-center justify-center text-center space-y-2 opacity-30">
+                                    <Activity size={32} strokeWidth={1} />
+                                    <p className="text-[10px] font-bold uppercase tracking-widest">No recent activity</p>
+                                </div>
+                            )}
                         </div>
 
                         {/* Interests */}
-                        <div className="space-y-8 bg-white dark:bg-stone-900 p-8 rounded-[2rem] border border-paper-100 dark:border-stone-800 shadow-sm">
+                        <div className="space-y-8 bg-white dark:bg-stone-900 p-8 rounded-[2rem] border border-paper-100 dark:border-stone-800 shadow-sm min-h-[400px] flex flex-col">
                             <h3 className="text-xl font-bold text-ink-900 dark:text-stone-100 serif">
                                 Genre Distribution
                             </h3>
-                            <div className="flex flex-col items-center gap-8">
-                                <div className="h-48 w-48 shrink-0">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <PieChart>
-                                            <Pie
-                                                data={genreData}
-                                                innerRadius={60}
-                                                outerRadius={80}
-                                                paddingAngle={5}
-                                                dataKey="value"
-                                                stroke="none"
-                                            >
-                                                {genreData.map((entry, index) => (
-                                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                                ))}
-                                            </Pie>
-                                            <Tooltip
-                                                contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', backgroundColor: '#ffffff' }}
-                                            />
-                                        </PieChart>
-                                    </ResponsiveContainer>
+                            {genreData.length > 0 ? (
+                                <div className="flex flex-col items-center gap-8 flex-1 justify-center">
+                                    <div className="h-48 w-48 shrink-0">
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <PieChart>
+                                                <Pie
+                                                    data={genreData}
+                                                    innerRadius={60}
+                                                    outerRadius={80}
+                                                    paddingAngle={5}
+                                                    dataKey="value"
+                                                    stroke="none"
+                                                >
+                                                    {genreData.map((entry, index) => (
+                                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                                    ))}
+                                                </Pie>
+                                                <Tooltip
+                                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', backgroundColor: '#ffffff' }}
+                                                />
+                                            </PieChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3 w-full">
+                                        {genreData.map((genre, index) => (
+                                            <div key={genre.name} className="flex items-center gap-2">
+                                                <div className="w-3 h-3 rounded-sm shrink-0" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
+                                                <span className="text-[10px] font-black text-ink-600 dark:text-stone-400 uppercase tracking-widest truncate" style={{ color: COLORS[index % COLORS.length] }}>
+                                                    {genre.name}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
-                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3 w-full">
-                                    {genreData.map((genre, index) => (
-                                        <div key={genre.name} className="flex items-center gap-2">
-                                            <div className="w-3 h-3 rounded-sm shrink-0" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                                            <span className="text-[10px] font-black text-ink-600 dark:text-stone-400 uppercase tracking-widest truncate" style={{ color: COLORS[index % COLORS.length] }}>
-                                                {genre.name}
-                                            </span>
-                                        </div>
-                                    ))}
+                            ) : (
+                                <div className="flex-1 flex flex-col items-center justify-center text-center space-y-2 opacity-30">
+                                    <Book size={48} strokeWidth={1} />
+                                    <p className="text-xs font-bold uppercase tracking-widest">No genres found</p>
                                 </div>
-                            </div>
+                            )}
                         </div>
                     </div>
 
@@ -140,10 +143,7 @@ const PublicProfilePage = () => {
                                 {profile.completedBooks.map((item) => (
                                     <div key={item._id} className="group cursor-pointer space-y-4" onClick={() => navigate(`/book/${item.googleBookId}`)}>
                                         <div className="aspect-[2/3] rounded-lg overflow-hidden border border-paper-100 dark:border-stone-800 shadow-sm transition-transform group-hover:-translate-y-1 group-hover:shadow-md h-full">
-                                            <PublicShelfItem googleBookId={item.googleBookId} />
-                                        </div>
-                                        <div className="text-center">
-                                            <p className="text-[9px] font-black uppercase tracking-[0.2em] text-ink-300 dark:text-stone-600 group-hover:text-ink-900 dark:group-hover:text-stone-300 transition-colors">Fragment Index</p>
+                                            <PublicShelfItem googleBookId={item.googleBookId} showTitle />
                                         </div>
                                     </div>
                                 ))}
@@ -214,7 +214,7 @@ const PublicProfilePage = () => {
     );
 };
 
-const PublicShelfItem = ({ googleBookId }) => {
+const PublicShelfItem = ({ googleBookId, showTitle }) => {
     const { data: bookDetails } = useQuery({
         queryKey: ['book', googleBookId],
         queryFn: () => import('../services/googleBooksService').then(m => m.getBookDetails(googleBookId)),
@@ -224,7 +224,18 @@ const PublicShelfItem = ({ googleBookId }) => {
     if (!bookDetails) return <div className="w-full h-full bg-paper-50 dark:bg-stone-900 animate-pulse" />;
 
     const thumbnail = bookDetails.volumeInfo.imageLinks?.thumbnail?.replace('http:', 'https:');
-    return <img src={thumbnail} alt={bookDetails.volumeInfo.title} className="w-full h-full object-cover" />;
+    const title = bookDetails.volumeInfo.title;
+
+    return (
+        <div className="relative w-full h-full flex flex-col">
+            <img src={thumbnail} alt={title} className="w-full h-64 object-cover" />
+            {showTitle && (
+                <div className="p-2 flex-1 flex flex-col justify-center bg-white dark:bg-stone-900">
+                    <p className="text-[10px] font-bold text-ink-900 dark:text-stone-100 line-clamp-2 leading-tight uppercase tracking-wider">{title}</p>
+                </div>
+            )}
+        </div>
+    );
 };
 
 export default PublicProfilePage;

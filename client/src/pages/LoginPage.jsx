@@ -19,6 +19,14 @@ const LoginPage = () => {
         resolver: zodResolver(schema),
     });
 
+    React.useEffect(() => {
+        const authError = sessionStorage.getItem('auth_error');
+        if (authError) {
+            toast.error(authError, { duration: 6000 });
+            sessionStorage.removeItem('auth_error');
+        }
+    }, []);
+
     const onSubmit = async (data) => {
         try {
             const response = await api.post('/auth/login', data);

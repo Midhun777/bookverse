@@ -24,11 +24,18 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response && error.response.status === 401) {
-            // If unauthorized, clear store and redirect to login
+        if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+            // If unauthorized or forbidden (banned), clear store and redirect to login
             useAuthStore.getState().logout();
-            // Optional: redirect to login if not already there
+
+            // If it's a 403, we might want to preserve the error message
+            const message = error.response.data.message || 'Access denied';
+
             if (window.location.pathname !== '/login') {
+                // Store ban message temporarily in session storage to show on login page
+                if (error.response.status === 403) {
+                    sessionStorage.setItem('auth_error', message);
+                }
                 window.location.href = '/login';
             }
         }

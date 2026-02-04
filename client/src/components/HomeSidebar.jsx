@@ -145,11 +145,6 @@ const HomeSidebar = () => {
 
             <div className="text-xs text-ink-400 text-center px-4">
                 <p>&copy; 2026 Bookverse</p>
-                <div className="flex justify-center gap-2 mt-1">
-                    <a href="#" className="hover:text-ink-600">About</a>
-                    <a href="#" className="hover:text-ink-600">Blog</a>
-                    <a href="#" className="hover:text-ink-600">Terms</a>
-                </div>
             </div>
         </aside>
     );

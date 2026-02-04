@@ -14,6 +14,10 @@ const protect = async (req, res, next) => {
                 return res.status(401).json({ message: 'Not authorized, user not found' });
             }
 
+            if (req.user.isBanned) {
+                return res.status(403).json({ message: 'Your account has been banned. Access denied.' });
+            }
+
             next();
         } catch (error) {
             console.error(error);

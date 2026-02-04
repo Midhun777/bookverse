@@ -25,12 +25,7 @@ const MainLayout = () => {
             <footer className="bg-white border-t border-paper-200 py-12 mt-auto dark:bg-stone-900 dark:border-stone-800">
                 <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-sm text-ink-600 gap-6 dark:text-stone-400">
                     <p>&copy; {new Date().getFullYear()} Bookverse. Ideally organized.</p>
-                    <div className="flex space-x-8 font-medium">
-                        <a href="#" className="hover:text-teal-600 transition-colors">About</a>
-                        <a href="#" className="hover:text-teal-600 transition-colors">Terms</a>
-                        <a href="#" className="hover:text-teal-600 transition-colors">Privacy</a>
-                        <a href="#" className="hover:text-teal-600 transition-colors">Help</a>
-                    </div>
+                    <p>&copy; {new Date().getFullYear()} Bookverse. Ideally organized.</p>
                 </div>
             </footer>
         </div>

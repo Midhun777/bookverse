@@ -79,7 +79,7 @@ const getAppStats = async (req, res) => {
         const reviewStats = await Review.aggregate([
             { $group: { _id: "$googleBookId", count: { $sum: 1 } } },
             { $sort: { count: -1 } },
-            { $limit: 5 }
+            { $limit: 10 }
         ]);
 
         // 3. Most Liked Books
@@ -102,7 +102,7 @@ const getAppStats = async (req, res) => {
         books.forEach(b => bookMap[b.googleBookId] = b.title);
 
         const enrichStats = (stats) => stats.map(s => ({
-            _id: bookMap[s._id] || s._id, // Use title if found, else ID
+            _id: bookMap[s._id] || `Global Book (${s._id})`, // Use title if found, else friendly fallback
             count: s.count
         }));
 
