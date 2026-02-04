@@ -203,18 +203,6 @@ const getAllReviews = async (req, res) => {
     }
 };
 
-// @desc    Get all books from recommendation dataset
-// @route   GET /api/admin/books
-// @access  Private/Admin
-const getAllSeedBooks = async (req, res) => {
-    try {
-        const books = await BookMaster.find({}).sort({ createdAt: -1 });
-        res.json(books);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
 module.exports = {
     getAllUsers,
     banUser,
@@ -222,6 +210,5 @@ module.exports = {
     updateSettings,
     getAppStats,
     getSettings,
-    getAllReviews,
-    getAllSeedBooks
+    getAllReviews
 };

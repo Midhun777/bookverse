@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getAllUsers, banUser, deleteUser, updateSettings, getAppStats, getSettings, getAllReviews, getAllSeedBooks } = require('../controllers/adminController');
+const { getAllUsers, banUser, deleteUser, updateSettings, getAppStats, getSettings, getAllReviews } = require('../controllers/adminController');
 const { protect, authorize } = require('../middlewares/authMiddleware');
 
 router.get('/users', protect, authorize('ADMIN'), getAllUsers);
@@ -9,7 +9,6 @@ router.delete('/delete-user/:userId', protect, authorize('ADMIN'), deleteUser);
 router.put('/settings', protect, authorize('ADMIN'), updateSettings);
 router.get('/stats', protect, authorize('ADMIN'), getAppStats);
 router.get('/reviews', protect, authorize('ADMIN'), getAllReviews);
-router.get('/books', protect, authorize('ADMIN'), getAllSeedBooks);
 router.get('/settings', getSettings);
 
 module.exports = router;
