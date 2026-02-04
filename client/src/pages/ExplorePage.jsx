@@ -148,11 +148,11 @@ const ExplorePage = () => {
 
     return (
         <div className="min-h-screen bg-paper-50 dark:bg-stone-950 pb-20">
-            {/* Header & Search */}
-            <header className="bg-paper-50 dark:bg-stone-900 border-b border-paper-200 dark:border-stone-800 py-8 px-6 transition-colors duration-300">
-                <div className="max-w-7xl mx-auto space-y-6">
-                    <div className="max-w-3xl mx-auto text-center space-y-4">
-                        <h1 className="text-3xl md:text-4xl font-serif font-bold text-ink-900 dark:text-stone-100">
+            {/* Header & Search - More Compact */}
+            <header className="bg-paper-50 dark:bg-stone-900 border-b border-paper-200 dark:border-stone-800 py-6 px-6 transition-colors duration-300">
+                <div className="max-w-7xl mx-auto space-y-4">
+                    <div className="max-w-2xl mx-auto text-center space-y-3">
+                        <h1 className="text-2xl md:text-3xl font-serif font-bold text-ink-900 dark:text-stone-100">
                             Discover
                         </h1>
                         <div className="relative group">
@@ -161,7 +161,7 @@ const ExplorePage = () => {
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
                                 placeholder="Search books, authors, or ISBNs..."
-                                className="w-full pl-5 pr-12 py-3 input-libra rounded text-lg shadow-sm"
+                                className="w-full pl-5 pr-12 py-2.5 input-libra rounded text-base shadow-sm"
                             />
                             <div className="absolute inset-y-0 right-4 flex items-center text-ink-400 dark:text-stone-500 pointer-events-none">
                                 <Search size={20} />
@@ -185,13 +185,13 @@ const ExplorePage = () => {
                                 </button>
                             ))}
                         </div>
-                        <div className="flex flex-wrap justify-center gap-2 border-t border-paper-100 pt-3">
-                            <span className="text-xs text-ink-400 font-bold uppercase tracking-widest py-1">Moods:</span>
+                        <div className="flex flex-wrap justify-center gap-2 border-t border-paper-100 pt-2">
+                            <span className="text-[10px] text-ink-400 font-bold uppercase tracking-widest py-1">Moods:</span>
                             {moods.map(mood => (
                                 <button
                                     key={mood}
                                     onClick={() => { setQuery(mood); setSearchTerm(mood); }}
-                                    className={`px-2 py-1 rounded text-xs transition-colors ${searchTerm.toLowerCase() === mood.toLowerCase()
+                                    className={`px-2 py-0.5 rounded text-[10px] transition-colors ${searchTerm.toLowerCase() === mood.toLowerCase()
                                         ? 'bg-teal-600 text-white'
                                         : 'text-ink-500 hover:bg-paper-100'
                                         }`}

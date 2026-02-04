@@ -3,9 +3,11 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Search, BookOpen, Sparkles, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const HeroSection = () => {
+const HeroSection = ({ settings }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const navigate = useNavigate();
+
+    const bannerText = settings?.homepageBannerText || 'Welcome to Bookverse';
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -34,14 +36,14 @@ const HeroSection = () => {
                     animate={{ opacity: 1, y: 0 }}
                     className="inline-block px-3 py-0.5 rounded-full bg-white/10 text-white text-[9px] font-black uppercase tracking-[0.2em] mb-3 backdrop-blur-md border border-white/10"
                 >
-                    Welcome to Bookverse
+                    {bannerText}
                 </motion.div>
 
                 <motion.h1
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="text-2xl md:text-4xl font-serif font-black text-white mb-3 leading-tight tracking-tight"
+                    className="text-2xl md:text-4xl font-serif font-black text-white mb-3 leading-tight tracking-tight px-4"
                 >
                     Your Personal Library, <br />
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-emerald-200 italic">Reimagined.</span>
@@ -51,9 +53,9 @@ const HeroSection = () => {
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="text-sm md:text-base text-teal-50/70 mb-6 max-w-lg leading-snug"
+                    className="text-sm md:text-base text-teal-50/70 mb-6 max-w-lg leading-snug px-6"
                 >
-                    Discover millions of books and track your progress.
+                    Discover millions of books and track your progress in your own sanctuary.
                 </motion.p>
 
                 {/* Search Container */}
@@ -81,7 +83,7 @@ const HeroSection = () => {
                     {/* Quick Tags */}
                     <div className="mt-4 flex flex-wrap justify-center gap-4 text-[10px] font-black">
                         <span className="text-teal-200/20 uppercase tracking-[0.2em]">Quick Search:</span>
-                        {['Fiction', 'Sci-Fi', 'Mystery', 'History'].map((tag) => (
+                        {(settings?.featuredCategories?.length > 0 ? settings.featuredCategories.slice(0, 4) : ['Fiction', 'Sci-Fi', 'Mystery', 'History']).map((tag) => (
                             <Link
                                 key={tag}
                                 to={`/explore?q=${encodeURIComponent(tag)}`}

@@ -1,5 +1,6 @@
 const Review = require('../models/Review');
 const Activity = require('../models/Activity');
+const AdminSettings = require('../models/AdminSettings');
 const axios = require('axios');
 const cache = require('../utils/cache');
 
@@ -162,11 +163,18 @@ const getHomeBooks = async (req, res) => {
             .map(item => formatBook(item, internalStatsMap[item.key]))
             .filter(b => b);
 
+        // 5. Fetch Admin Settings
+        let settings = await AdminSettings.findOne();
+        if (!settings) {
+            settings = await AdminSettings.create({});
+        }
+
         res.json({
             trending,
             topRated,
             recentlyReviewed,
-            freeToRead
+            freeToRead,
+            settings
         });
 
     } catch (error) {

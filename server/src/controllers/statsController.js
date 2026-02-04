@@ -3,6 +3,8 @@ const ReadingSession = require('../models/ReadingSession');
 const User = require('../models/User');
 const ReadingList = require('../models/ReadingList');
 const BookMaster = require('../models/BookMaster');
+const Review = require('../models/Review');
+const Note = require('../models/Note');
 
 // @desc    Update reading session time
 // @route   POST /api/stats/session
@@ -55,6 +57,9 @@ const getPublicProfile = async (req, res) => {
 
         const stats = await ReadingStats.find({ userId: user._id });
         const completedBooks = await ReadingList.find({ userId: user._id, status: 'COMPLETED' });
+        const reviewCount = await Review.countDocuments({ userId: user._id });
+        const notesCount = await Note.countDocuments({ userId: user._id });
+        const savedCount = await ReadingList.countDocuments({ userId: user._id, status: { $in: ['TO_READ', 'READING'] } });
 
         const totalReadingTime = stats.reduce((acc, item) => acc + item.totalReadingMinutes, 0);
         const totalBooksRead = completedBooks.length;
@@ -175,6 +180,9 @@ const getPublicProfile = async (req, res) => {
             genreDistribution,
             weeklyActivity,
             completedBooks,
+            reviewCount,
+            notesCount,
+            savedCount,
             timeline: completedBooks.map(b => ({ bookId: b.googleBookId, date: b.completedAt }))
         });
     } catch (error) {

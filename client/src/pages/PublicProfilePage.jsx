@@ -18,24 +18,25 @@ const PublicProfilePage = () => {
     if (isLoading) return <div className="flex justify-center py-40"><Loader2 className="animate-spin text-gray-300 w-10 h-10" /></div>;
     if (isError) return <div className="text-center py-40 text-red-500 font-bold serif">Archive entry not found.</div>;
 
-    const COLORS = ['#111827', '#4B5563', '#9CA3AF', '#D1D5DB', '#E5E7EB'];
+    const COLORS = [
+        '#10B981', '#3B82F6', '#EF4444', '#F59E0B', '#8B5CF6',
+        '#EC4899', '#06B6D4', '#F97316', '#6366F1', '#14B8A6'
+    ];
 
     const genreData = profile.genreDistribution?.length > 0 ? profile.genreDistribution : [
-        { name: 'Literature', value: 45 },
-        { name: 'Science', value: 25 },
-        { name: 'Arts', value: 15 },
-        { name: 'History', value: 15 },
+        { name: 'BUSINESS', value: 45 },
+        { name: 'FANTASY', value: 25 },
+        { name: 'FICTION', value: 15 },
+        { name: 'FINANCE', value: 15 },
+        { name: 'HISTORY', value: 10 },
+        { name: 'PHILOSOPHY', value: 10 },
+        { name: 'PSYCHOLOGY', value: 10 },
+        { name: 'SCIENCE', value: 10 },
+        { name: 'SELF-HELP', value: 10 },
+        { name: 'SUCCESS', value: 10 },
     ];
 
-    const weeklyActivity = [
-        { day: 'Mon', minutes: 45 },
-        { day: 'Tue', minutes: 30 },
-        { day: 'Wed', minutes: 60 },
-        { day: 'Thu', minutes: 20 },
-        { day: 'Fri', minutes: 50 },
-        { day: 'Sat', minutes: 90 },
-        { day: 'Sun', minutes: 30 },
-    ];
+    const weeklyActivity = profile.weeklyActivity || [];
 
     return (
         <div className="max-w-4xl mx-auto space-y-24 pb-32 animate-page">
@@ -90,34 +91,39 @@ const PublicProfilePage = () => {
                         </div>
 
                         {/* Interests */}
-                        <div className="space-y-8">
-                            <h3 className="text-xl font-bold text-ink-900 dark:text-stone-100 serif flex items-center gap-3 border-b border-paper-50 dark:border-stone-800 pb-4">
-                                <Book size={20} className="text-ink-400 dark:text-stone-500" /> Interests
+                        <div className="space-y-8 bg-white dark:bg-stone-900 p-8 rounded-[2rem] border border-paper-100 dark:border-stone-800 shadow-sm">
+                            <h3 className="text-xl font-bold text-ink-900 dark:text-stone-100 serif">
+                                Genre Distribution
                             </h3>
-                            <div className="flex items-center gap-6">
-                                <div className="h-32 w-32 shrink-0">
+                            <div className="flex flex-col items-center gap-8">
+                                <div className="h-48 w-48 shrink-0">
                                     <ResponsiveContainer width="100%" height="100%">
                                         <PieChart>
                                             <Pie
                                                 data={genreData}
-                                                innerRadius={40}
-                                                outerRadius={55}
-                                                paddingAngle={8}
+                                                innerRadius={60}
+                                                outerRadius={80}
+                                                paddingAngle={5}
                                                 dataKey="value"
+                                                stroke="none"
                                             >
                                                 {genreData.map((entry, index) => (
                                                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                                 ))}
                                             </Pie>
-                                            <Tooltip />
+                                            <Tooltip
+                                                contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', backgroundColor: '#ffffff' }}
+                                            />
                                         </PieChart>
                                     </ResponsiveContainer>
                                 </div>
-                                <div className="space-y-2">
-                                    {genreData.slice(0, 4).map((genre, index) => (
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3 w-full">
+                                    {genreData.map((genre, index) => (
                                         <div key={genre.name} className="flex items-center gap-2">
-                                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                                            <span className="text-[10px] font-bold text-ink-500 dark:text-stone-400 uppercase tracking-widest">{genre.name}</span>
+                                            <div className="w-3 h-3 rounded-sm shrink-0" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
+                                            <span className="text-[10px] font-black text-ink-600 dark:text-stone-400 uppercase tracking-widest truncate" style={{ color: COLORS[index % COLORS.length] }}>
+                                                {genre.name}
+                                            </span>
                                         </div>
                                     ))}
                                 </div>
@@ -127,10 +133,7 @@ const PublicProfilePage = () => {
 
                     {/* Personal Collection */}
                     <section className="space-y-12">
-                        <div className="flex items-end justify-between border-b border-paper-200 dark:border-stone-800 pb-4">
-                            <h2 className="text-2xl font-bold text-ink-900 dark:text-stone-100 serif uppercase tracking-tight">Archived Works</h2>
-                            <p className="text-xs font-bold text-ink-300 dark:text-stone-600 uppercase tracking-widest italic">Completed collection</p>
-                        </div>
+                        <h2 className="text-2xl font-bold text-ink-900 dark:text-stone-100 serif uppercase tracking-tight">Completed Collection</h2>
 
                         {profile.completedBooks.length > 0 ? (
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-12 px-2">
@@ -171,16 +174,34 @@ const PublicProfilePage = () => {
                         <h3 className="text-lg font-bold text-ink-900 dark:text-stone-100 serif uppercase tracking-tight border-b border-paper-50 dark:border-stone-800 pb-4">Personal Awards</h3>
                         <div className="space-y-8">
                             {[
-                                { icon: <Star size={20} fill="currentColor" />, label: 'Nexus Critic', sub: '10+ Shared Reflections' },
-                                { icon: <Activity size={20} />, label: 'Deep Sync', sub: '500+ Hours in Flow' },
-                                { icon: <Bookmark size={20} />, label: 'Collector', sub: '50+ Saved Fragments' }
+                                {
+                                    icon: <Star size={20} fill={profile.reviewCount >= 10 ? "currentColor" : "none"} />,
+                                    label: 'Nexus Critic',
+                                    sub: `${profile.reviewCount || 0}/10 Shared Reflections`,
+                                    active: profile.reviewCount >= 10
+                                },
+                                {
+                                    icon: <Activity size={20} />,
+                                    label: 'Deep Sync',
+                                    sub: `${Math.floor(profile.totalReadingTime / 60)}/500 Hours in Flow`,
+                                    active: (profile.totalReadingTime / 60) >= 500
+                                },
+                                {
+                                    icon: <Bookmark size={20} />,
+                                    label: 'Collector',
+                                    sub: `${(profile.notesCount || 0) + (profile.savedCount || 0)}/50 Saved Fragments`,
+                                    active: (profile.notesCount + profile.savedCount) >= 50
+                                }
                             ].map((medal, i) => (
                                 <div key={i} className="flex items-center gap-6 group">
-                                    <div className="p-4 rounded-2xl bg-white dark:bg-stone-800 border border-paper-100 dark:border-stone-700 text-ink-900 dark:text-stone-100 group-hover:bg-ink-900 dark:group-hover:bg-stone-100 group-hover:text-white dark:group-hover:text-stone-900 transition-all duration-300 shadow-sm">
+                                    <div className={`p-4 rounded-2xl border transition-all duration-300 shadow-sm ${medal.active
+                                        ? "bg-ink-900 dark:bg-stone-100 text-white dark:text-stone-900 border-transparent shadow-md"
+                                        : "bg-white dark:bg-stone-800 border-paper-100 dark:border-stone-700 text-ink-300 dark:text-stone-600 grayscale"
+                                        }`}>
                                         {medal.icon}
                                     </div>
                                     <div>
-                                        <p className="font-bold text-ink-900 dark:text-stone-100 text-base">{medal.label}</p>
+                                        <p className={`font-bold text-base ${medal.active ? "text-ink-900 dark:text-stone-100" : "text-ink-400 dark:text-stone-500"}`}>{medal.label}</p>
                                         <p className="text-[10px] font-bold text-ink-300 dark:text-stone-500 uppercase tracking-widest mt-1 italic">{medal.sub}</p>
                                     </div>
                                 </div>

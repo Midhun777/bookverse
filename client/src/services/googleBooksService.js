@@ -64,10 +64,21 @@ export const searchBooks = async (query) => {
             }
         });
 
-        return { items: response.data.items || [] };
+        if (response.data.items && response.data.items.length > 0) {
+            return { items: response.data.items };
+        }
+
+        // Fallback to local search if Google returns nothing
+        throw new Error('No items from Google');
 
     } catch (error) {
-        console.error('Search Error:', error);
-        return { items: [] };
+        console.warn('Google Search unavailable/empty, falling back to local DB:', error.message);
+        try {
+            const localRes = await api.get(`/books/search?q=${query}`);
+            return { items: localRes.data || [] };
+        } catch (localErr) {
+            console.error('Local Search Error:', localErr);
+            return { items: [] };
+        }
     }
 };

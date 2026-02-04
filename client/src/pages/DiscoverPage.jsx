@@ -50,31 +50,31 @@ const DiscoverPage = () => {
                 <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-indigo-500/10 blur-[60px] rounded-full pointer-events-none translate-y-1/2 -translate-x-1/2" />
 
                 <div className="max-w-7xl mx-auto relative z-10">
-                    <div className="flex flex-col lg:flex-row items-center gap-8">
+                    <div className="flex flex-col lg:flex-row items-center gap-6">
                         {/* Text Content */}
-                        <div className="flex-1 text-center lg:text-left space-y-3">
+                        <div className="flex-1 text-center lg:text-left space-y-2">
                             <motion.div
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="inline-flex items-center gap-2 px-3 py-0.5 bg-white/5 border border-white/10 rounded-full text-teal-400 text-[8px] font-black uppercase tracking-[0.25em] backdrop-blur-md"
+                                className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-white/5 border border-white/10 rounded-full text-teal-400 text-[7px] font-black uppercase tracking-[0.2em] backdrop-blur-md"
                             >
-                                <Sparkles size={10} className="animate-pulse" />
+                                <Sparkles size={8} className="animate-pulse" />
                                 Discovery
                             </motion.div>
                             <motion.h1
                                 initial={{ opacity: 0, y: 15 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.1 }}
-                                className="text-3xl md:text-4xl font-serif font-black text-white tracking-tighter leading-[1]"
+                                className="text-2xl md:text-3xl font-serif font-black text-white tracking-tighter leading-[1]"
                             >
                                 Explore the <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-300 italic pr-2">Bookverse</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-300 italic pr-2 text-3xl md:text-4xl">Bookverse</span>
                             </motion.h1>
                             <motion.p
                                 initial={{ opacity: 0, y: 15 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.2 }}
-                                className="text-sm md:text-base text-ink-300/70 font-serif max-w-sm leading-relaxed"
+                                className="text-xs md:text-sm text-ink-300/70 font-serif max-w-sm leading-relaxed"
                             >
                                 Find your next favorite masterpiece from 200+ titles.
                             </motion.p>
@@ -122,14 +122,14 @@ const DiscoverPage = () => {
             </header>
 
             {/* Hub Sections */}
-            <div className="max-w-[1400px] mx-auto px-6 py-16 space-y-24">
+            <div className="max-w-[1400px] mx-auto px-6 py-8 space-y-16">
 
                 {/* Categories Pill Navigation */}
                 <section>
-                    <div className="flex items-center justify-between mb-8">
-                        <div className="flex items-center gap-3">
-                            <BookOpen size={22} className="text-teal-600" />
-                            <h2 className="text-2xl font-serif font-bold text-ink-900 dark:text-stone-100">Browse by Interest</h2>
+                    <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-2">
+                            <BookOpen size={18} className="text-teal-600" />
+                            <h2 className="text-xl font-serif font-bold text-ink-900 dark:text-stone-100">Browse by Interest</h2>
                         </div>
                     </div>
                     <div className="flex flex-wrap gap-3">
@@ -137,7 +137,7 @@ const DiscoverPage = () => {
                             <Link
                                 to={`/explore?q=${cat.name}`}
                                 key={idx}
-                                className="px-6 py-3 rounded-full bg-white border border-paper-200 hover:border-teal-500 hover:bg-teal-50 text-ink-600 hover:text-teal-700 transition-all font-bold text-xs uppercase tracking-widest dark:bg-stone-900 dark:border-stone-800 dark:text-stone-400"
+                                className="px-4 py-2 rounded-full bg-white border border-paper-200 hover:border-teal-500 hover:bg-teal-50 text-ink-600 hover:text-teal-700 transition-all font-bold text-[10px] uppercase tracking-widest dark:bg-stone-900 dark:border-stone-800 dark:text-stone-400"
                             >
                                 {cat.name}
                             </Link>
@@ -154,12 +154,12 @@ const DiscoverPage = () => {
                         viewport={{ once: true }}
                         transition={{ delay: idx * 0.1 }}
                     >
-                        <div className="flex items-end justify-between mb-10 pb-4 border-b border-paper-100 dark:border-stone-800">
+                        <div className="flex items-end justify-between mb-6 pb-3 border-b border-paper-100 dark:border-stone-800">
                             <div>
-                                <h2 className="text-3xl font-serif font-bold text-ink-900 dark:text-stone-100 tracking-tight">
+                                <h2 className="text-2xl font-serif font-bold text-ink-900 dark:text-stone-100 tracking-tight">
                                     {section.title}
                                 </h2>
-                                <p className="text-ink-500 dark:text-stone-400 font-medium mt-1">{section.description}</p>
+                                <p className="text-ink-500 dark:text-stone-400 text-xs font-medium mt-0.5">{section.description}</p>
                             </div>
                             <Link to={`/explore?q=${section.title.includes('Titan') ? 'Technology' : ''}`} className="text-sm font-bold text-teal-600 hover:text-teal-800 flex items-center gap-1 transition-colors group">
                                 View Full Collection <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
@@ -181,18 +181,18 @@ const DiscoverPage = () => {
                 ))}
             </div>
 
-            {/* Elevated Personalized CTA */}
-            <section className="mx-6 max-w-7xl lg:mx-auto bg-gradient-to-br from-ink-900 to-stone-900 rounded-[4rem] p-12 md:p-24 text-white text-center relative shadow-3xl overflow-hidden mt-12 border border-white/5">
-                <div className="relative z-10 max-w-3xl mx-auto space-y-10">
-                    <div className="inline-block p-4 bg-teal-500/20 rounded-3xl backdrop-blur-xl">
-                        <Sparkles size={48} className="text-teal-400 animate-pulse" />
+            {/* Elevated Personalized CTA - Compacted */}
+            <section className="mx-6 max-w-5xl lg:mx-auto bg-gradient-to-br from-ink-900 to-stone-900 rounded-[2.5rem] p-8 md:p-12 text-white text-center relative shadow-3xl overflow-hidden mt-8 border border-white/5">
+                <div className="relative z-10 max-w-2xl mx-auto space-y-6">
+                    <div className="inline-block p-3 bg-teal-500/20 rounded-2xl backdrop-blur-xl">
+                        <Sparkles size={32} className="text-teal-400 animate-pulse" />
                     </div>
-                    <h2 className="text-5xl md:text-7xl font-serif font-bold leading-tight">Ready for your <span className="italic text-teal-400">Next Chapter</span>?</h2>
-                    <p className="text-xl text-ink-300 font-serif leading-relaxed max-w-2xl mx-auto">
+                    <h2 className="text-3xl md:text-5xl font-serif font-bold leading-tight">Ready for your <span className="italic text-teal-400">Next Chapter</span>?</h2>
+                    <p className="text-base text-ink-300 font-serif leading-relaxed max-w-xl mx-auto">
                         Your library is unique. We analyze your reading patterns across 11+ genres to find the books you actually want to read.
                     </p>
-                    <Link to="/recommendations" className="inline-flex items-center gap-3 px-14 py-6 bg-teal-600 hover:bg-teal-500 text-white rounded-full font-bold text-xl transition-all shadow-2xl hover:scale-105 active:scale-95">
-                        Get Personal Recommendations <ArrowRight size={20} />
+                    <Link to="/recommendations" className="inline-flex items-center gap-2 px-8 py-4 bg-teal-600 hover:bg-teal-500 text-white rounded-full font-bold text-lg transition-all shadow-2xl hover:scale-105 active:scale-95">
+                        Get Personal Recommendations <ArrowRight size={18} />
                     </Link>
                 </div>
 

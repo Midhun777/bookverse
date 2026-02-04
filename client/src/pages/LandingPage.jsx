@@ -80,7 +80,7 @@ const LandingPage = () => {
             <main className="lg:col-span-9 space-y-12">
 
                 {/* Hero Section */}
-                <HeroSection />
+                <HeroSection settings={data?.settings} />
 
                 {/* Featured Collections */}
                 <section>
@@ -201,7 +201,7 @@ const LandingPage = () => {
                                 Popular Genres
                             </h3>
                             <div className="flex flex-wrap gap-2 text-xs">
-                                {['Fiction', 'Non-Fiction', 'Science', 'Mystery', 'Fantasy', 'Romance', 'Historical', 'Biography', 'Thrillers', 'Philosophy'].map(genre => (
+                                {(data?.settings?.featuredCategories?.length > 0 ? data.settings.featuredCategories : ['Fiction', 'Non-Fiction', 'Science', 'Mystery', 'Fantasy', 'Romance', 'Historical', 'Biography', 'Thrillers', 'Philosophy']).map(genre => (
                                     <Link key={genre} to={`/explore?q=${genre}`} className="px-3 py-1.5 rounded-full bg-paper-100 text-ink-600 hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200 border border-transparent transition-all font-medium">
                                         {genre}
                                     </Link>

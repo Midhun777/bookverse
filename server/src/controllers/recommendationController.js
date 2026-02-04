@@ -1,5 +1,6 @@
 const Activity = require('../models/Activity');
 const BookMaster = require('../models/BookMaster');
+const AdminSettings = require('../models/AdminSettings');
 const { getRecommendations, getGlobalRecommendations } = require('./recommendationService');
 
 // @desc    Get Discover Hub (Global Trending & Categories)
@@ -8,7 +9,7 @@ const { getRecommendations, getGlobalRecommendations } = require('./recommendati
 const getDiscoverFeed = async (req, res) => {
     try {
         // 1. Top Categories from BookMaster (aggregated)
-        const categories = await BookMaster.aggregate([
+        const aggregatedCategories = await BookMaster.aggregate([
             { $unwind: "$subjects" },
             {
                 $group: {
@@ -21,6 +22,20 @@ const getDiscoverFeed = async (req, res) => {
             { $sort: { count: -1 } },
             { $limit: 12 }
         ]);
+
+        // 1.5 Fetch Admin Settings
+        let settings = await AdminSettings.findOne();
+        if (!settings) settings = await AdminSettings.create({});
+
+        // Use featuredCategories from settings if they exist, otherwise use aggregated
+        const finalCategories = settings.featuredCategories?.length > 0
+            ? settings.featuredCategories.map(name => ({ name }))
+            : aggregatedCategories.map(c => ({
+                name: c._id,
+                count: c.count,
+                avgPopularity: c.avgPopularity,
+                trendingCount: c.trendingCount
+            }));
 
         // 2. Global Sections
         const popularBooks = await BookMaster.find().sort({ popularityScore: -1 }).limit(15);
@@ -76,14 +91,10 @@ const getDiscoverFeed = async (req, res) => {
         ];
 
         res.json({
-            categories: categories.map(c => ({
-                name: c._id,
-                count: c.count,
-                avgPopularity: c.avgPopularity,
-                trendingCount: c.trendingCount
-            })),
+            categories: finalCategories,
             feed: hub,
-            featured: trending[0] // Spotlight the top trending book
+            featured: trending[0], // Spotlight the top trending book
+            settings
         });
 
     } catch (error) {

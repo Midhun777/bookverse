@@ -6,7 +6,8 @@ const User = require('../models/User');
 const Favorite = require('../models/Favorite');
 const connectDB = require('../config/db');
 
-dotenv.config({ path: './.env' });
+const path = require('path');
+dotenv.config({ path: path.join(__dirname, '../../.env') });
 
 /**
  * THE DATASET: 65+ Curated books with high-quality metadata.
