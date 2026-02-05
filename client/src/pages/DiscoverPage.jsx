@@ -6,15 +6,23 @@ import { Sparkles, TrendingUp, BookOpen, Star, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
+import { DISCOVER_FEED } from '../data/discoverData';
+
 const DiscoverPage = () => {
-    const { data, isLoading, isError } = useQuery({
-        queryKey: ['discover-hub'],
-        queryFn: async () => {
-            const res = await api.get('/recommendations/discover');
-            return res.data;
-        },
-        staleTime: 1000 * 60 * 5,
-    });
+    // We are now loading the Discover page data locally from code to ensure 100% accuracy
+    // and bypassing the database as requested by the user.
+    const data = {
+        feed: DISCOVER_FEED,
+        categories: [
+            { name: 'FICTION' },
+            { name: 'TECHNOLOGY' },
+            { name: 'SCIENCE' },
+            { name: 'HISTORY' }
+        ]
+    };
+
+    const isLoading = false;
+    const isError = false;
 
     if (isLoading) {
         return (

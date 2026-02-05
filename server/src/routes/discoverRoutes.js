@@ -1,7 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const discoverController = require('../controllers/discoverController');
+const { getDiscoverFeed, getBooksByCategory } = require('../controllers/discoverController');
 
-router.get('/', discoverController.getDiscoverData);
+// @route   GET /api/discover/feed
+router.get('/feed', getDiscoverFeed);
+
+// @route   GET /api/discover/books
+router.get('/books', getBooksByCategory);
 
 module.exports = router;

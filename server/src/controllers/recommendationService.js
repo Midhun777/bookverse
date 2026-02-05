@@ -125,6 +125,10 @@ const getRecommendations = async (userId) => {
         .limit(5);
 
     for (const genre of sortedGenres.slice(0, 2)) {
+        // [FIX] Minimum weight threshold to avoid noise from single accidental searches
+        const weight = profile.genres[genre] || 0;
+        if (weight < 3) continue;
+
         const books = await BookMaster.find({
             subjects: genre,
             googleBookId: { $nin: excludeIds }

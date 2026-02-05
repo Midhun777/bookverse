@@ -23,12 +23,9 @@ const BookCard = ({ book, className = "w-32 md:w-40" }) => {
     const authors = isFlat ? (book.authors || []) : book.volumeInfo?.authors;
     let thumbnail = book.coverImage || book.thumbnail || (isFlat ? null : book.volumeInfo?.imageLinks?.thumbnail);
 
-    // Force HTTPS and prefer higher resolution if it's a Google Books URL
+    // Force HTTPS
     if (thumbnail && typeof thumbnail === 'string') {
         thumbnail = thumbnail.replace('http:', 'https:');
-        if (thumbnail.includes('googleusercontent.com') || thumbnail.includes('books.google.com')) {
-            thumbnail = thumbnail.replace('zoom=1', 'zoom=2').replace('zoom=5', 'zoom=2');
-        }
     }
 
     const avgRating = book.averageRating || book.volumeInfo?.averageRating;
@@ -133,7 +130,15 @@ const BookCard = ({ book, className = "w-32 md:w-40" }) => {
                     alt={title}
                     className="w-full h-full object-cover"
                     loading="lazy"
+                    referrerPolicy="no-referrer"
                     onError={(e) => {
+                        const currentSrc = e.target.src;
+                        // If it failed with zoom=2 or zoom=3, try falling back to zoom=1
+                        if (currentSrc.includes('zoom=2') || currentSrc.includes('zoom=3') || currentSrc.includes('zoom=5')) {
+                            e.target.src = currentSrc.replace(/zoom=[235]/, 'zoom=1');
+                            return;
+                        }
+
                         e.target.onerror = null;
                         const colors = ['0D9488', '0891B2', '4F46E5', '7C3AED', 'DB2777', '2563EB'];
                         const fallbackIdx = Math.abs(id?.charCodeAt(0) || 0) % colors.length;
