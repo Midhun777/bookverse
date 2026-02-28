@@ -203,6 +203,34 @@ const getAllReviews = async (req, res) => {
     }
 };
 
+// @desc    Resolve a flagged review (Approve or Delete)
+// @route   PUT /api/admin/reviews/resolve/:reviewId
+// @access  Private/Admin
+const resolveReview = async (req, res) => {
+    try {
+        const { action } = req.body; // 'approve' or 'delete'
+        const review = await Review.findById(req.params.reviewId);
+
+        if (!review) {
+            return res.status(404).json({ message: 'Review not found' });
+        }
+
+        if (action === 'approve') {
+            review.status = 'approved';
+            review.moderationReason = 'Manually approved by admin';
+            await review.save();
+            res.json({ message: 'Review approved', review });
+        } else if (action === 'delete') {
+            await Review.findByIdAndDelete(req.params.reviewId);
+            res.json({ message: 'Review deleted' });
+        } else {
+            res.status(400).json({ message: 'Invalid action. Use approve or delete.' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     getAllUsers,
     banUser,
@@ -210,5 +238,6 @@ module.exports = {
     updateSettings,
     getAppStats,
     getSettings,
-    getAllReviews
+    getAllReviews,
+    resolveReview
 };

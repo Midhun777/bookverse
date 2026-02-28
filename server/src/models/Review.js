@@ -28,6 +28,19 @@ const ReviewSchema = new mongoose.Schema({
     updatedAt: {
         type: Date,
         default: Date.now
+    },
+    status: {
+        type: String,
+        enum: ['approved', 'flagged', 'pending'],
+        default: 'approved'
+    },
+    moderationReason: {
+        type: String,
+        default: ''
+    },
+    isAutoFlagged: {
+        type: Boolean,
+        default: false
     }
 });
 

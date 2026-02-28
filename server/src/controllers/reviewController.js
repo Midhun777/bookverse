@@ -1,5 +1,6 @@
 const Review = require('../models/Review');
 const User = require('../models/User');
+const { moderateContent } = require('../utils/moderationUtils');
 
 // @desc    Add a new review
 // @route   POST /api/reviews/add
@@ -14,11 +15,17 @@ const addReview = async (req, res) => {
             return res.status(400).json({ message: 'You have already reviewed this book' });
         }
 
+        // Automatic Moderation
+        const moderation = moderateContent(reviewText);
+
         const review = await Review.create({
             userId: req.user._id,
             googleBookId,
             rating,
-            reviewText
+            reviewText,
+            status: moderation.flagged ? 'flagged' : 'approved',
+            moderationReason: moderation.reason,
+            isAutoFlagged: moderation.flagged
         });
 
         res.status(201).json(review);
@@ -40,7 +47,10 @@ const getBookReviews = async (req, res) => {
         if (sort === 'highest') sortBy = { rating: -1 };
         if (sort === 'lowest') sortBy = { rating: 1 };
 
-        const reviews = await Review.find({ googleBookId })
+        const reviews = await Review.find({
+            googleBookId,
+            status: { $ne: 'flagged' } // Filter out flagged reviews
+        })
             .populate('userId', 'name avatar')
             .sort(sortBy);
 
@@ -77,7 +87,15 @@ const updateReview = async (req, res) => {
         }
 
         review.rating = rating || review.rating;
-        review.reviewText = reviewText || review.reviewText;
+
+        if (reviewText && reviewText !== review.reviewText) {
+            review.reviewText = reviewText;
+            // Re-verify moderation if text changed
+            const moderation = moderateContent(reviewText);
+            review.status = moderation.flagged ? 'flagged' : 'approved';
+            review.moderationReason = moderation.reason;
+            review.isAutoFlagged = moderation.flagged;
+        }
 
         const updatedReview = await review.save();
         res.json(updatedReview);

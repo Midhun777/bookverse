@@ -66,7 +66,7 @@ export const searchBooks = async (query) => {
         }
 
         // 1. Fetch from Google Books
-        const googlePromise = axios.get(GOOGLE_BOOKS_BASE_URL, {
+        const response = await axios.get(GOOGLE_BOOKS_BASE_URL, {
             params: {
                 q: finalQuery,
                 maxResults: 20,
@@ -74,46 +74,21 @@ export const searchBooks = async (query) => {
             }
         });
 
-        // 2. Fetch from Local Database
-        const localPromise = api.get(`/books/search?q=${query}`);
-
-        // Wait for both (but don't fail if one fails)
-        const [googleRes, localRes] = await Promise.allSettled([googlePromise, localPromise]);
-
-        let combinedItems = [];
-
-        // Handle Google Results
-        if (googleRes.status === 'fulfilled' && googleRes.value.data.items) {
-            combinedItems = [...googleRes.value.data.items];
-        } else if (googleRes.status === 'rejected') {
-            const status = googleRes.reason?.response?.status;
-            if (status === 429) {
-                console.warn('Google Books API rate limit reached (429).');
-                // We'll rely on local results only
-            } else {
-                console.error('Google Books Search Error:', googleRes.reason?.message);
-            }
-        }
-
-        // Handle Local Results
-        if (localRes.status === 'fulfilled' && localRes.value.data) {
-            const localItems = localRes.value.data;
-            // Merge and deduplicate by ID
-            localItems.forEach(localBook => {
-                const exists = combinedItems.find(gBook => gBook.id === localBook.id);
-                if (!exists) {
-                    combinedItems.unshift(localBook); // Put local/curated books at the top
-                }
-            });
-        }
+        const items = response.data.items || [];
 
         return {
-            items: combinedItems,
-            isLimited: googleRes.status === 'rejected' && googleRes.reason?.response?.status === 429
+            items: items,
+            isLimited: false
         };
 
     } catch (error) {
-        console.error('Unified Search Error:', error);
+        console.error('Google Books Search Error:', error);
+
+        if (error.response?.status === 429) {
+            console.warn('Google Books API rate limit reached (429).');
+            return { items: [], isLimited: true };
+        }
+
         return { items: [] };
     }
 };
