@@ -42,7 +42,7 @@ const BookCard = ({ book, className = "w-32 md:w-40" }) => {
     const isFavorited = favoriteBooks?.some(b => b.googleBookId === id);
 
     const toggleFavoriteMutation = useMutation({
-        mutationFn: async (e) => {
+        mutationFn: async () => {
             if (!user) {
                 toast.error('Please login to favorite books');
                 throw new Error('Unauthorized');
@@ -63,10 +63,7 @@ const BookCard = ({ book, className = "w-32 md:w-40" }) => {
                 return 'favorited';
             }
         },
-        onMutate: async (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-
+        onMutate: async () => {
             // Cancel any outgoing refetches
             await queryClient.cancelQueries({ queryKey: ['favoriteBooks'] });
 

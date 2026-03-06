@@ -1,0 +1,148 @@
+
+D:\vs-code\main-project\bookverse\client\src\components\ReadingProgressModal.jsx
+  17:52  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  15 |     useEffect(() => {
+  16 |         if (isOpen) {
+> 17 |             if (book?.currentPage !== currentPage) setCurrentPage(book?.currentPage || 0);
+     |                                                    ^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  18 |             if ((book?.volumeInfo?.pageCount || book?.pageCount || 100) !== localTotalPages) setLocalTotalPages(book?.volumeInfo?.pageCount || book?.pageCount || 100);
+  19 |         }
+  20 |     }, [isOpen, book?.currentPage, book?.pageCount, book?.googleBookId]);  react-hooks/set-state-in-effect
+  20:8   warning  React Hook useEffect has missing dependencies: 'book?.volumeInfo?.pageCount', 'currentPage', and 'localTotalPages'. Either include them or remove the dependency array. If 'setLocalTotalPages' needs the current value of 'book.volumeInfo.pageCount', you can also switch to useReducer instead of useState and read 'book.volumeInfo.pageCount' in the reducer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            react-hooks/exhaustive-deps
+
+D:\vs-code\main-project\bookverse\client\src\pages\AdminDashboard.jsx
+  43:24  error  'isLoadingSettings' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\vs-code\main-project\bookverse\client\src\pages\BookDetailsPage.jsx
+  121:13  error  'setReviewText' is not defined  no-undef
+
+D:\vs-code\main-project\bookverse\client\src\pages\DiscoverPage.jsx
+  6:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\vs-code\main-project\bookverse\client\src\pages\ExplorePage.jsx
+  27:11  error  'navigate' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               no-unused-vars
+  32:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  30 |     useEffect(() => {
+  31 |         if (urlQuery) {
+> 32 |             setQuery(urlQuery);
+     |             ^^^^^^^^ Avoid calling setState() directly within an effect
+  33 |             setSearchTerm(urlQuery);
+  34 |         }
+  35 |     }, [urlQuery]);                                                                           react-hooks/set-state-in-effect
+  45:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  43 |     useEffect(() => {
+  44 |         if (debouncedQuery) {
+> 45 |             setSearchTerm(debouncedQuery);
+     |             ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  46 |
+  47 |             // HONESTY: Don't log the initial default search as user activity
+  48 |             if (isFirstMount.current) {  react-hooks/set-state-in-effect
+  62:19  error  'favoriteBooks' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          no-unused-vars
+
+D:\vs-code\main-project\bookverse\client\src\pages\FavoritesPage.jsx
+  3:8   error  'api' is defined but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+  7:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\vs-code\main-project\bookverse\client\src\pages\LandingPage.jsx
+  17:30  error  'isError' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u          no-unused-vars
+  24:42  error  'activityLoading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+D:\vs-code\main-project\bookverse\client\src\pages\MyListsPage.jsx
+  65:53  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+  63 |                             // Check updated date or created date? Ideally completed date. 
+  64 |                             // Assuming `updatedAt` is close enough to completion time for now.
+> 65 |                             new Date(i.updatedAt || Date.now()).getFullYear() === currentYear
+     |                                                     ^^^^^^^^^^ Cannot call impure function
+  66 |                         ).length || 0;
+  67 |                         const goal = 30; // Hardcoded goal for now, or fetch from user settings later
+  68 |                         const percentage = Math.min((completedThisYear / goal) * 100, 100);  react-hooks/purity
+
+D:\vs-code\main-project\bookverse\client\src\pages\ProfilePage.jsx
+   15:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-unused-vars
+  192:68  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  190 |                                             <BarChart data={weeklyActivity}>
+  191 |                                                 <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#78716c' }} dy={10} />
+> 192 |                                                 <Tooltip content={<CustomTooltip />} cursor={{ fill: 'var(--paper-100)' }} />
+      |                                                                    ^^^^^^^^^^^^^ This component is created during render
+  193 |                                                 <Bar dataKey="minutes" fill="#0d9488" radius={[4, 4, 4, 4]} barSize={24} />
+  194 |                                             </BarChart>
+  195 |                                         </ResponsiveContainer>
+
+  64 |     const COLORS = ['#0d9488', '#f59e0b', '#57534e', '#a8a29e', '#f5f5f4'];
+  65 |
+> 66 |     const CustomTooltip = ({ active, payload, label }) => {
+     |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 67 |         if (active && payload && payload.length) {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 68 |             return (
+     …
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 75 |         return null;
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 76 |     };
+     | ^^^^^^ The component is created during render here
+  77 |
+  78 |     const genreData = profile?.genreDistribution?.length > 0 ? profile.genreDistribution : [
+  79 |         { name: 'Fiction', value: 40 },  react-hooks/static-components
+  222:68  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  220 |                                                     ))}
+  221 |                                                 </Pie>
+> 222 |                                                 <Tooltip content={<CustomTooltip />} />
+      |                                                                    ^^^^^^^^^^^^^ This component is created during render
+  223 |                                             </PieChart>
+  224 |                                         </ResponsiveContainer>
+  225 |                                     </div>
+
+  64 |     const COLORS = ['#0d9488', '#f59e0b', '#57534e', '#a8a29e', '#f5f5f4'];
+  65 |
+> 66 |     const CustomTooltip = ({ active, payload, label }) => {
+     |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 67 |         if (active && payload && payload.length) {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 68 |             return (
+     …
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 75 |         return null;
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 76 |     };
+     | ^^^^^^ The component is created during render here
+  77 |
+  78 |     const genreData = profile?.genreDistribution?.length > 0 ? profile.genreDistribution : [
+  79 |         { name: 'Fiction', value: 40 },                                                                                                                                                                                                                                                  react-hooks/static-components
+
+D:\vs-code\main-project\bookverse\client\src\pages\RecommendationsPage.jsx
+   6:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u            no-unused-vars
+  13:30  error  'isError' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+✖ 19 problems (18 errors, 1 warning)
+

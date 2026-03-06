@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Search, BookOpen, Sparkles, TrendingUp } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Search, BookOpen, Sparkles } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const HeroSection = ({ settings }) => {
     const [searchQuery, setSearchQuery] = useState('');

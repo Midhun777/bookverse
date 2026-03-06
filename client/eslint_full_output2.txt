@@ -1,0 +1,106 @@
+
+D:\vs-code\main-project\bookverse\client\src\components\ReadingProgressModal.jsx
+  17:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  15 |     useEffect(() => {
+  16 |         if (isOpen) {
+> 17 |             setCurrentPage(book?.currentPage || 0);
+     |             ^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  18 |             setLocalTotalPages(book?.volumeInfo?.pageCount || book?.pageCount || 100);
+  19 |         }
+  20 |     }, [isOpen, book]);  react-hooks/set-state-in-effect
+
+D:\vs-code\main-project\bookverse\client\src\pages\AdminDashboard.jsx
+   20:19  error  'dashboardStats' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+   20:46  error  'statsLoading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u       no-unused-vars
+   43:24  error  'isLoadingSettings' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   98:27  error  'isLoadingStats' is not defined                                                                    no-undef
+  141:81  error  'stats' is not defined                                                                             no-undef
+  150:81  error  'stats' is not defined                                                                             no-undef
+  159:81  error  'stats' is not defined                                                                             no-undef
+  169:54  error  'stats' is not defined                                                                             no-undef
+  187:51  error  'stats' is not defined                                                                             no-undef
+  196:46  error  'stats' is not defined                                                                             no-undef
+  213:53  error  'stats' is not defined                                                                             no-undef
+  226:34  error  'stats' is not defined                                                                             no-undef
+
+D:\vs-code\main-project\bookverse\client\src\pages\BookDetailsPage.jsx
+  121:13  error  'setReviewText' is not defined  no-undef
+
+D:\vs-code\main-project\bookverse\client\src\pages\ExplorePage.jsx
+   3:27  error  'useNavigate' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                no-unused-vars
+  31:22  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+  29 |
+  30 |     // Reset search when URL param changes
+> 31 |     if (urlQuery !== previousUrlQuery.current) {
+     |                      ^^^^^^^^^^^^^^^^^^^^^^^^ Cannot access ref value during render
+  32 |         previousUrlQuery.current = urlQuery;
+  33 |         if (urlQuery) {
+  34 |             setQuery(urlQuery);                                                                                                                        react-hooks/refs
+  32:9   error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+  30 |     // Reset search when URL param changes
+  31 |     if (urlQuery !== previousUrlQuery.current) {
+> 32 |         previousUrlQuery.current = urlQuery;
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^ Cannot update ref during render
+  33 |         if (urlQuery) {
+  34 |             setQuery(urlQuery);
+  35 |             setSearchTerm(urlQuery);                                                                                                      react-hooks/refs
+  62:28  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+  60 |     // Update searchTerm to match debouncedQuery to prevent rapid API Calls but keep UI response
+  61 |     const previousDebounced = useRef(debouncedQuery);
+> 62 |     if (debouncedQuery !== previousDebounced.current) {
+     |                            ^^^^^^^^^^^^^^^^^^^^^^^^^ Cannot access ref value during render
+  63 |         previousDebounced.current = debouncedQuery;
+  64 |         setSearchTerm(debouncedQuery);
+  65 |     }  react-hooks/refs
+  63:9   error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+  61 |     const previousDebounced = useRef(debouncedQuery);
+  62 |     if (debouncedQuery !== previousDebounced.current) {
+> 63 |         previousDebounced.current = debouncedQuery;
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^ Cannot update ref during render
+  64 |         setSearchTerm(debouncedQuery);
+  65 |     }
+  66 |                                                                                                                            react-hooks/refs
+
+D:\vs-code\main-project\bookverse\client\src\pages\LandingPage.jsx
+   17:19  error  'popularBooks' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u    no-unused-vars
+   24:19  error  'globalActivity' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   69:23  error  'activities' is not defined                                                                     no-undef
+   83:40  error  'data' is not defined                                                                           no-undef
+  122:34  error  'data' is not defined                                                                           no-undef
+  216:35  error  'data' is not defined                                                                           no-undef
+  216:84  error  'data' is not defined                                                                           no-undef
+
+D:\vs-code\main-project\bookverse\client\src\pages\MyListsPage.jsx
+  9:33  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+   7 | const MyListsPage = () => {
+   8 |     const [activeTab, setActiveTab] = useState('TO_READ');
+>  9 |     const nowRef = React.useRef(Date.now());
+     |                                 ^^^^^^^^^^ Cannot call impure function
+  10 |
+  11 |
+  12 |     const { data: listItems, isLoading: listLoading } = useQuery({  react-hooks/purity
+
+✖ 27 problems (27 errors, 0 warnings)
+

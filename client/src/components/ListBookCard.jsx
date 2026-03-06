@@ -88,7 +88,7 @@ const ListBookCard = ({ item, showRemove = true }) => {
                 {/* 4. Date Added / Empty Slot */}
                 <div className="md:col-span-3 hidden md:flex items-center gap-2 text-xs text-ink-400 dark:text-stone-500">
                     <Calendar size={14} />
-                    <span>{new Date(item.updatedAt || Date.now()).toLocaleDateString()}</span>
+                    <span>{new Date(item.updatedAt || new Date()).toLocaleDateString()}</span>
                 </div>
 
                 {/* 5. Actions */}

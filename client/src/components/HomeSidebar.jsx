@@ -43,7 +43,7 @@ const HomeSidebar = () => {
         const currentYear = new Date().getFullYear();
         return myLists.filter(item =>
             item.status === 'COMPLETED' &&
-            new Date(item.updatedAt || Date.now()).getFullYear() === currentYear
+            new Date(item.updatedAt || new Date()).getFullYear() === currentYear
         ).length;
     }, [myLists]);
 
@@ -128,7 +128,7 @@ const HomeSidebar = () => {
                 </div>
                 {favoriteBooks && favoriteBooks.length > 0 ? (
                     <div className="mt-3 flex -space-x-2">
-                        {favoriteBooks.slice(0, 5).map((book, i) => (
+                        {favoriteBooks.slice(0, 5).map((book) => (
                             <Link key={book._id} to={`/book/${book.googleBookId}`} title={book.title}>
                                 <img
                                     src={book.thumbnail || "https://via.placeholder.com/32x48?text=?"}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReviewItem from './ReviewItem';
 import { Star, Send } from 'lucide-react';
-import { useAuthStore } from '../store/authStore';
+
 
 const ReviewList = ({ reviews, user, onAddReview, onDeleteReview }) => {
     const [reviewText, setReviewText] = useState('');

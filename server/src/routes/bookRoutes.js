@@ -5,7 +5,8 @@ const {
     addToFavorites,
     removeFromFavorites,
     getFavorites,
-    searchBooks
+    searchBooks,
+    getFreeBooks
 } = require('../controllers/bookController');
 const { protect } = require('../middlewares/authMiddleware');
 
@@ -15,6 +16,7 @@ router.delete('/favorites/:googleBookId', protect, removeFromFavorites);
 router.get('/favorites', protect, getFavorites);
 
 // Public routes
+router.get('/free', getFreeBooks);
 router.get('/search', searchBooks);
 router.get('/:id', getBookById);
 

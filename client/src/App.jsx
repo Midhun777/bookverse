@@ -15,6 +15,7 @@ import DiscoverPage from './pages/DiscoverPage';
 import RecommendationsPage from './pages/RecommendationsPage';
 import ChallengesPage from './pages/ChallengesPage';
 import FavoritesPage from './pages/FavoritesPage';
+import ReadBookPage from './pages/ReadBookPage';
 import { Toaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -34,6 +35,7 @@ function App() {
             <Route path="recommendations" element={<RecommendationsPage />} />
             <Route path="explore" element={<ExplorePage />} />
             <Route path="book/:id" element={<BookDetailsPage />} />
+            <Route path="read/:id" element={<ReadBookPage />} />
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="favorites" element={<FavoritesPage />} />
             <Route path="my-books" element={<MyListsPage />} />

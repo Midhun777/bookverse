@@ -2,14 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getBookDetails } from '../services/googleBooksService';
-import api from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import {
     Loader2, Heart, BookOpen, Clock, CheckCircle, Star, Send, Trash2, ChevronLeft, Calendar, Book, ChevronDown
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { getBookReviews, addReview, deleteReview } from '../services/reviewService';
-import { favoriteBook, unfavoriteBook, getFavoriteBooks } from '../services/bookService';
 import { getMyLists, addToList } from '../services/listService';
 import { logActivity } from '../services/activityService';
 import ReviewList from '../components/ReviewList';
@@ -48,20 +46,12 @@ const BookDetailsPage = () => {
         }
     }, [book, id, user]);
 
-    const [reviewSort, setReviewSort] = useState('newest');
-    const [reviewText, setReviewText] = useState('');
-    const [rating, setRating] = useState(0);
+    const [reviewSort] = useState('newest');
     const [isProgressModalOpen, setIsProgressModalOpen] = useState(false);
 
     const { data: reviewsData, refetch: refetchReviews } = useQuery({
         queryKey: ['reviews', id, reviewSort],
         queryFn: () => getBookReviews(id, reviewSort),
-    });
-
-    const { data: favoriteBooks } = useQuery({
-        queryKey: ['favoriteBooks'],
-        queryFn: getFavoriteBooks,
-        enabled: !!user
     });
 
     const { data: myLists } = useQuery({
@@ -70,73 +60,7 @@ const BookDetailsPage = () => {
         enabled: !!user,
     });
 
-    const isBookFavorited = favoriteBooks?.some(b => b.googleBookId === id);
     const savedStatus = myLists?.find(b => b.googleBookId === id)?.status;
-
-    const toggleFavoriteMutation = useMutation({
-        mutationFn: async () => {
-            if (isBookFavorited) {
-                return await unfavoriteBook(id);
-            } else {
-                return await favoriteBook({
-                    googleBookId: book.id,
-                    title: book.volumeInfo.title,
-                    authors: book.volumeInfo.authors,
-                    thumbnail: book.volumeInfo.imageLinks?.thumbnail,
-                    categories: book.volumeInfo.categories,
-                    rating: book.volumeInfo.averageRating
-                });
-            }
-        },
-        onMutate: async () => {
-            // Cancel any outgoing refetches
-            await queryClient.cancelQueries({ queryKey: ['favoriteBooks'] });
-
-            // Snapshot the previous value
-            const previousFavorites = queryClient.getQueryData(['favoriteBooks']);
-
-            // Optimistically update to the new value
-            queryClient.setQueryData(['favoriteBooks'], (old) => {
-                if (isBookFavorited) {
-                    return old?.filter(b => b.googleBookId !== id);
-                } else {
-                    return [...(old || []), {
-                        googleBookId: id,
-                        title: book.volumeInfo.title,
-                        thumbnail: book.volumeInfo.imageLinks?.thumbnail,
-                        authors: book.volumeInfo.authors
-                    }];
-                }
-            });
-
-            return { previousFavorites };
-        },
-        onSuccess: () => {
-            const status = isBookFavorited ? 'Removed from favorites' : 'Added to favorites';
-            toast.success(status);
-
-            if (!isBookFavorited) {
-                logActivity({
-                    actionType: 'SAVE',
-                    googleBookId: id,
-                    bookTitle: book?.volumeInfo?.title,
-                    bookAuthor: book?.volumeInfo?.authors?.[0],
-                    bookCover: book?.volumeInfo?.imageLinks?.thumbnail,
-                    keyword: book?.volumeInfo?.title,
-                    subjects: book?.volumeInfo?.categories
-                });
-            }
-        },
-        onError: (err, variables, context) => {
-            toast.error(err.response?.data?.message || 'Failed to update favorites');
-            if (context?.previousFavorites) {
-                queryClient.setQueryData(['favoriteBooks'], context.previousFavorites);
-            }
-        },
-        onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: ['favoriteBooks'] });
-        }
-    });
 
     const updateListMutation = useMutation({
         mutationFn: async (newStatus) => {
@@ -194,7 +118,6 @@ const BookDetailsPage = () => {
         mutationFn: addReview,
         onSuccess: () => {
             toast.success('Review posted');
-            setReviewText('');
             refetchReviews();
         },
         onError: (error) => {
@@ -260,70 +183,95 @@ const BookDetailsPage = () => {
                             />
                         </div>
 
-                        {/* Action Buttons */}
-                        <div className="space-y-3">
-                            {user ? (
-                                <>
-                                    <div className="relative">
-                                        <button
-                                            onClick={() => setIsListOpen(!isListOpen)}
-                                            className="w-full py-2 btn-primary flex items-center justify-center gap-2 text-sm font-bold shadow-sm"
-                                        >
-                                            <span className="flex-1 text-center pl-6">
-                                                {savedStatus === 'TO_READ' && 'Want to Read'}
-                                                {savedStatus === 'READING' && 'Currently Reading'}
-                                                {savedStatus === 'COMPLETED' && 'Read'}
-                                                {!savedStatus && 'Add to List'}
-                                            </span>
-                                            <div className="w-px h-6 bg-white/20"></div>
-                                            <ChevronDown size={16} className={`transition-transform px-2 box-content ${isListOpen ? 'rotate-180' : ''}`} />
-                                        </button>
+                        {user ? (
+                            <div className="space-y-4">
+                                {/* Action Buttons */}
+                                <div className="relative">
+                                    <button
+                                        onClick={() => setIsListOpen(!isListOpen)}
+                                        className="w-full py-2 btn-primary flex items-center justify-center gap-2 text-sm font-bold shadow-sm"
+                                    >
+                                        <span className="flex-1 text-center pl-6">
+                                            {savedStatus === 'TO_READ' && 'Want to Read'}
+                                            {savedStatus === 'READING' && 'Currently Reading'}
+                                            {savedStatus === 'COMPLETED' && 'Read'}
+                                            {!savedStatus && 'Add to List'}
+                                        </span>
+                                        <div className="w-px h-6 bg-white/20"></div>
+                                        <ChevronDown size={16} className={`transition-transform px-2 box-content ${isListOpen ? 'rotate-180' : ''}`} />
+                                    </button>
 
-                                        {isListOpen && (
-                                            <>
-                                                <div className="fixed inset-0 z-40" onClick={() => setIsListOpen(false)} />
-                                                <div className="absolute top-full left-0 w-full mt-1 bg-paper-50 border border-paper-200 shadow-xl rounded-md overflow-hidden z-50 dark:bg-stone-900 dark:border-stone-800">
-                                                    <button onClick={() => handleShelve('TO_READ')} className="w-full text-left px-4 py-2 hover:bg-paper-100 text-sm text-ink-900 flex items-center gap-2 dark:hover:bg-stone-800 dark:text-stone-300">
-                                                        <Clock size={14} className="text-teal-600" /> Want to Read
-                                                    </button>
-                                                    <button onClick={() => handleShelve('READING')} className="w-full text-left px-4 py-2 hover:bg-paper-100 text-sm text-ink-900 flex items-center gap-2 dark:hover:bg-stone-800 dark:text-stone-300">
-                                                        <BookOpen size={14} className="text-amber-500" /> Currently Reading
-                                                    </button>
-                                                    <button onClick={() => handleShelve('COMPLETED')} className="w-full text-left px-4 py-2 hover:bg-paper-100 text-sm text-ink-900 flex items-center gap-2 dark:hover:bg-stone-800 dark:text-stone-300">
-                                                        <CheckCircle size={14} className="text-green-600" /> Read
-                                                    </button>
-                                                </div>
-                                            </>
-                                        )}
-                                    </div>
-
-                                    {savedStatus === 'READING' && (
-                                        <button
-                                            onClick={() => setIsProgressModalOpen(true)}
-                                            className="w-full py-2 border border-teal-600 text-teal-700 bg-paper-50 font-bold text-sm hover:bg-teal-50 transition-colors rounded dark:bg-stone-900 dark:text-teal-500 dark:hover:bg-stone-800"
-                                        >
-                                            Update Progress
-                                        </button>
+                                    {isListOpen && (
+                                        <>
+                                            <div className="fixed inset-0 z-40" onClick={() => setIsListOpen(false)} />
+                                            <div className="absolute top-full left-0 w-full mt-1 bg-paper-50 border border-paper-200 shadow-xl rounded-md overflow-hidden z-50 dark:bg-stone-900 dark:border-stone-800">
+                                                <button onClick={() => handleShelve('TO_READ')} className="w-full text-left px-4 py-2 hover:bg-paper-100 text-sm text-ink-900 flex items-center gap-2 dark:hover:bg-stone-800 dark:text-stone-300">
+                                                    <Clock size={14} className="text-teal-600" /> Want to Read
+                                                </button>
+                                                <button onClick={() => handleShelve('READING')} className="w-full text-left px-4 py-2 hover:bg-paper-100 text-sm text-ink-900 flex items-center gap-2 dark:hover:bg-stone-800 dark:text-stone-300">
+                                                    <BookOpen size={14} className="text-amber-500" /> Currently Reading
+                                                </button>
+                                                <button onClick={() => handleShelve('COMPLETED')} className="w-full text-left px-4 py-2 hover:bg-paper-100 text-sm text-ink-900 flex items-center gap-2 dark:hover:bg-stone-800 dark:text-stone-300">
+                                                    <CheckCircle size={14} className="text-green-600" /> Read
+                                                </button>
+                                            </div>
+                                        </>
                                     )}
+                                </div>
 
-                                    <div className="flex gap-2">
-                                        <button
-                                            onClick={() => toggleFavoriteMutation.mutate()}
-                                            className={`flex-1 py-1.5 rounded border text-xs font-bold transition-all ${isBookFavorited ? 'bg-red-50 border-red-200 text-red-600 dark:bg-red-900/20 dark:border-red-900/30' : 'bg-paper-50 border-paper-200 text-ink-600 hover:bg-paper-100 dark:bg-stone-900 dark:border-stone-800 dark:text-stone-400 dark:hover:bg-stone-800'}`}
-                                        >
-                                            {isBookFavorited ? 'Favorited' : 'Favorite'}
-                                        </button>
-                                    </div>
-                                </>
-                            ) : (
+                                {savedStatus === 'READING' && (
+                                    <button
+                                        onClick={() => setIsProgressModalOpen(true)}
+                                        className="w-full py-2 border border-teal-600 text-teal-700 bg-paper-50 font-bold text-sm hover:bg-teal-50 transition-colors rounded dark:bg-stone-900 dark:text-teal-500 dark:hover:bg-stone-800"
+                                    >
+                                        Update Progress
+                                    </button>
+                                )}
+
+                                {/* Read Free Button */}
+                                {(book.isFree || book.accessInfo?.embeddable || book.accessInfo?.webReaderLink) && (
+                                    <button
+                                        onClick={() => {
+                                            if (book.isFree && book.readLink) {
+                                                navigate(`/read/${id}`, { state: { readLink: book.readLink, isFree: true, title: book.volumeInfo.title } });
+                                            } else if (book.accessInfo?.embeddable) {
+                                                navigate(`/read/${id}`, { state: { bookData: book, title: book.volumeInfo.title } });
+                                            } else if (book.accessInfo?.webReaderLink) {
+                                                window.open(book.accessInfo.webReaderLink, '_blank');
+                                            }
+                                        }}
+                                        className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm transition-colors rounded shadow-sm flex items-center justify-center gap-2"
+                                    >
+                                        <BookOpen size={16} /> Look Inside / Read
+                                    </button>
+                                )}
+
+                            </div>
+                        ) : (
+                            <div className="space-y-4">
                                 <Link to="/login" className="block w-full text-center py-2 btn-primary font-bold text-sm">
                                     Sign in to Shelve
                                 </Link>
-                            )}
 
-                        </div>
-
-
+                                {/* Read Free Button for Unauthenticated Users */}
+                                {(book.isFree || book.accessInfo?.embeddable || book.accessInfo?.webReaderLink) && (
+                                    <button
+                                        onClick={() => {
+                                            if (book.isFree && book.readLink) {
+                                                navigate(`/read/${id}`, { state: { readLink: book.readLink, isFree: true, title: book.volumeInfo.title } });
+                                            } else if (book.accessInfo?.embeddable) {
+                                                navigate(`/read/${id}`, { state: { bookData: book, title: book.volumeInfo.title } });
+                                            } else if (book.accessInfo?.webReaderLink) {
+                                                window.open(book.accessInfo.webReaderLink, '_blank');
+                                            }
+                                        }}
+                                        className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm transition-colors rounded shadow-sm flex items-center justify-center gap-2"
+                                    >
+                                        <BookOpen size={16} /> Look Inside / Read
+                                    </button>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     {/* RIGHT: Metadata & Content */}
@@ -370,7 +318,6 @@ const BookDetailsPage = () => {
                         </div>
 
                         {/* Reviews Section */}
-                        {/* Reviews Section using Modular Component */}
                         <div className="pt-8">
                             <ReviewList
                                 reviews={reviewsData?.reviews || []}
@@ -397,7 +344,7 @@ const BookDetailsPage = () => {
                 }}
                 onUpdate={handleProgressUpdate}
             />
-        </div>
+        </div >
     );
 };
 

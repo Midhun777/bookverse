@@ -24,6 +24,18 @@ const schema = z.object({
     avatar: z.string().url('Invalid URL').optional().or(z.literal('')),
 });
 
+const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+        return (
+            <div className="bg-paper-50 p-3 border border-paper-200 rounded shadow-lg text-xs dark:bg-stone-800 dark:border-stone-700">
+                <p className="font-bold text-ink-900 mb-1 dark:text-stone-100">{label}</p>
+                <p className="text-teal-700 font-bold dark:text-teal-500">{`${payload[0].value} units`}</p>
+            </div>
+        );
+    }
+    return null;
+};
+
 const ProfilePage = () => {
     const { user, login } = useAuthStore();
     const [activeTab, setActiveTab] = useState('portfolio');
@@ -62,18 +74,6 @@ const ProfilePage = () => {
 
     // Libra Palette for Charts
     const COLORS = ['#0d9488', '#f59e0b', '#57534e', '#a8a29e', '#f5f5f4'];
-
-    const CustomTooltip = ({ active, payload, label }) => {
-        if (active && payload && payload.length) {
-            return (
-                <div className="bg-paper-50 p-3 border border-paper-200 rounded shadow-lg text-xs dark:bg-stone-800 dark:border-stone-700">
-                    <p className="font-bold text-ink-900 mb-1 dark:text-stone-100">{label}</p>
-                    <p className="text-teal-700 font-bold dark:text-teal-500">{`${payload[0].value} units`}</p>
-                </div>
-            );
-        }
-        return null;
-    };
 
     const genreData = profile?.genreDistribution?.length > 0 ? profile.genreDistribution : [
         { name: 'Fiction', value: 40 },

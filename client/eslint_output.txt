@@ -1,0 +1,9 @@
+
+D:\vs-code\main-project\bookverse\client\src\pages\BookDetailsPage.jsx
+   11:10  error  'favoriteBook' is defined but never used. Allowed unused vars must match /^[A-Z_]/u              no-unused-vars
+   11:24  error  'unfavoriteBook' is defined but never used. Allowed unused vars must match /^[A-Z_]/u            no-unused-vars
+   70:11  error  'isBookFavorited' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  129:13  error  'setReviewText' is not defined                                                                   no-undef
+
+✖ 4 problems (4 errors, 0 warnings)
+

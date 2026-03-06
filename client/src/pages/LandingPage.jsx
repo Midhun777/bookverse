@@ -14,17 +14,17 @@ import { getMyLists } from '../services/listService';
 const LandingPage = () => {
     const { user } = useAuthStore();
 
-    const { data, isLoading, isError } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ['homeBooks'],
         queryFn: getHomeData,
         staleTime: 1000 * 60 * 5,
     });
 
     // Fetch real Global Activity Feed
-    const { data: activities, isLoading: activityLoading } = useQuery({
+    const { data: activities } = useQuery({
         queryKey: ['globalActivity'],
         queryFn: async () => {
-            const res = await api.get('/activity/global');
+            const res = await api.get('/activities/global');
             return res.data;
         },
         retry: false

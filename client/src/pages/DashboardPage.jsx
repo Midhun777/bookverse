@@ -12,7 +12,7 @@ const DashboardPage = () => {
     const toReadRef = useRef(null);
     const completedRef = useRef(null);
 
-    const { data: favoriteBooks, isLoading: favoriteLoading } = useQuery({
+    const { isLoading: favoriteLoading } = useQuery({
         queryKey: ['favoriteBooks'],
         queryFn: async () => {
             const res = await api.get('/books/favorites');

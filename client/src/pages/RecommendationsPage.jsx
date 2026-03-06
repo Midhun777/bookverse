@@ -2,15 +2,15 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import api from '../services/api';
 import BookCard from '../components/BookCard';
-import { Sparkles, BookOpen, ArrowRight, UserCheck } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Sparkles, BookOpen, UserCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
+import { motion } from 'framer-motion';
 
 const RecommendationsPage = () => {
     const { user } = useAuthStore();
 
-    const { data, isLoading, isError } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ['personal-recommendations'],
         queryFn: async () => {
             const res = await api.get('/recommendations/my');

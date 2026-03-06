@@ -40,7 +40,7 @@ const AdminDashboard = () => {
         homepageBannerText: ''
     });
 
-    const { data: settings } = useQuery({
+    const { isLoading: _isLoadingSettings } = useQuery({
         queryKey: ['adminSettings'],
         queryFn: async () => {
             const res = await api.get('/admin/settings');

@@ -1,10 +1,9 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import api from '../services/api';
 import { Loader2, Heart, Sparkles, ArrowLeft } from 'lucide-react';
+import { motion } from 'framer-motion';
 import ListBookCard from '../components/ListBookCard';
 import { getFavoriteBooks } from '../services/bookService';
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 const FavoritesPage = () => {

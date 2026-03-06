@@ -6,7 +6,7 @@ import ListBookCard from '../components/ListBookCard';
 
 const MyListsPage = () => {
     const [activeTab, setActiveTab] = useState('TO_READ');
-
+    const [now] = useState(() => Date.now());
 
     const { data: listItems, isLoading: listLoading } = useQuery({
         queryKey: ['myLists'],
@@ -62,7 +62,7 @@ const MyListsPage = () => {
                             i.status === 'COMPLETED' &&
                             // Check updated date or created date? Ideally completed date. 
                             // Assuming `updatedAt` is close enough to completion time for now.
-                            new Date(i.updatedAt || Date.now()).getFullYear() === currentYear
+                            new Date(i.updatedAt || now).getFullYear() === currentYear
                         ).length || 0;
                         const goal = 30; // Hardcoded goal for now, or fetch from user settings later
                         const percentage = Math.min((completedThisYear / goal) * 100, 100);

@@ -1,0 +1,57 @@
+
+D:\vs-code\main-project\bookverse\client\src\components\ReadingProgressModal.jsx
+  20:13  warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/exhaustive-deps')
+  22:13  warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/exhaustive-deps')
+
+D:\vs-code\main-project\bookverse\client\src\pages\ExplorePage.jsx
+  30:38  error  'previousUrlQuery' is not defined                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 no-undef
+  31:13  error  'previousUrlQuery' is not defined                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 no-undef
+  32:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  30 |         if (urlQuery && urlQuery !== previousUrlQuery.current) {
+  31 |             previousUrlQuery.current = urlQuery;
+> 32 |             setQuery(urlQuery);
+     |             ^^^^^^^^ Avoid calling setState() directly within an effect
+  33 |             setSearchTerm(urlQuery);
+  34 |         }
+  35 |     }, [urlQuery]);  react-hooks/set-state-in-effect
+  59:32  error  'previousDebounced' is not defined                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                no-undef
+  60:13  error  'previousDebounced' is not defined                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                no-undef
+  61:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  59 |         if (debouncedQuery !== previousDebounced.current) {
+  60 |             previousDebounced.current = debouncedQuery;
+> 61 |             setSearchTerm(debouncedQuery);
+     |             ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  62 |         }
+  63 |     }, [debouncedQuery]);
+  64 |               react-hooks/set-state-in-effect
+
+D:\vs-code\main-project\bookverse\client\src\pages\MyListsPage.jsx
+  9:33  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+   7 | const MyListsPage = () => {
+   8 |     const [activeTab, setActiveTab] = useState('TO_READ');
+>  9 |     const nowRef = React.useRef(Date.now());
+     |                                 ^^^^^^^^^^ Cannot call impure function
+  10 |
+  11 |
+  12 |     const { data: listItems, isLoading: listLoading } = useQuery({  react-hooks/purity
+
+✖ 9 problems (7 errors, 2 warnings)
+  0 errors and 2 warnings potentially fixable with the `--fix` option.
+

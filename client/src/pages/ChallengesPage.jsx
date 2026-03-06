@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Trophy, Target, Calendar, BookOpen, Edit2, CheckCircle, TrendingUp } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { Link } from 'react-router-dom';
@@ -11,7 +11,6 @@ import toast from 'react-hot-toast';
 
 const ChallengesPage = () => {
     const { user } = useAuthStore();
-    const queryClient = useQueryClient();
     const [goal, setGoal] = useState(30); // Default, ideally fetched from user preferences
     const [isEditing, setIsEditing] = useState(false);
 
@@ -21,7 +20,7 @@ const ChallengesPage = () => {
         enabled: !!user
     });
 
-    const { data: profile, isLoading: profileLoading } = useQuery({
+    const { data: profile } = useQuery({
         queryKey: ['myProfile', user?.username],
         queryFn: () => getPublicProfile(user?.username),
         enabled: !!user?.username,

@@ -1,18 +1,18 @@
 import { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import api from '../services/api';
 import { searchBooks } from '../services/googleBooksService';
 import BookCard from '../components/BookCard';
 import BookListItem from '../components/BookListItem';
-import { Search, Loader2, Sparkles, Filter, X, Grid, List } from 'lucide-react';
+import { Search, Grid, List } from 'lucide-react';
 import { useDebounce } from '../hooks/useDebounce';
 import { logActivity } from '../services/activityService';
 import { getMyRecommendations } from '../services/recommendationService';
 import { addToList } from '../services/listService';
 import { useAuthStore } from '../store/authStore';
 import toast from 'react-hot-toast';
-import { motion } from 'framer-motion';
+
 
 const ExplorePage = () => {
     const isFirstMount = useRef(true);
@@ -24,11 +24,14 @@ const ExplorePage = () => {
     const [searchTerm, setSearchTerm] = useState(urlQuery || 'popular');
     const [viewMode, setViewMode] = useState('grid');
     const { user } = useAuthStore();
-    const navigate = useNavigate();
+
+    const previousUrlQuery = useRef(urlQuery);
 
     // Reset search when URL param changes
     useEffect(() => {
-        if (urlQuery) {
+        if (urlQuery && urlQuery !== previousUrlQuery.current) {
+            previousUrlQuery.current = urlQuery;
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setQuery(urlQuery);
             setSearchTerm(urlQuery);
         }
@@ -41,25 +44,31 @@ const ExplorePage = () => {
     });
 
     useEffect(() => {
-        if (debouncedQuery) {
-            setSearchTerm(debouncedQuery);
-
+        if (debouncedQuery && user) {
             // HONESTY: Don't log the initial default search as user activity
             if (isFirstMount.current) {
                 isFirstMount.current = false;
                 return;
             }
 
-            if (user) {
-                logActivity({
-                    actionType: 'SEARCH',
-                    keyword: debouncedQuery
-                });
-            }
+            logActivity({
+                actionType: 'SEARCH',
+                keyword: debouncedQuery
+            });
         }
     }, [debouncedQuery, user]);
 
-    const { data: favoriteBooks, isLoading: favoriteLoading } = useQuery({
+    const previousDebounced = useRef(debouncedQuery);
+
+    useEffect(() => {
+        if (debouncedQuery !== previousDebounced.current) {
+            previousDebounced.current = debouncedQuery;
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setSearchTerm(debouncedQuery);
+        }
+    }, [debouncedQuery]);
+
+    const { isLoading: favoriteLoading } = useQuery({
         queryKey: ['favoriteBooks'],
         queryFn: async () => {
             const res = await api.get('/books/favorites');
@@ -68,7 +77,7 @@ const ExplorePage = () => {
         enabled: !!user, // Only fetch if user is logged in
     });
 
-    const { data, isLoading, isError, error } = useQuery({
+    const { data, isLoading, isError } = useQuery({
         queryKey: ['books', searchTerm],
         queryFn: () => searchBooks(searchTerm),
         enabled: !!searchTerm,

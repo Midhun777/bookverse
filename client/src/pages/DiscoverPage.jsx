@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import api from '../services/api';
 import BookCard from '../components/BookCard';
 import { Sparkles, TrendingUp, BookOpen, Star, ArrowRight } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 import { DISCOVER_FEED } from '../data/discoverData';
@@ -21,8 +21,15 @@ const DiscoverPage = () => {
         ]
     };
 
-    const isLoading = false;
-    const isError = false;
+    const { data: freeBooksData, isLoading: isFreeLoading } = useQuery({
+        queryKey: ['freeBooks'],
+        queryFn: async () => {
+            const res = await api.get('/books/free?search=fiction&page=1');
+            return res.data;
+        }
+    });
+
+    const isLoading = isFreeLoading;
 
     if (isLoading) {
         return (
@@ -39,15 +46,19 @@ const DiscoverPage = () => {
         );
     }
 
-    if (isError) {
-        return (
-            <div className="min-h-screen bg-paper-50 dark:bg-stone-950 flex items-center justify-center text-ink-500">
-                <p>Failed to load the Discovery Hub.</p>
-            </div>
-        );
-    }
+    const { feed: staticFeed, categories, featured } = data || {};
 
-    const { feed, categories, featured } = data || {};
+    let combinedFeed = staticFeed ? [...staticFeed] : [];
+
+    // Insert the "Free Books" section at the top
+    if (freeBooksData?.results?.length > 0) {
+        combinedFeed.unshift({
+            title: "Free & Public Domain Classics",
+            description: "Timeless masterpieces you can read right now for free.",
+            category: "FREE",
+            books: freeBooksData.results
+        });
+    }
 
     return (
         <div className="min-h-screen bg-paper-50 dark:bg-stone-950 pb-20">
@@ -152,7 +163,7 @@ const DiscoverPage = () => {
                 </section>
 
                 {/* Feed Sections */}
-                {feed?.map((section, idx) => (
+                {combinedFeed?.map((section, idx) => (
                     <motion.section
                         key={idx}
                         initial={{ opacity: 0, y: 30 }}

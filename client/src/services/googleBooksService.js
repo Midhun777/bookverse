@@ -11,6 +11,18 @@ export const getBookDetails = async (bookId) => {
             const localRes = await api.get(`/books/${bookId}`);
             if (localRes.data) {
                 const book = localRes.data;
+
+                // If backend already provides volumeInfo (like Gutenberg books), return it directly
+                if (book.volumeInfo) {
+                    // Make sure id matches expected structure
+                    return {
+                        id: book.googleBookId || book.id || bookId,
+                        isFree: book.isFree,
+                        readLink: book.readLink,
+                        ...book
+                    };
+                }
+
                 return {
                     id: book.googleBookId || book.openLibraryId,
                     volumeInfo: {
