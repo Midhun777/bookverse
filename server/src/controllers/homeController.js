@@ -77,20 +77,26 @@ const getHomeBooks = async (req, res) => {
         // 3. Section Building
 
         // Trending Books (Sorted by activity, filtered by existence in Master)
-        const trending = trendingIds
+        let trending = trendingIds
             .map(t => formatBook(masterMap[t._id], internalStatsMap[t._id]))
-            .filter(b => b)
-            .slice(0, 10);
+            .filter(b => b && !['HP93DAAAQBAJ', 'P_e-EAAAQBAJ'].includes(b.googleBookId));
 
         // If trending is empty (e.g., first run or legacy IDs), fall back to isTrending flag
         if (trending.length < 4) {
-            const fallbackTrending = await BookMaster.find({ isTrending: true }).limit(8);
+            const fallbackTrending = await BookMaster.find({ isTrending: true, googleBookId: { $nin: ['HP93DAAAQBAJ', 'P_e-EAAAQBAJ'] } }).limit(8);
             fallbackTrending.forEach(b => {
                 if (!trending.find(ex => ex.googleBookId === b.googleBookId)) {
                     trending.push(formatBook(b, internalStatsMap[b.googleBookId]));
                 }
             });
         }
+
+        // Add Sherlock Holmes to the beginning of the trending list
+        const newTrendingBook = await BookMaster.findOne({ googleBookId: 'buc0AAAAMAAJ' });
+        if (newTrendingBook && !trending.find(ex => ex.googleBookId === 'buc0AAAAMAAJ')) {
+             trending.unshift(formatBook(newTrendingBook, internalStatsMap['buc0AAAAMAAJ']));
+        }
+        trending = trending.slice(0, 10);
 
         // Top Rated
         const topRated = topRatedStats

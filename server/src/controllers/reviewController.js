@@ -9,12 +9,6 @@ const addReview = async (req, res) => {
     try {
         const { googleBookId, rating, reviewText } = req.body;
 
-        // Check if user already reviewed this book
-        const existingReview = await Review.findOne({ userId: req.user._id, googleBookId });
-        if (existingReview) {
-            return res.status(400).json({ message: 'You have already reviewed this book' });
-        }
-
         // Automatic Moderation
         const moderation = moderateContent(reviewText);
 

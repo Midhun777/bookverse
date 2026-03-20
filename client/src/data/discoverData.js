@@ -18,10 +18,10 @@ export const DISCOVER_FEED = [
                 googleBookId: "Cx6aDwAAQBAJ"
             },
             {
-                title: "The Subtle Art of Not Giving a F*ck",
-                author: "Mark Manson",
-                coverImage: "https://books.google.com/books/content?id=HP93DAAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
-                googleBookId: "HP93DAAAQBAJ"
+                title: "The Intelligent Investor",
+                author: "Benjamin Graham",
+                coverImage: "https://books.google.com/books/content?id=98mSDAAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+                googleBookId: "98mSDAAAQBAJ"
             },
             {
                 title: "Zero to One",
