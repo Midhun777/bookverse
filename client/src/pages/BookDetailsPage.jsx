@@ -13,7 +13,7 @@ import { logActivity } from '../services/activityService';
 import ReviewList from '../components/ReviewList';
 import ReadingProgressModal from '../components/ReadingProgressModal';
 import { updateProgress, getProgress } from '../services/progressService';
-
+import { getFavoriteBooks, favoriteBook, unfavoriteBook } from '../services/bookService';
 const BookDetailsPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -61,6 +61,85 @@ const BookDetailsPage = () => {
     });
 
     const savedStatus = myLists?.find(b => b.googleBookId === id)?.status;
+
+    // Favorite Logic
+    const { data: favoriteBooks } = useQuery({
+        queryKey: ['favoriteBooks'],
+        queryFn: getFavoriteBooks,
+        enabled: !!user,
+        staleTime: 1000 * 60 * 5 // 5 mins
+    });
+
+    const isFavorited = favoriteBooks?.some(b => b.googleBookId === id);
+
+    const toggleFavoriteMutation = useMutation({
+        mutationFn: async () => {
+            if (!user) {
+                toast.error('Please login to favorite books');
+                throw new Error('Unauthorized');
+            }
+
+            if (isFavorited) {
+                await unfavoriteBook(id);
+                return 'unfavorited';
+            } else {
+                const thumbnail = book.volumeInfo?.imageLinks?.thumbnail?.replace('http:', 'https:') || 'https://via.placeholder.com/300x450?text=No+Cover';
+                await favoriteBook({
+                    googleBookId: id,
+                    title: book.volumeInfo?.title || 'Unknown Title',
+                    authors: Array.isArray(book.volumeInfo?.authors) ? book.volumeInfo.authors : [book.volumeInfo?.authors || 'Unknown'],
+                    thumbnail: thumbnail,
+                    categories: Array.isArray(book.volumeInfo?.categories) ? book.volumeInfo.categories : [],
+                    rating: book.averageRating || book.volumeInfo?.averageRating
+                });
+                return 'favorited';
+            }
+        },
+        onMutate: async () => {
+            await queryClient.cancelQueries({ queryKey: ['favoriteBooks'] });
+            const previousFavorites = queryClient.getQueryData(['favoriteBooks']);
+            queryClient.setQueryData(['favoriteBooks'], (old) => {
+                if (isFavorited) {
+                    return old?.filter(b => b.googleBookId !== id);
+                } else {
+                    const thumbnail = book.volumeInfo?.imageLinks?.thumbnail?.replace('http:', 'https:') || 'https://via.placeholder.com/300x450?text=No+Cover';
+                    return [...(old || []), {
+                        googleBookId: id,
+                        title: book.volumeInfo?.title,
+                        thumbnail: thumbnail,
+                        authors: Array.isArray(book.volumeInfo?.authors) ? book.volumeInfo.authors : [book.volumeInfo?.authors]
+                    }];
+                }
+            });
+            return { previousFavorites };
+        },
+        onSuccess: (action) => {
+            toast.success(action === 'favorited' ? 'Added to favorites' : 'Removed from favorites');
+            if (action === 'favorited') {
+                const thumbnail = book.volumeInfo?.imageLinks?.thumbnail?.replace('http:', 'https:') || 'https://via.placeholder.com/300x450?text=No+Cover';
+                logActivity({
+                    actionType: 'SAVE',
+                    googleBookId: id,
+                    bookTitle: book.volumeInfo?.title,
+                    bookAuthor: Array.isArray(book.volumeInfo?.authors) ? book.volumeInfo.authors[0] : (book.volumeInfo?.authors || 'Unknown'),
+                    bookCover: thumbnail,
+                    keyword: book.volumeInfo?.title,
+                    subjects: Array.isArray(book.volumeInfo?.categories) ? book.volumeInfo.categories : [book.volumeInfo?.categories].filter(Boolean)
+                });
+            }
+        },
+        onError: (err, variables, context) => {
+            if (err.message !== 'Unauthorized') {
+                toast.error(err.response?.data?.message || 'Failed to update favorites');
+                if (context?.previousFavorites) {
+                    queryClient.setQueryData(['favoriteBooks'], context.previousFavorites);
+                }
+            }
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ['favoriteBooks'] });
+        }
+    });
 
     const updateListMutation = useMutation({
         mutationFn: async (newStatus) => {
@@ -276,11 +355,22 @@ const BookDetailsPage = () => {
 
                     {/* RIGHT: Metadata & Content */}
                     <div className="md:col-span-8 lg:col-span-9 space-y-8">
-                        <div>
-                            <h1 className="text-3xl md:text-4xl font-serif font-bold text-ink-900 dark:text-stone-100 leading-tight mb-2">{volumeInfo.title}</h1>
-                            <p className="text-xl text-ink-600 dark:text-stone-400 font-serif">
-                                by <span className="text-ink-900 dark:text-stone-200 font-bold hover:underline cursor-pointer">{volumeInfo.authors?.join(', ')}</span>
-                            </p>
+                        <div className="flex justify-between items-start gap-4">
+                            <div>
+                                <h1 className="text-3xl md:text-4xl font-serif font-bold text-ink-900 dark:text-stone-100 leading-tight mb-2">{volumeInfo.title}</h1>
+                                <p className="text-xl text-ink-600 dark:text-stone-400 font-serif">
+                                    by <span className="text-ink-900 dark:text-stone-200 font-bold hover:underline cursor-pointer">{volumeInfo.authors?.join(', ')}</span>
+                                </p>
+                            </div>
+                            {user && (
+                                <button
+                                    onClick={() => toggleFavoriteMutation.mutate()}
+                                    className={`p-3 rounded-full flex-shrink-0 border transition-all ${isFavorited ? 'border-red-200 bg-red-50 text-red-500 dark:bg-red-900/20 dark:border-red-900' : 'border-paper-200 bg-white text-ink-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 dark:bg-stone-900 dark:border-stone-800 dark:hover:bg-red-900/20 dark:hover:border-red-900'}`}
+                                    title={isFavorited ? "Remove from Favorites" : "Add to Favorites"}
+                                >
+                                    <Heart size={24} fill={isFavorited ? "currentColor" : "none"} className={isFavorited ? "scale-110 transition-transform" : "transition-transform"} />
+                                </button>
+                            )}
                         </div>
 
                         {/* Description */}
