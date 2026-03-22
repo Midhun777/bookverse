@@ -92,3 +92,6 @@ Ans: Database aggregation vazhiyaanu. Database-il ethozhokke books aanu koodutha
 - Parayunna karyangalude logic first clear aayi parayuka. Syntax aarum chothikkillenkiyum flow eppazhum orthu vakkuka (Click -> API -> Controller -> DB -> Token).
 - Arillatha question vannal, "I am not sure how to implement that edge case currenty, pakshe njan documentation eduthu ezhuthan nokkam" ennu parayuka. Blank aakkaruth.
 - Tailwind css upayogichathu kond responsive design (Mobile-ilum PC-ilum correct aayi work cheyyum) ezhuthan easy aayi ennum parayuka.
+
+
+<!--  -->
