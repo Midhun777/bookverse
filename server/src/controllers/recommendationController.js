@@ -112,9 +112,9 @@ const getMyRecommendations = async (req, res) => {
         const personalSections = await getRecommendations(userId);
 
         // Fetch Global Sections for everyone
-        const popularBooks = await BookMaster.find().sort({ popularityScore: -1 }).limit(6);
-        const classics = await BookMaster.find({ isClassic: true }).limit(6);
-        const trending = await BookMaster.find({ isTrending: true }).limit(6);
+        const popularBooks = await BookMaster.find().sort({ popularityScore: -1 }).limit(12);
+        const classics = await BookMaster.find({ isClassic: true }).limit(12);
+        const trending = await BookMaster.find({ isTrending: true }).limit(12);
 
         const globalSections = [
             {

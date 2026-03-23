@@ -78,13 +78,23 @@ const addToFavorites = async (req, res) => {
             rating
         });
 
-        // Log 'LIKE' activity
+        // Enrich with subjects from BookMaster for recommendation signals
+        let bookSubjects = categories || [];
+        if (bookSubjects.length === 0) {
+            const masterBook = await BookMaster.findOne({ googleBookId });
+            if (masterBook && masterBook.subjects) {
+                bookSubjects = masterBook.subjects;
+            }
+        }
+
+        // Log 'LIKE' activity — includes subjects for search-to-like recommendation shortcut
         await Activity.create({
             userId: req.user._id,
             actionType: 'LIKE',
             googleBookId,
-            keyword: title, // Use title as keyword context
-            category: categories ? categories[0] : null
+            bookTitle: title,
+            keyword: title,
+            subjects: bookSubjects
         });
 
         res.status(201).json(favorite);
